@@ -1,10 +1,13 @@
 package com.umc7.ZIC.user.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
+import com.umc7.ZIC.common.domain.enums.Region;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,4 +31,11 @@ public class User extends BaseEntity {
 
     @Column(length = 20, nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserInstrument> userInstrumentList = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "region_id")
+    private Region region;
 }
