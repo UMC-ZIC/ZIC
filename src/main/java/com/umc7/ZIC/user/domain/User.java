@@ -1,7 +1,7 @@
 package com.umc7.ZIC.user.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
-import com.umc7.ZIC.common.domain.enums.Region;
+import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.reservation.domain.Reservation;
 import jakarta.persistence.*;
 import lombok.*;

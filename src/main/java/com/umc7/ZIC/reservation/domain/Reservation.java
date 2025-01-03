@@ -1,6 +1,7 @@
 package com.umc7.ZIC.reservation.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
+import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import com.umc7.ZIC.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,8 +22,9 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private Long practiceRoomDetail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "practiceRoomDetail_id", nullable = false)
+    private PracticeRoomDetail practiceRoomDetail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
