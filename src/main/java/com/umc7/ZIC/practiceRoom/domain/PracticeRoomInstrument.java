@@ -1,7 +1,7 @@
 package com.umc7.ZIC.practiceRoom.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
-import com.umc7.ZIC.instrument.domain.Instrument;
+import com.umc7.ZIC.common.domain.Instrument;
 import jakarta.persistence.*;
 import lombok.*;
 
