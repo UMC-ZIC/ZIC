@@ -1,7 +1,8 @@
 package com.umc7.ZIC.practiceRoom.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
-import com.umc7.ZIC.common.domain.enums.Region;
+import com.umc7.ZIC.common.domain.Region;
+import com.umc7.ZIC.common.domain.enums.RegionType;
 import com.umc7.ZIC.owner.domain.Owner;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
