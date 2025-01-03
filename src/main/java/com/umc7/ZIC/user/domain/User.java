@@ -2,6 +2,7 @@ package com.umc7.ZIC.user.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
 import com.umc7.ZIC.common.domain.enums.Region;
+import com.umc7.ZIC.reservation.domain.Reservation;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -32,10 +33,13 @@ public class User extends BaseEntity {
     @Column(length = 20, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserInstrument> userInstrumentList = new ArrayList<>();
-
     @OneToOne
     @JoinColumn(name = "region_id")
     private Region region;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserInstrument> userInstrumentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Reservation> reservationList = new ArrayList<>();
 }
