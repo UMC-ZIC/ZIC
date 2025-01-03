@@ -27,10 +27,10 @@ public class PracticeRoom extends BaseEntity {
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
-    @Column(nullable = false)
+    @Column(length = 40, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(length = 40, nullable = false)
     private String address;
 
     @Min(value = -90)
