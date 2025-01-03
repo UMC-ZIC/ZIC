@@ -1,6 +1,6 @@
-package com.umc7.ZIC.common.domain.enums;
+package com.umc7.ZIC.common.domain;
 
-import com.umc7.ZIC.common.domain.BaseEntity;
+import com.umc7.ZIC.common.domain.enums.RegionType;
 import com.umc7.ZIC.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
