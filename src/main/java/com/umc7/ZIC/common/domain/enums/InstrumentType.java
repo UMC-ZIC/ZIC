@@ -3,7 +3,7 @@ package com.umc7.ZIC.common.domain.enums;
 import lombok.Getter;
 
 @Getter
-public enum Instrument {
+public enum InstrumentType {
     piano("피아노"),
     violin("바이올린"),
     guitar("기타"),
@@ -18,7 +18,7 @@ public enum Instrument {
     private final String koreanName;
 
 
-    Instrument(String koreanName) {
+    InstrumentType(String koreanName) {
         this.koreanName = koreanName;
     }
 }
