@@ -1,0 +1,62 @@
+package com.umc7.ZIC.practiceRoom.domain;
+
+import static com.querydsl.core.types.PathMetadataFactory.*;
+
+import com.querydsl.core.types.dsl.*;
+
+import com.querydsl.core.types.PathMetadata;
+import javax.annotation.processing.Generated;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
+
+
+/**
+ * QPracticeRoomInstrument is a Querydsl query type for PracticeRoomInstrument
+ */
+@Generated("com.querydsl.codegen.DefaultEntitySerializer")
+public class QPracticeRoomInstrument extends EntityPathBase<PracticeRoomInstrument> {
+
+    private static final long serialVersionUID = 1577124670L;
+
+    private static final PathInits INITS = PathInits.DIRECT2;
+
+    public static final QPracticeRoomInstrument practiceRoomInstrument = new QPracticeRoomInstrument("practiceRoomInstrument");
+
+    public final com.umc7.ZIC.common.domain.QBaseEntity _super = new com.umc7.ZIC.common.domain.QBaseEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final com.umc7.ZIC.instrument.domain.QInstrument instrument;
+
+    public final QPracticeRoom practiceRoom;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    public QPracticeRoomInstrument(String variable) {
+        this(PracticeRoomInstrument.class, forVariable(variable), INITS);
+    }
+
+    public QPracticeRoomInstrument(Path<? extends PracticeRoomInstrument> path) {
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+    }
+
+    public QPracticeRoomInstrument(PathMetadata metadata) {
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QPracticeRoomInstrument(PathMetadata metadata, PathInits inits) {
+        this(PracticeRoomInstrument.class, metadata, inits);
+    }
+
+    public QPracticeRoomInstrument(Class<? extends PracticeRoomInstrument> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.instrument = inits.isInitialized("instrument") ? new com.umc7.ZIC.instrument.domain.QInstrument(forProperty("instrument")) : null;
+        this.practiceRoom = inits.isInitialized("practiceRoom") ? new QPracticeRoom(forProperty("practiceRoom"), inits.get("practiceRoom")) : null;
+    }
+
+}
+

@@ -1,0 +1,49 @@
+package com.umc7.ZIC.instrument.domain;
+
+import static com.querydsl.core.types.PathMetadataFactory.*;
+
+import com.querydsl.core.types.dsl.*;
+
+import com.querydsl.core.types.PathMetadata;
+import javax.annotation.processing.Generated;
+import com.querydsl.core.types.Path;
+
+
+/**
+ * QInstrument is a Querydsl query type for Instrument
+ */
+@Generated("com.querydsl.codegen.DefaultEntitySerializer")
+public class QInstrument extends EntityPathBase<Instrument> {
+
+    private static final long serialVersionUID = 201450521L;
+
+    public static final QInstrument instrument = new QInstrument("instrument");
+
+    public final com.umc7.ZIC.common.domain.QBaseEntity _super = new com.umc7.ZIC.common.domain.QBaseEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final StringPath image = createString("image");
+
+    public final EnumPath<com.umc7.ZIC.common.domain.enums.InstrumentType> name = createEnum("name", com.umc7.ZIC.common.domain.enums.InstrumentType.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    public QInstrument(String variable) {
+        super(Instrument.class, forVariable(variable));
+    }
+
+    public QInstrument(Path<? extends Instrument> path) {
+        super(path.getType(), path.getMetadata());
+    }
+
+    public QInstrument(PathMetadata metadata) {
+        super(Instrument.class, metadata);
+    }
+
+}
+
