@@ -28,11 +28,11 @@ public class ApiResponse<T> {
 
     // 성공시 result 없이 응답
     public static <T> ApiResponse<T> onSuccessWithoutResult(BaseCode code){
-        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode() , code.getReasonHttpStatus().getMessage(), null);
+        return new ApiResponse<>(true, code.getReasonHttpStatus().code() , code.getReasonHttpStatus().message(), null);
     }
 
     public static <T> ApiResponse<T> of(BaseCode code, T result){
-        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode() , code.getReasonHttpStatus().getMessage(), result);
+        return new ApiResponse<>(true, code.getReasonHttpStatus().code() , code.getReasonHttpStatus().message(), result);
     }
 
 

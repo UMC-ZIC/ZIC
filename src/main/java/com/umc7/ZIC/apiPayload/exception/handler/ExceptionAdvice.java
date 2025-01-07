@@ -69,7 +69,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleExceptionInternal(Exception e, ErrorReasonDTO reason,
                                                            HttpHeaders headers, HttpServletRequest request) {
 
-        ApiResponse<Object> body = ApiResponse.onFailure(reason.getCode(),reason.getMessage(),null);
+        ApiResponse<Object> body = ApiResponse.onFailure(reason.code(),reason.message(),null);
 //        e.printStackTrace();
 
         WebRequest webRequest = new ServletWebRequest(request);
@@ -77,7 +77,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 e,
                 body,
                 headers,
-                reason.getHttpStatus(),
+                reason.httpStatus(),
                 webRequest
         );
     }
