@@ -31,6 +31,7 @@ public class PracticeRoomDetail extends BaseEntity {
     @Column(length = 20, nullable = false)
     private Integer fee;
 
+    @Builder.Default
     @OneToMany(mappedBy = "practiceRoomDetail", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 }
