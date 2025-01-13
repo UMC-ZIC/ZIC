@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface PracticeRoomRepository extends JpaRepository<PracticeRoom, Long> {
 
     //연습실 리스트 조회
-    @Query("SELECT p FROM PracticeRoom p")
+    @Query("SELECT pr FROM PracticeRoom pr")
     Page<PracticeRoom> findAllPracticeRoom(Pageable pageable);
 
     // 연습실 단일 조회
