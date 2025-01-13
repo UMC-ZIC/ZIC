@@ -18,19 +18,20 @@ public class PracticeRoomDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="practice_room_id")
     private PracticeRoom practiceRoom;
 
     @Column(length = 20, nullable = false)
     private String name;
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 255)
     private String image;
 
     @Column(length = 20, nullable = false)
     private Integer fee;
 
+    @Builder.Default
     @OneToMany(mappedBy = "practiceRoomDetail", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 }

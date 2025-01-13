@@ -37,9 +37,11 @@ public class User extends BaseEntity {
     @JoinColumn(name = "region_id")
     private Region region;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserInstrument> userInstrumentList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
 }
