@@ -20,7 +20,7 @@ public class Instrument extends BaseEntity{
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private InstrumentType instrumentType;
+    private InstrumentType name;
 
     @OneToMany(mappedBy = "instrument", cascade = CascadeType.ALL)
     private List<UserInstrument> userInstrumentList = new ArrayList<>();
