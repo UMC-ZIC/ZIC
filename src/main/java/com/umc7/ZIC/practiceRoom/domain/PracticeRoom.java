@@ -2,8 +2,7 @@ package com.umc7.ZIC.practiceRoom.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
 import com.umc7.ZIC.common.domain.Region;
-import com.umc7.ZIC.common.domain.enums.RegionType;
-import com.umc7.ZIC.owner.domain.Owner;
+import com.umc7.ZIC.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -25,8 +24,8 @@ public class PracticeRoom extends BaseEntity {
     private Region region;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(length = 40, nullable = false)
     private String name;
