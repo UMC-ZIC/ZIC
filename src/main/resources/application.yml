@@ -26,8 +26,8 @@ spring:
             client-secret: ${KAKAO_SECRET_KEY}
             authorization-grant-type: authorization_code
             scope:
-                - profile_nickname
-                - account_email
+              - profile_nickname
+              - account_email
             client-name: Kakao
         provider:
           kakao:
