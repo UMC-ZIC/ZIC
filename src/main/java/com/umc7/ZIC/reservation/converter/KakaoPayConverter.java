@@ -41,9 +41,9 @@ public class KakaoPayConverter {
         parameters.put("total_amount", String.valueOf(amount + vat));
         parameters.put("vat_amount", String.valueOf(vat));
         parameters.put("tax_free_amount", String.valueOf(amount));
-        parameters.put("approval_url", "http://localhost:8080/api/reservation/payment/success"); // 성공 시 redirect url
-        parameters.put("cancel_url", "http://localhost:8080/api/reservation/payment/cancel"); // 취소 시 redirect url
-        parameters.put("fail_url", "http://localhost:8080/api/reservation/payment/fail"); // 실패 시 redirect url
+        parameters.put("approval_url", "http://localhost:8080/reservation/payment/success"); // 성공 시 redirect url - 추후에 프론트엔드 url로 변경
+        parameters.put("cancel_url", "http://localhost:8080/reservation/payment/cancel"); // 취소 시 redirect url
+        parameters.put("fail_url", "http://localhost:8080/reservation/payment/fail"); // 실패 시 redirect url
 
         return parameters;
     }
