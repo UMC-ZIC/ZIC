@@ -41,5 +41,14 @@ public class PracticeRoom extends BaseEntity {
     @Max(value = 180)
     private Double longitude;
 
+    public void update(Region region, User user, String name, String address, Double latitude, Double longitude) {
+        this.region = region;
+        this.user = user;
+        this.name = name;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
 
 }
