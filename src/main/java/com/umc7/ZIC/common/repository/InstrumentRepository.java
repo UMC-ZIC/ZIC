@@ -5,7 +5,9 @@ import com.umc7.ZIC.common.domain.enums.InstrumentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface InstrumentRepository extends JpaRepository<Instrument, Long> {
-    Instrument findByName(InstrumentType instrumentType);
+    Optional<Instrument> findByName(InstrumentType instrumentType);
 }
