@@ -61,7 +61,8 @@ def querydslSrcDir = 'src/main/generated'
 clean {
 	delete file(querydslSrcDir)
 }
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
 	options.generatedSourceOutputDirectory = file(querydslSrcDir)
+	options.compilerArgs.add("-parameters")
 }
 tasks.test.enabled = false

@@ -45,15 +45,19 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
         Region region = regionRepository.findById(regionId)
                 .orElseThrow(() -> new RegionHandler(ErrorStatus.REGION_NOT_FOUND));
 
-        if (!user.getRole().equals(RoleType.OWNER)){
+//        if (!user.getRole().equals(RoleType.OWNER)){
+//            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+//        }
+        try {
+            PracticeRoom practiceRoom = createRequest.toEntity(user, region);
+
+            PracticeRoom savedPracticeRoom = practiceRoomRepository.save(practiceRoom);
+
+            return PracticeRoomResponseDto.CreateResponseDto.from(savedPracticeRoom);
+        }catch (Exception e) {
+            log.error(e.getMessage());
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
         }
-
-        PracticeRoom practiceRoom = createRequest.toEntity(user, region);
-
-        PracticeRoom savedPracticeRoom = practiceRoomRepository.save(practiceRoom);
-
-        return PracticeRoomResponseDto.CreateResponseDto.from(savedPracticeRoom);
     }
 
     //연습실 수정
@@ -68,9 +72,13 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
                 .orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
 
+        if (!user.getRole().equals(RoleType.OWNER)){
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+        }
         if(!user.getId().equals(practiceRoom.getUser().getId())) {
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_AUTHORIZATION_FAILED);
         }
+
 
         //엔티티 수정
         practiceRoom.update(
