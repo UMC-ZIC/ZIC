@@ -2,6 +2,7 @@ package com.umc7.ZIC.practiceRoom.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
 import com.umc7.ZIC.common.domain.Region;
+import com.umc7.ZIC.common.domain.enums.RegionType;
 import com.umc7.ZIC.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -41,9 +42,7 @@ public class PracticeRoom extends BaseEntity {
     @Max(value = 180)
     private Double longitude;
 
-    public void update(Region region, User user, String name, String address, Double latitude, Double longitude) {
-        this.region = region;
-        this.user = user;
+    public void update(String name, String address, Double latitude, Double longitude) {
         this.name = name;
         this.address = address;
         this.latitude = latitude;
