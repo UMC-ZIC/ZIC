@@ -1,6 +1,7 @@
 package com.umc7.ZIC.practiceRoom.dto;
 
 import com.umc7.ZIC.common.domain.Region;
+import com.umc7.ZIC.common.domain.enums.RegionType;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.user.domain.User;
 import jakarta.validation.constraints.Max;

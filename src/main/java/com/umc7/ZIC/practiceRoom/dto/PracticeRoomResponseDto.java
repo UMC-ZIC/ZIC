@@ -63,31 +63,4 @@ public record PracticeRoomResponseDto() {
             );
         }
     }
-
-    /**
-     * 연습실 목록 조회 결과 DTO
-     */
-    public record GetListResult(
-            Long practiceRoomId, // 연습실 ID
-            String name, // 연습실 이름
-            String address, // 연습실 주소
-            Double latitude, // 위도
-            Double longitude, // 경도
-            RegionType region, // 지역 (Region 엔티티의 regionName)
-            LocalDateTime createdAt, // 생성 시간
-            LocalDateTime updatedAt // 수정 시간
-    ) {
-        public static GetListResult from(PracticeRoom practiceRoom, Long totalElements, Integer totalPages, Integer currentPage, Integer currentSize) {
-            return new GetListResult(
-                    practiceRoom.getId(),
-                    practiceRoom.getName(),
-                    practiceRoom.getAddress(),
-                    practiceRoom.getLatitude(),
-                    practiceRoom.getLongitude(),
-                    practiceRoom.getRegion().getName(),
-                    practiceRoom.getCreatedAt(),
-                    practiceRoom.getUpdatedAt()
-            );
-        }
-    }
 }
