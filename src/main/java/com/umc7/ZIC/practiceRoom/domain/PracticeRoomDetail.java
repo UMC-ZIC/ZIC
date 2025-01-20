@@ -38,4 +38,11 @@ public class PracticeRoomDetail extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "practiceRoomDetail", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
+
+    public void update(String name, String image, Integer fee, RoomStatus status) {
+        this.name = name;
+        this.image = image;
+        this.fee = fee;
+        this.status = status;
+    }
 }
