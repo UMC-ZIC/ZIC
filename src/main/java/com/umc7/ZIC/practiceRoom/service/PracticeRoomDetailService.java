@@ -4,7 +4,7 @@ import com.umc7.ZIC.practiceRoom.dto.PageRequestDto;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomDetailRequestDto;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomDetailResponseDto;
 import org.springframework.data.domain.Page;
-;
+
 
 public interface PracticeRoomDetailService {
     PracticeRoomDetailResponseDto.CreateResponseDto createPracticeRoomDetail(PracticeRoomDetailRequestDto.CreateRequestDetailDto createRequest, Long practiceRoomId, Long userId);
