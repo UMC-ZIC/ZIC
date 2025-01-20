@@ -30,6 +30,10 @@ public enum ErrorStatus implements BaseErrorCode {
     JWT_EXPIRED(HttpStatus.UNAUTHORIZED, "JWT4004", "만료된 토큰입니다."),
     JWT_REFRESHTOKEN_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "JWT4005", "RefreshToken이 일치하지 않습니다."),
 
+    //연습실 내부 연습방 관련에러
+    PRACTICEROOMDETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "PRACTICEROOMDETAIL4004", "연습실 내부에 해당 연습방이 없습니다."),
+    PRACTICEROOMDETAIL_NOT_CREATE(HttpStatus.BAD_GATEWAY, "PRACTICEROOMDETAIL4000", "연습실 생성에 실패하였습니다.."),
+
     //연습실 관련 에러
     PRACTICEROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "PRACTICEROOM4004", "연습실이 없습니다."),
     PRACTICEROOM_NOT_OWNER_ROLE(HttpStatus.NOT_FOUND, "PRACTICEROOM4002", "대여자 권한이 필요합니다."),
