@@ -8,11 +8,8 @@ import com.umc7.ZIC.user.dto.UserRequestDto;
 import com.umc7.ZIC.user.dto.UserResponseDto;
 import com.umc7.ZIC.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,14 +28,13 @@ public class UserController {
         return jwt;
     }
 
-    @PatchMapping("/user-details")
+    @PatchMapping("details")
     public ApiResponse<UserResponseDto.userDetailsDto> userDetails(@RequestBody UserRequestDto.userDetailsDto userRequestDto){
         Long userId = jwtTokenProvider.getUserIdFromToken();
 
         return ApiResponse.onSuccess(userService.updateUserDetails(userId, userRequestDto));
     }
 
-    //todo 추가 정보 기입
     @GetMapping("/owner/revenue/{userId}")
     public ApiResponse<UserResponseDto.OwnerEarningDTO> ownerRevenue(
             @PathVariable(name = "userId") Long userId,
@@ -50,24 +46,13 @@ public class UserController {
         return ApiResponse.onSuccess(UserConverter.toOwnerEarningDTO(ownerEarningList, ownerMonthlyEarningList));
     }
 
-    @PatchMapping("/owner-details")
-    public ApiResponse<UserResponseDto.userDetailsDto> ownerDetails(@RequestBody UserRequestDto.ownerDetailsDto ownerRequestDto){
-        Long userId = jwtTokenProvider.getUserIdFromToken();
-        return ApiResponse.onSuccess(userService.updateOwnerDetails(userId, ownerRequestDto));
-    }
-
     //test용
-    @GetMapping("/test/user/get-token-from-user-id")
+    @GetMapping("/test/get-token-from-user-id")
     public String testCreateUserToken(@RequestParam Long userId){
         String userToken =jwtTokenProvider.createRefreshToken(userId, RoleType.USER.name());
         return userToken;
     }
 
-    //test용
-    @GetMapping("/test/owner/get-token-from-user-id")
-    public String testCreateOwnerToken(@RequestParam Long userId){
-        String userToken =jwtTokenProvider.createRefreshToken(userId, RoleType.OWNER.name());
-        return userToken;
-    }
+
 
 }
