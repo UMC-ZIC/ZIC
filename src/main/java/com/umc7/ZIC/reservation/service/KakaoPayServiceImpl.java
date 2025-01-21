@@ -45,7 +45,6 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         Map<String, String> parameters = KakaoPayConverter.toReadyParam(
                 cid, request.reservationNumber(), user.getName(), itemName, request.startTime(), request.endTime(), request.price()
         );
-        System.out.println("Parameter : "+parameters); // TODO : 나중에 삭제하기
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders(secret_Key_Dev));
         RestTemplate restTemplate = new RestTemplate();
