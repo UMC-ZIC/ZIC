@@ -25,7 +25,9 @@ spring:
             redirect_uri: ${KAKAO_REDIRECT_URI}
             client-secret: ${KAKAO_SECRET_KEY}
             authorization-grant-type: authorization_code
-            scope: profile_nickname
+            scope:
+              - profile_nickname
+              - account_email
             client-name: Kakao
         provider:
           kakao:

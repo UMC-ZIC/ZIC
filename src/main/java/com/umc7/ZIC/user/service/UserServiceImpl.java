@@ -15,12 +15,14 @@ import com.umc7.ZIC.user.domain.User;
 import com.umc7.ZIC.user.domain.UserInstrument;
 import com.umc7.ZIC.user.domain.enums.RoleType;
 import com.umc7.ZIC.user.dto.UserRequestDto;
+import com.umc7.ZIC.user.dto.UserResponseDto;
 import com.umc7.ZIC.user.repository.UserInstrumentRepository;
 import com.umc7.ZIC.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,6 +39,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User join(String kakaoCode, UserRequestDto.joinDto joinDto) {
         return null;
+    }
+
+    @Override
+    public List<UserResponseDto.OwnerEarning> getOwnerEarnings(Long userId, LocalDate targetMonth) {
+        return userRepository.findOwnerEarningByUserIdAndMonth(userId, targetMonth);
+    }
+
+    @Override
+    public List<UserResponseDto.OwnerMonthlyEarning> getOwnerMonthlyEarnings(Long userId) {
+        return userRepository.findOwnerMonthlyEarningByUserId(userId);
     }
 
     Region getRegion(String regionName) {
