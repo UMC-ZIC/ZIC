@@ -23,25 +23,20 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/callback")
-    public ResponseEntity<?> callback(@RequestParam("code") String code) throws IOException {
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/kakao/join")
-    public ApiResponse<?> kakaoJoin(@RequestParam("code") String code, @RequestBody UserRequestDto.joinDto joinDto) {
-        userService.join(code, joinDto);
-
-        return ApiResponse.onSuccess(null);
-    }
-
+    //test용
     @GetMapping("/user-id")
     public String userid(){
         String jwt =jwtTokenProvider.getUserIdFromToken().toString()+ "    "+jwtTokenProvider.getUserTypeInToken(jwtTokenProvider.resolveAccessToken()).toString();
         return jwt;
     }
-    
+
+    @PatchMapping("/user-details")
+    public ApiResponse<UserResponseDto.userDetailsDto> userDetails(@RequestBody UserRequestDto.userDetailsDto userRequestDto){
+        Long userId = jwtTokenProvider.getUserIdFromToken();
+
+        return ApiResponse.onSuccess(userService.updateUserDetails(userId, userRequestDto));
+    }
+
     //todo 추가 정보 기입
     @GetMapping("/owner/revenue/{userId}")
     public ApiResponse<UserResponseDto.OwnerEarningDTO> ownerRevenue(
@@ -52,6 +47,12 @@ public class UserController {
         List<UserResponseDto.OwnerMonthlyEarning> ownerMonthlyEarningList = userService.getOwnerMonthlyEarnings(userId);
 
         return ApiResponse.onSuccess(UserConverter.toOwnerEarningDTO(ownerEarningList, ownerMonthlyEarningList));
+    }
+
+    @PatchMapping("/owner-details")
+    public ApiResponse<UserResponseDto.userDetailsDto> ownerDetails(@RequestBody UserRequestDto.ownerDetailsDto ownerRequestDto){
+        Long userId = jwtTokenProvider.getUserIdFromToken();
+        return ApiResponse.onSuccess(userService.updateOwnerDetails(userId, ownerRequestDto));
     }
 
 }

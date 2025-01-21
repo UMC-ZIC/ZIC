@@ -2,15 +2,24 @@ package com.umc7.ZIC.user.dto;
 
 import lombok.Builder;
 
+
 import java.util.List;
 
 public record UserResponseDto() {
 
+    @Builder
     public record user(
             String email,
             String name,
             Long regionId
-    ){ }
+    ){}
+    @Builder
+    public static record userDetailsDto(
+            Long userId,
+            String userName,
+            String userRole, //user인지 owner인지
+            String token
+    ){}
 
     /**
      * 연습실 주인의 연습실 방별 예약 횟수와 수익
