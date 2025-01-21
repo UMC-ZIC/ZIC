@@ -71,6 +71,7 @@ public class UserServiceImpl implements UserService {
         user.setAddress(address);
         user.setBusinessName(ownerDetailsDto.businessName());
         user.setBusinessNumber(ownerDetailsDto.businessNumber());
+
         //update
         User savedUser = userRepository.save(user);
         saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
