@@ -1,5 +1,6 @@
 package com.umc7.ZIC.practiceRoom.repository;
 
+import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,5 +20,8 @@ public interface PracticeRoomDetailRepository extends JpaRepository<PracticeRoom
 
     // 연습실 내부 연습방 단일 조회 (방 ID로 조회)
     Optional<PracticeRoomDetail> findById(Long id);
+
+    // 연습실 내부 연습방 단일 조회 (방 ID와 연습실로 조회)
+    Optional<PracticeRoomDetail> findByIdAndPracticeRoom(Long id, PracticeRoom practiceRoom);
 
 }

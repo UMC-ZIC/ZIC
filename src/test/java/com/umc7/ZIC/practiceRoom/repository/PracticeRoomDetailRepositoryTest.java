@@ -2,17 +2,15 @@ package com.umc7.ZIC.practiceRoom.repository;
 
 import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.common.domain.enums.RegionType;
-import com.umc7.ZIC.owner.domain.Owner;
+import com.umc7.ZIC.common.repository.RegionRepository;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
-import com.umc7.ZIC.practiceRoom.repository.temp.OwnerRepository;
-import com.umc7.ZIC.practiceRoom.repository.temp.RegionRepository;
+import com.umc7.ZIC.user.domain.User;
+import com.umc7.ZIC.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,15 +31,15 @@ class PracticeRoomDetailRepositoryTest {
     private PracticeRoomRepository practiceRoomRepository;
 
     @Autowired
-    private RegionRepository regionRepository; //임시
-
+    private RegionRepository regionRepository;
     @Autowired
-    private OwnerRepository ownerRepository; //임시
+    private UserRepository userRepository;
+
 
     private PracticeRoom savedPracticeRoom1;
     private PracticeRoom savedPracticeRoom2;
     private Region region;
-    private Owner owner;
+    private User user;
 
     @BeforeEach
     void setUp() {
@@ -49,16 +47,16 @@ class PracticeRoomDetailRepositoryTest {
         region = Region.builder()
                 .name(RegionType.SEOUL)
                 .build();
-        owner = Owner.builder()
+        user = user.builder()
                 .name("테스트닉네임")
                 .businessName("테스트 악기연습소")
                 .businessNumber("전화번호")
                 .email("12@12.com")
-                .kakaoId("test")
+                .kakaoId(0L)
                 .build();
         PracticeRoom practiceRoom1 = PracticeRoom.builder()
                 .region(region)
-                .owner(owner)
+                .user(user)
                 .name("연습실 1")
                 .address("주소 1")
                 .latitude(37.5)
@@ -66,7 +64,7 @@ class PracticeRoomDetailRepositoryTest {
                 .build();
         PracticeRoom practiceRoom2 = PracticeRoom.builder()
                 .region(region)
-                .owner(owner)
+                .user(user)
                 .name("연습실 2")
                 .address("주소 2")
                 .latitude(37.6)
@@ -75,7 +73,7 @@ class PracticeRoomDetailRepositoryTest {
         savedPracticeRoom1 =practiceRoomRepository.save(practiceRoom1);
         savedPracticeRoom2 =practiceRoomRepository.save(practiceRoom2);
         regionRepository.save(region);
-        ownerRepository.save(owner);
+        userRepository.save(user);
     }
 
     @Test

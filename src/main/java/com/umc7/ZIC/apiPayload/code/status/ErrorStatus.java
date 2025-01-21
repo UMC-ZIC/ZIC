@@ -24,7 +24,16 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
     
     //악기 관련 에러
-    INSTRUMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "INSTRUMENT4001", "해당 악기가 없습니다.")
+    INSTRUMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "INSTRUMENT4001", "해당 악기가 없습니다."),
+
+    //연습실 내부 연습방 관련에러
+    PRACTICEROOMDETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "PRACTICEROOMDETAIL4004", "연습실 내부에 해당 연습방이 없습니다."),
+    PRACTICEROOMDETAIL_NOT_CREATE(HttpStatus.BAD_GATEWAY, "PRACTICEROOMDETAIL4000", "연습실 생성에 실패하였습니다.."),
+
+    //연습실 관련 에러
+    PRACTICEROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "PRACTICEROOM4004", "연습실이 없습니다."),
+    PRACTICEROOM_NOT_OWNER_ROLE(HttpStatus.NOT_FOUND, "PRACTICEROOM4002", "대여자 권한이 필요합니다."),
+    PRACTICEROOM_AUTHORIZATION_FAILED(HttpStatus.UNAUTHORIZED, "JPRACTICEROOM4001", "해당 연습실에 권한이 없습니다.")
     ;
 
 
