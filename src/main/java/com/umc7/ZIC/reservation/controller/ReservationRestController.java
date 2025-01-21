@@ -46,6 +46,7 @@ public class ReservationRestController {
         return ApiResponse.onSuccess(ReservationConverter.toReservationList(reservationList));
     }
 
+    // TODO : 결제 승인 취소 및 실패 시 예약 내용 DB 테이블에서 삭제하는 로직 구현하기
     @Operation(summary = "예약 요청 API",
             description = "연습실 예약 결제 요청하는 API입니다. startTime과 endTime은 \"HH:mm\" 형식으로 입력해주세요. ex) startTime=\"02:00\", endTime=\"13:30\". partner_order_id는 프론트엔드에서 생성한 무작위 문자열입니다.")
     @PostMapping("/payment/ready")
