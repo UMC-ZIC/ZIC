@@ -2,10 +2,11 @@ package com.umc7.ZIC.practiceRoom.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.common.domain.enums.RegionType;
-import com.umc7.ZIC.owner.domain.Owner;
+import com.umc7.ZIC.common.repository.RegionRepository;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
-import com.umc7.ZIC.practiceRoom.repository.temp.OwnerRepository;
-import com.umc7.ZIC.practiceRoom.repository.temp.RegionRepository;
+
+import com.umc7.ZIC.user.domain.User;
+import com.umc7.ZIC.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,30 +27,30 @@ class PracticeRoomRepositoryTest {
     private PracticeRoomRepository practiceRoomRepository;
 
     @Autowired
-    private RegionRepository regionRepository; // RegionRepository 임시 추가 병합되면 임포트 변경
+    private RegionRepository regionRepository;
 
     @Autowired
-    private OwnerRepository ownerRepository; // OwnerRepository 임시 추가 병합되면 임포트 변경
+    private UserRepository userRepository;
 
     private Region region;
-    private Owner owner;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        // 테스트를 위한 Region과 Owner 객체 생성 및 저장
+        // 테스트를 위한 Region과 User 객체 생성 및 저장
         region = Region.builder()
                 .name(RegionType.SEOUL)
                 .build();
-        owner = Owner.builder()
+        user = User.builder()
                 .name("테스트닉네임")
                 .businessName("테스트 악기연습소")
                 .businessNumber("전화번호")
                 .email("12@12.com")
-                .kakaoId("test")
+                .kakaoId(0L)
                 .build();
         PracticeRoom practiceRoom1 = PracticeRoom.builder()
                 .region(region)
-                .owner(owner)
+                .user(user)
                 .name("연습실 1")
                 .address("주소 1")
                 .latitude(37.5)
@@ -57,7 +58,7 @@ class PracticeRoomRepositoryTest {
                 .build();
         PracticeRoom practiceRoom2 = PracticeRoom.builder()
                 .region(region)
-                .owner(owner)
+                .user(user)
                 .name("연습실 2")
                 .address("주소 2")
                 .latitude(37.6)
@@ -66,7 +67,7 @@ class PracticeRoomRepositoryTest {
         practiceRoomRepository.save(practiceRoom1);
         practiceRoomRepository.save(practiceRoom2);
         regionRepository.save(region);
-        ownerRepository.save(owner);
+        userRepository.save(user);
     }
 
     @Test
@@ -91,7 +92,7 @@ class PracticeRoomRepositoryTest {
         // Given
         PracticeRoom practiceRoom = PracticeRoom.builder()
                 .region(region)
-                .owner(owner)
+                .user(user)
                 .name("ZIC 연습실")
                 .address("서울시 강남구")
                 .latitude(37.5)

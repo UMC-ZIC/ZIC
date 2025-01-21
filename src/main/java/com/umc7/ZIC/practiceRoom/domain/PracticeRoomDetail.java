@@ -1,6 +1,7 @@
 package com.umc7.ZIC.practiceRoom.domain;
 
 import com.umc7.ZIC.common.domain.BaseEntity;
+import com.umc7.ZIC.practiceRoom.domain.enums.RoomStatus;
 import com.umc7.ZIC.reservation.domain.Reservation;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,7 +32,17 @@ public class PracticeRoomDetail extends BaseEntity {
     @Column(length = 20, nullable = false)
     private Integer fee;
 
+    @Enumerated(EnumType.STRING)
+    private RoomStatus status;
+
     @Builder.Default
     @OneToMany(mappedBy = "practiceRoomDetail", cascade = CascadeType.ALL)
     private List<Reservation> reservationList = new ArrayList<>();
+
+    public void update(String name, String image, Integer fee, RoomStatus status) {
+        this.name = name;
+        this.image = image;
+        this.fee = fee;
+        this.status = status;
+    }
 }

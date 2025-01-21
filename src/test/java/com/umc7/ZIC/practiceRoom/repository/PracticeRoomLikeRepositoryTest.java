@@ -3,14 +3,12 @@ package com.umc7.ZIC.practiceRoom.repository;
 
 import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.common.domain.enums.RegionType;
-import com.umc7.ZIC.owner.domain.Owner;
+import com.umc7.ZIC.common.repository.RegionRepository;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomLike;
-import com.umc7.ZIC.practiceRoom.repository.temp.OwnerRepository;
-import com.umc7.ZIC.practiceRoom.repository.temp.RegionRepository;
-import com.umc7.ZIC.practiceRoom.repository.temp.UserRepository;
 import com.umc7.ZIC.user.domain.User;
 
+import com.umc7.ZIC.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +32,7 @@ class PracticeRoomLikeRepositoryTest {
     private UserRepository userRepository;//임시 임포트
     @Autowired
     private RegionRepository regionRepository; //임시
-    @Autowired
-    private OwnerRepository ownerRepository; //임시
+
 
     private User user;
     private PracticeRoom practiceRoom;
@@ -49,19 +46,10 @@ class PracticeRoomLikeRepositoryTest {
                 .build();
         regionRepository.save(region);
 
-        Owner owner = Owner.builder()
-                .name("테스트닉네임")
-                .businessName("테스트 악기연습소")
-                .businessNumber("전화번호")
-                .email("12@12.com")
-                .kakaoId("test")
-                .build();
-        ownerRepository.save(owner);
-
         user = User.builder()
                 .email("test@example.com")
                 .name("testUser")
-                .kakaoId("testKakaoId")
+                .kakaoId(0L)
                 .region(region)
                 .build();
         userRepository.save(user);
@@ -69,7 +57,7 @@ class PracticeRoomLikeRepositoryTest {
 
         practiceRoom = PracticeRoom.builder()
                 .region(region)
-                .owner(owner)
+                .user(user)
                 .name("연습실 1")
                 .address("주소 1")
                 .latitude(37.5)
@@ -110,7 +98,7 @@ class PracticeRoomLikeRepositoryTest {
         User anotherUser = User.builder()
                 .email("another@example.com")
                 .name("anotherUser")
-                .kakaoId("anotherKakaoId")
+                .kakaoId(10000L)
                 .region(region)
                 .build();
         userRepository.save(anotherUser);
@@ -125,6 +113,6 @@ class PracticeRoomLikeRepositoryTest {
         Long count = practiceRoomLikeRepository.countByPracticeRoomId(practiceRoom.getId());
 
         // Then
-        assertThat(count).isEqualTo(2); //h2 db로 나중에 다시 테스트
+        assertThat(count).isEqualTo(2); //테스트 DB로 구현해야함
     }
 }
