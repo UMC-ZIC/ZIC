@@ -1,5 +1,6 @@
 package com.umc7.ZIC.reservation.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.umc7.ZIC.common.domain.BaseEntity;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import com.umc7.ZIC.user.domain.User;
@@ -22,6 +23,10 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
+    // 클라이언트에서 생성한 무작위 문자열
+    @Column(nullable = false)
+    private String reservationNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "practiceRoomDetail_id", nullable = false)
     private PracticeRoomDetail practiceRoomDetail;
@@ -35,10 +40,16 @@ public class Reservation extends BaseEntity {
     private LocalDate date;
 
     // 예약 시작 시간
+    @JsonFormat(pattern = "HH:mm")
     @Column(nullable = false)
     private LocalTime startTime;
 
     // 예약 끝나는 시간
+    @JsonFormat(pattern = "HH:mm")
     @Column(nullable = false)
     private LocalTime endTime;
+
+    // 양방향 연결
+    @OneToOne(mappedBy = "reservation", fetch = FetchType.LAZY)
+    private ReservationDetail reservationDetail;
 }

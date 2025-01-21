@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto.userDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        String userRequestRegion = userDetailsDto.region(); 
+        String userRequestRegion = userDetailsDto.region();
 
         Region userRegion = getRegion(userRequestRegion);
         user.setRegion(userRegion);
@@ -78,6 +79,16 @@ public class UserServiceImpl implements UserService {
         return UserConverter.toRegisterUserDetails(user, jwtToken);
     }
 
+
+    @Override
+    public List<UserResponseDto.OwnerEarning> getOwnerEarnings(Long userId, LocalDate targetMonth) {
+        return userRepository.findOwnerEarningByUserIdAndMonth(userId, targetMonth);
+    }
+
+    @Override
+    public List<UserResponseDto.OwnerMonthlyEarning> getOwnerMonthlyEarnings(Long userId) {
+        return userRepository.findOwnerMonthlyEarningByUserId(userId);
+    }
 
     Region getRegion(String regionName) {
         return regionRepository.findByName(RegionUtil.fromKoreanName(regionName))

@@ -22,4 +22,13 @@ public record UserRequestDto(
             String businessNumber,
             String businessName
     ){}
+
+//    public static record testUserJoinDto(
+//            String kakaoId,
+//            String name,
+//            String email,
+//            String region,
+//            List<String> InstrumentList
+//
+//    ){}
 }

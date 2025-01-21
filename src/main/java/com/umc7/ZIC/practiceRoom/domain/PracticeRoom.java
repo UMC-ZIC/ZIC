@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -41,5 +44,7 @@ public class PracticeRoom extends BaseEntity {
     @Max(value = 180)
     private Double longitude;
 
-
+    @Builder.Default
+    @OneToMany(mappedBy = "practiceRoom", cascade = CascadeType.ALL)
+    private List<PracticeRoomDetail> PracticeRoomDetailList = new ArrayList<>();
 }
