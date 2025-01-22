@@ -22,7 +22,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 사용자 관려 에러
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
-    
+    USER_ROLE_NOT_PENDING(HttpStatus.BAD_REQUEST, "USER4002", "사용자가 이미 가입되어 있습니다."),
     //악기 관련 에러
     INSTRUMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "INSTRUMENT4001", "해당 악기가 없습니다."),
 

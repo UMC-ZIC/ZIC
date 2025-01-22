@@ -44,6 +44,8 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto.userDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
+        checkPendingStatus(user);
+
         String userRequestRegion = userDetailsDto.region();
 
         Region userRegion = getRegion(userRequestRegion);
@@ -61,6 +63,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto.userDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        checkPendingStatus(user);
+
         //todo 전처리 해야함 ex) 울산시 남구 무거동 1~~~ -> [0]울산
         String userRequestRegion = ownerDetailsDto.region1();
         Region userRegion = getRegion(userRequestRegion);
@@ -105,6 +110,13 @@ public class UserServiceImpl implements UserService {
                 UserInstrument userInstrument = UserInstrumentConverter.toUserInstrument(user, instrument);
                 userInstrumentRepository.save(userInstrument);
             }
+        }
+    }
+
+    private void checkPendingStatus(User user) {
+        //유저가 아직 가입 전인지 판단
+        if(!user.getRole().equals(RoleType.PENDING)){
+            throw new UserHandler(ErrorStatus.USER_ROLE_NOT_PENDING);
         }
     }
 
