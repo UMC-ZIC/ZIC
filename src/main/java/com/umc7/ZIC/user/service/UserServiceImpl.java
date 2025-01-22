@@ -46,11 +46,13 @@ public class UserServiceImpl implements UserService {
 
         checkPendingStatus(user);
 
+        user.setRole(RoleType.USER);
+
         String userRequestRegion = userDetailsDto.region();
 
         Region userRegion = getRegion(userRequestRegion);
         user.setRegion(userRegion);
-        user.setRole(RoleType.USER);
+
         //update
         User savedUser = userRepository.save(user);
         saveUserInstruments(savedUser, userDetailsDto.instrumentList());
@@ -66,14 +68,25 @@ public class UserServiceImpl implements UserService {
 
         checkPendingStatus(user);
 
-        //todo 전처리 해야함 ex) 울산시 남구 무거동 1~~~ -> [0]울산
-        String userRequestRegion = ownerDetailsDto.region1();
-        Region userRegion = getRegion(userRequestRegion);
+        //ex [0]: 울산, [1]:남구 무거동~
+        String[] userRequestRegion = ownerDetailsDto.region1().split(" ");
+        Region userRegion = getRegion(userRequestRegion[0]);//ex 울산
         user.setRegion(userRegion);
+
         user.setRole(RoleType.OWNER);
-        //todo[1] 남구 무거동 111~ 울산대학교 ~~호 ~동
-        String address = ownerDetailsDto.region2();
-        user.setAddress(address);
+
+        //남구 무거동 ~~~~
+        StringBuilder address= new StringBuilder(); //메모리 효율을 위해 사용
+        for (int i = 1; i < userRequestRegion.length; i++) {
+            address.append(userRequestRegion[i]);
+            if (i < userRequestRegion.length - 1) {
+                address.append(" "); // 띄어쓰기
+            }
+        }
+        //울산대학교 ~~
+        address.append(" ").append(ownerDetailsDto.region2());
+
+        user.setAddress(address.toString());
         user.setBusinessName(ownerDetailsDto.businessName());
         user.setBusinessNumber(ownerDetailsDto.businessNumber());
 
