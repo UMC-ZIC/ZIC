@@ -13,16 +13,15 @@ public class ReservationRequestDTO {
      * 연습실 예약 시 클라이언트에서 정보를 받아오는 DTO
      * @param reservationNumber
      * @param practiceRoomDetail
-     * @param user
      * @param date
      * @param startTime
      * @param endTime
+     * @param price
      */
     @Builder
     public record reservationRegistDTO(
             String reservationNumber,
             Long practiceRoomDetail,
-            Long user,
             LocalDate date,
             @DateTimeFormat(pattern = "HH:mm")
             @JsonFormat(pattern = "HH:mm")

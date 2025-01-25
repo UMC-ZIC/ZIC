@@ -51,15 +51,16 @@ public class KakaoPayConverter {
     /**
      * KAKAO PAY 결제 승인을 하기위한 JSON BODY 생성
      * @param cid 가맹점 고유 코드 : 테스트 코드는 TC0ONETIME
-     * @param request 
+     * @param request
+     * @param userId
      * @return
      */
-    public static Map<String, String> toApproveParam(String cid, PaymentRequestDTO.KakaoPaymentApproveRequestDTO request) {
+    public static Map<String, String> toApproveParam(String cid, PaymentRequestDTO.KakaoPaymentApproveRequestDTO request, String userId) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", cid);
         parameters.put("tid", request.tid());
         parameters.put("partner_order_id", request.partner_order_id());
-        parameters.put("partner_user_id", request.partner_user_id());
+        parameters.put("partner_user_id", userId);
         parameters.put("pg_token", request.pg_token());
 
         return parameters;

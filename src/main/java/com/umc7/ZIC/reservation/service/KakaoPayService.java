@@ -9,14 +9,16 @@ public interface KakaoPayService {
     /**
      * 카카오 페이 결제 요청 Service
      * @param request
+     * @param userid
      * @return
      */
-    PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPayReady(ReservationRequestDTO.reservationRegistDTO request);
+    PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPayReady(ReservationRequestDTO.reservationRegistDTO request, Long userid);
 
     /**
      * 카카오 페이 결제 승인 Service
      * @param request
+     * @param userid
      * @return
      */
-    PaymentResponseDTO.KakaoPaymentApproveResponseDTO kakaoPayApprove(PaymentRequestDTO.KakaoPaymentApproveRequestDTO request);
+    PaymentResponseDTO.KakaoPaymentApproveResponseDTO kakaoPayApprove(PaymentRequestDTO.KakaoPaymentApproveRequestDTO request, Long userid);
 }

@@ -11,9 +11,10 @@ public interface ReservationCommandService {
     /**
      * Reservation 엔티티에 데이터를 저장하는 Service
      * @param request
-     * @return Reservation
+     * @param userId
+     * @return
      */
-    Reservation registReservation(ReservationRequestDTO.reservationRegistDTO request);
+    Reservation registReservation(ReservationRequestDTO.reservationRegistDTO request, Long userId);
 
     /**
      * ReservationDetail 엔티티에 데이터를 저장하는 Service
