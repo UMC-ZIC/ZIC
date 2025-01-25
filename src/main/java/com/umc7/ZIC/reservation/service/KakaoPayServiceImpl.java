@@ -34,11 +34,11 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     private String secret_Key_Dev;
 
     @Override
-    public PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPayReady(ReservationRequestDTO.reservationRegistDTO request) {
+    public PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPayReady(ReservationRequestDTO.reservationRegistDTO request, Long userid) {
         PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPaymentResponseDTO;
         
         PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findById(request.practiceRoomDetail()).get();
-        User user = userRepository.findById(request.user()).get();
+        User user = userRepository.findById(userid).get();
         String itemName = practiceRoomDetail.getPracticeRoom().getName() + " " + practiceRoomDetail.getName();
 
         // JSON BODY 생성
@@ -60,10 +60,11 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     }
 
     @Override
-    public PaymentResponseDTO.KakaoPaymentApproveResponseDTO kakaoPayApprove(PaymentRequestDTO.KakaoPaymentApproveRequestDTO request) {
+    public PaymentResponseDTO.KakaoPaymentApproveResponseDTO kakaoPayApprove(PaymentRequestDTO.KakaoPaymentApproveRequestDTO request, Long userid) {
         PaymentResponseDTO.KakaoPaymentApproveResponseDTO kakaoPaymentResponseDTO;
+        User user = userRepository.findById(userid).get();
 
-        Map<String, String> parameters = KakaoPayConverter.toApproveParam(cid, request);
+        Map<String, String> parameters = KakaoPayConverter.toApproveParam(cid, request, user.getName());
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders(secret_Key_Dev));
         RestTemplate restTemplate = new RestTemplate();
 

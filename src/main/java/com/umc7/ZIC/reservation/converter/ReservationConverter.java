@@ -3,6 +3,7 @@ package com.umc7.ZIC.reservation.converter;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import com.umc7.ZIC.reservation.domain.Reservation;
 import com.umc7.ZIC.reservation.domain.ReservationDetail;
+import com.umc7.ZIC.reservation.domain.enums.Status;
 import com.umc7.ZIC.reservation.dto.PaymentResponseDTO;
 import com.umc7.ZIC.reservation.dto.ReservationRequestDTO;
 import com.umc7.ZIC.reservation.dto.ReservationResponseDTO;
@@ -32,6 +33,25 @@ public class ReservationConverter {
     }
 
     /**
+     * Reservation 엔티티에서 예약 데이터의 status를 변경
+     * @param reservation
+     * @param status
+     * @return
+     */
+    public static Reservation toReservationToggle(Reservation reservation, Status status) {
+        return Reservation.builder()
+                .id(reservation.getId())
+                .reservationNumber(reservation.getReservationNumber())
+                .practiceRoomDetail(reservation.getPracticeRoomDetail())
+                .user(reservation.getUser())
+                .status(status)
+                .date(reservation.getDate())
+                .startTime(reservation.getStartTime())
+                .endTime(reservation.getEndTime())
+                .build();
+    }
+
+    /**
      * Reservation 엔티티에 저장 후 결과를 알려줄 객체 생성
      * @param reservation
      * @return
@@ -42,6 +62,7 @@ public class ReservationConverter {
                 .reservationNumber(reservation.getReservationNumber())
                 .practiceRoomDetail(reservation.getPracticeRoomDetail().getId())
                 .user(reservation.getUser().getId())
+                .status(reservation.getStatus())
                 .date(reservation.getDate())
                 .startTime(reservation.getStartTime())
                 .endTime(reservation.getEndTime())
@@ -143,6 +164,7 @@ public class ReservationConverter {
                         .practiceRoom(practiceRoomDTO)
                         .practiceRoomDetail(practiceRoomDetailDTO)
                         .user(reservation.getUser().getId())
+                        .status(reservation.getStatus())
                         .date(reservation.getDate())
                         .startTime(reservation.getStartTime())
                         .endTime(reservation.getEndTime())

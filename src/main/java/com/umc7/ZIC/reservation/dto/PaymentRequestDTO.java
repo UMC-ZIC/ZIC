@@ -9,7 +9,6 @@ public class PaymentRequestDTO {
      * @param reservationId
      * @param tid
      * @param partner_order_id
-     * @param partner_user_id
      * @param pg_token
      */
     @Builder
@@ -17,7 +16,6 @@ public class PaymentRequestDTO {
             Long reservationId,
             String tid,
             String partner_order_id,
-            String partner_user_id,
             String pg_token
-    ) {};
+    ) {}
 }

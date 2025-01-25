@@ -1,6 +1,7 @@
 package com.umc7.ZIC.reservation.service;
 
 import com.umc7.ZIC.reservation.domain.Reservation;
+import com.umc7.ZIC.reservation.domain.enums.Status;
 import com.umc7.ZIC.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,6 @@ public class ReservationQueryServiceImpl implements ReservationQueryService {
 
     @Override
     public Page<Reservation> getReservationList(Long userId, LocalDate localDate, Integer page) {
-        return reservationRepository.findAllByUserIdAndDate(userId, localDate, PageRequest.of(page, 10));
+        return reservationRepository.findAllByUserIdAndDateAndStatus(userId, localDate, Status.SUCCESS,PageRequest.of(page, 10));
     }
 }

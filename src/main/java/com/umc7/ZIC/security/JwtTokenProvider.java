@@ -99,6 +99,12 @@ public class JwtTokenProvider {
         return getUserIdInToken(accessToken);
     }
 
+    // UserType 추출
+    public String getUserTypeFromToken() {
+        String accessToken = resolveAccessToken();
+        return getUserTypeInToken(accessToken);
+    }
+
     // 토큰에서 userId 추출
     public Long getUserIdInToken(String token) {
         return extractAllClaims(token).get("userId", Long.class);
