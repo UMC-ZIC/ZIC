@@ -23,9 +23,15 @@ import com.umc7.ZIC.user.repository.UserInstrumentRepository;
 import com.umc7.ZIC.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -57,6 +63,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         saveUserInstruments(savedUser, userDetailsDto.instrumentList());
 
+
         String jwtToken = jwtTokenProvider.createAccessToken(userId, RoleType.USER.name());
 
         return UserConverter.toRegisterUserDetails(user, jwtToken);
@@ -76,7 +83,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(RoleType.OWNER);
 
         //남구 무거동 ~~~~
-        StringBuilder address= new StringBuilder(); //메모리 효율을 위해 사용
+        StringBuilder address = new StringBuilder(); //메모리 효율을 위해 사용
         for (int i = 1; i < userRequestRegion.length; i++) {
             address.append(userRequestRegion[i]);
             if (i < userRequestRegion.length - 1) {
@@ -93,7 +100,7 @@ public class UserServiceImpl implements UserService {
         //update
         User savedUser = userRepository.save(user);
         saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
-
+        updateAuthorities(user);
         String jwtToken = jwtTokenProvider.createAccessToken(userId, RoleType.OWNER.name());
         return UserConverter.toRegisterUserDetails(user, jwtToken);
     }
@@ -118,7 +125,8 @@ public class UserServiceImpl implements UserService {
     private void saveUserInstruments(User user, List<String> instrumentKorNames) {
         for (String instrumentKorName : instrumentKorNames) {
             InstrumentType instrumentType = InstrumentUtil.fromKoreanName(instrumentKorName);
-            Instrument instrument = instrumentRepository.findByName(instrumentType).orElseThrow(() -> new InstrumentHandler(ErrorStatus.INSTRUMENT_NOT_FOUND));;
+            Instrument instrument = instrumentRepository.findByName(instrumentType).orElseThrow(() -> new InstrumentHandler(ErrorStatus.INSTRUMENT_NOT_FOUND));
+            ;
             if (instrument != null) {
                 UserInstrument userInstrument = UserInstrumentConverter.toUserInstrument(user, instrument);
                 userInstrumentRepository.save(userInstrument);
@@ -128,9 +136,19 @@ public class UserServiceImpl implements UserService {
 
     private void checkPendingStatus(User user) {
         //유저가 아직 가입 전인지 판단
-        if(!user.getRole().equals(RoleType.PENDING)){
+        if (!user.getRole().equals(RoleType.PENDING)) {
             throw new UserHandler(ErrorStatus.USER_ROLE_NOT_PENDING);
         }
     }
 
+    private void updateAuthorities(User user) {
+        Collection<GrantedAuthority> updatedAuthorities = Collections.singleton(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+        );
+
+        // 유저 권한 업데이트 로직 추가
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(user, null, updatedAuthorities)
+        );
+    }
 }

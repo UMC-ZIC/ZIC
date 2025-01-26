@@ -1,5 +1,6 @@
 package com.umc7.ZIC.security;
 
+import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -25,12 +26,18 @@ public class JwtFilter extends GenericFilterBean {
         // 헤더에서 JWT 를 받아 옴
         String token = jwtTokenProvider.resolveAccessToken();
 
+        // 여기서 예외 발생시 securityconfig에서 설정한 다음 필터 체인인 ExceptionHandlerFilter으로 바로 넘어감.
+
         // 유효 토큰 확인
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (token ==null){
+            request.setAttribute("exception", ErrorStatus.JWT_NULL.getCode());
+        } else if (jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        filterChain.doFilter(request, response);
+
+            filterChain.doFilter(request, response);
     }
+
 
 }
