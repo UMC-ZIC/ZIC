@@ -128,7 +128,7 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
             return practiceRoomPage.map(PracticeRoomResponseDto.GetResponseDto::from); // 메서드 레퍼런스 사용
         } catch (Exception e) {
             log.error("getPracticeRoomList error: {}", e.getMessage());
-            throw new UserHandler(ErrorStatus.USER_NOT_FOUND);
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND);
         }
     }
 }
