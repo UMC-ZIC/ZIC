@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtTokenProvider jwtTokenProvider;
     private final JwtFilter jwtFilter;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler; // 핸들러 필드 추가
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -28,7 +27,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers( "/kakao-login/home","/kakao-login/page").permitAll()
-                        .requestMatchers("/api/user/details", "/api/owner/details").hasRole("PENDING")//Owner,User도 가능하지만 Service에서 막음
+                        .requestMatchers("/api/user/details", "/api/owner/details").hasRole("PENDING")
                         .requestMatchers("/api/user/**").hasRole("USER")
                         .requestMatchers("/api/owner/**").hasRole("OWNER")
                         .anyRequest().permitAll() //설정한 나머지는 아무나 가능.
@@ -45,14 +44,14 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/kakao-login/success", true)
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(customOAuth2UserService))
-                        .successHandler(oAuth2AuthenticationSuccessHandler) // 성공 핸들러 등록
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
                         .permitAll()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)) // CustomAccessDeniedHandler )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
-                .addFilterBefore(exceptionHandlerFilter, JwtFilter.class); // ExceptionHandlerFilter 추가
+                        .accessDeniedHandler(customAccessDeniedHandler))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JwtFilter.class);
 
 
         return http.build();
