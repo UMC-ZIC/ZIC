@@ -23,6 +23,15 @@ public enum ErrorStatus implements BaseErrorCode {
     // 사용자 관려 에러
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
     USER_ROLE_NOT_PENDING(HttpStatus.BAD_REQUEST, "USER4002", "사용자가 이미 가입되어 있습니다."),
+
+    // 토큰 관련 에러
+    JWT_AUTHORIZATION_FAILED(HttpStatus.UNAUTHORIZED, "JWT4001", "권한이 없습니다."),
+    JWT_Signature_FAILED(HttpStatus.UNAUTHORIZED, "JWT4002", "서명을 확인하지 못했습니다."),
+    JWT_EXPIRED(HttpStatus.UNAUTHORIZED, "JWT4003", "만료된 토큰입니다."),
+    JWT_MALFORMED(HttpStatus.UNAUTHORIZED, "JWT4004", "잘못된 형식의 토큰입니다."),
+    JWT_UNSUPPORTED(HttpStatus.UNAUTHORIZED, "JWT4005", "지원하지 않는 형식입니다."),
+    JWT_NULL(HttpStatus.UNAUTHORIZED,"JWT4006", "토큰이 없습니다."),
+
     //악기 관련 에러
     INSTRUMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "INSTRUMENT4001", "해당 악기가 없습니다."),
 
