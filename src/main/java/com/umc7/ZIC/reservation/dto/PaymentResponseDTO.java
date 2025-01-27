@@ -21,7 +21,7 @@ public class PaymentResponseDTO {
             String next_redirect_pc_url,
             String next_redirect_app_url,
             String created_at
-    ) {};
+    ) {}
 
     /**
      * KAKAO 결제 승인 응답 DTO
@@ -61,7 +61,7 @@ public class PaymentResponseDTO {
                 int discount,
                 int point,
                 int green_deposit
-        ) {};
+        ) {}
 
         // 카드 결제 시 카드 정보
         public record CardInfo(
@@ -77,7 +77,7 @@ public class PaymentResponseDTO {
                 String kakaopay_issuer_corp,
                 String kakaopay_issuer_corp_code
         ) {}
-    };
+    }
 
     /**
      * 클라이언트에게 전송할 예약 상세 id + KAKAO PAY 결제 승인 응답 DTO
@@ -89,5 +89,84 @@ public class PaymentResponseDTO {
     public record KakaoPaymentResultDTO<T>(
             Long reservation_detail_id,
             T PaymentResult
-    ) {};
+    ) {}
+
+    /**
+     * KAKAO 결제 취소 응답 DTO
+     * @param aid
+     * @param cid
+     * @param tid
+     * @param status
+     * @param partner_user_id
+     * @param partner_order_id
+     * @param payment_method_type
+     * @param item_name
+     * @param quantity
+     * @param amount
+     * @param approved_cancel_amount
+     * @param canceled_amount
+     * @param cancel_available_amount
+     * @param created_at
+     * @param approved_at
+     * @param canceled_at
+     */
+    @Builder
+    public record KakaoPaymentCancelResponseDTO(
+            String aid,
+            String cid,
+            String tid,
+            String status,
+            String partner_user_id,
+            String partner_order_id,
+            String payment_method_type,
+            String item_name,
+            int quantity,
+            Amount amount,
+            ApprovedCancelAmount approved_cancel_amount,
+            CanceledAmount canceled_amount,
+            CancelAvailableAmount cancel_available_amount,
+            LocalDateTime created_at,
+            LocalDateTime approved_at,
+            LocalDateTime canceled_at
+    ) {
+        // 상품 결제 가격 정보
+        public record Amount(
+                int total,
+                int tax_free,
+                int vat,
+                int discount,
+                int point,
+                int green_deposit
+        ) {}
+
+        // 이번 요청으로 취소된 금액
+        public record ApprovedCancelAmount(
+                int total,
+                int tax_free,
+                int vat,
+                int discount,
+                int point,
+                int green_deposit
+        ) {}
+
+        // 누계 취소 금액
+        public record CanceledAmount(
+                int total,
+                int tax_free,
+                int vat,
+                int discount,
+                int point,
+                int green_deposit
+        ) {}
+
+        // 남은 취소 가능 금액
+        public record CancelAvailableAmount(
+                int total,
+                int tax_free,
+                int vat,
+                int discount,
+                int point,
+                int green_deposit
+        ) {}
+    }
 }

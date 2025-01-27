@@ -96,4 +96,15 @@ public class ReservationRestController {
     }
 
     // TODO : 결제 승인 취소 API 구현하기
+    @Operation(summary = "결제 취소 API",
+            description = "KaKao Pay 결제 취소 API입니다. " +
+                    "<br><h2>JWT 토큰 필요합니다.</h2> ")
+    @PostMapping("/payment/kakao/cancel")
+    public ApiResponse<ReservationResponseDTO.reservationDTO<PaymentResponseDTO.KakaoPaymentCancelResponseDTO>> cancelToKakaoPay(@RequestBody PaymentRequestDTO.KakaoPaymentCancelRequestDTO request) {
+        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
+            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
+        }
+
+        return ApiResponse.onSuccess(kakaoPayService.kakaoPayCancel(request));
+    }
 }

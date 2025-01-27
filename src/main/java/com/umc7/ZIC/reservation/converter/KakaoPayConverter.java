@@ -1,6 +1,7 @@
 package com.umc7.ZIC.reservation.converter;
 
 import com.umc7.ZIC.reservation.dto.PaymentRequestDTO;
+import org.springframework.http.HttpHeaders;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -8,6 +9,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class KakaoPayConverter {
+
+    /**
+     * JSON 헤더 추가
+     * @param secret_Key_Dev KaKao Pay Secret_Key_DEV
+     * @return
+     */
+    public static HttpHeaders getHeaders(String secret_Key_Dev) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        String auth = "SECRET_KEY " + secret_Key_Dev;
+
+        httpHeaders.set("Authorization", auth);
+        httpHeaders.set("Content-Type", "application/json");
+
+        return httpHeaders;
+    }
 
     /**
      * KAKAO PAY 결제 요청을 하기위한 JSON BODY 생성
@@ -63,6 +80,24 @@ public class KakaoPayConverter {
         parameters.put("partner_order_id", request.partner_order_id());
         parameters.put("partner_user_id", userId);
         parameters.put("pg_token", request.pg_token());
+
+        return parameters;
+    }
+
+    /**
+     * KAKAO PAY 결제 취소를 하기위한 JSON BODY 생성
+     * @param cid cid 가맹점 고유 코드 : 테스트 코드는 TC0ONETIME
+     * @param request
+     * @return
+     */
+    public static Map<String, String> toCancelParam(String cid, PaymentRequestDTO.KakaoPaymentCancelRequestDTO request) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("cid", cid);
+        parameters.put("tid", request.tid());
+        parameters.put("cancel_amount", String.valueOf(request.cancel_amount()));
+        parameters.put("cancel_tax_free_amount", String.valueOf(request.cancel_tax_free_amount()));
+        parameters.put("cancel_vat_amount", String.valueOf(request.cancel_vat_amount()));
+        //parameters.put("cancel_available_amount", request.cancel_available_amount());
 
         return parameters;
     }
