@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/reservation")
 public class ReservationPageController {
-    @GetMapping("/payment/success")
+    @GetMapping("/payment/kakao-pay")
     public String ready() {
 
         return "KakaoReady";
