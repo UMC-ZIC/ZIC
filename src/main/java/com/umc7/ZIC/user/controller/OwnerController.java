@@ -33,13 +33,6 @@ public class OwnerController {
         return ApiResponse.onSuccess(userService.updateOwnerDetails(userId, ownerRequestDto));
     }
 
-    //test용
-    @GetMapping("/test/get-token-from-user-id")
-    public String testCreateOwnerToken(@RequestParam Long userId){
-        String userToken =jwtTokenProvider.createRefreshToken(userId, RoleType.OWNER.name());
-        return userToken;
-    }
-
     @Operation(summary = "연습실 주인의 수익 통계를 조회하는 API",
             description = "연습실 주인의 수익 통계를 조회하는 API입니다. " +
                     "<br>날짜는 <b>[년도, 월]</b>을 통해 조회하며 <b>[일]은 아무거나 넣으셔도 됩니다.</b>" +

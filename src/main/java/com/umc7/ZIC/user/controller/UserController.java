@@ -30,13 +30,4 @@ public class UserController {
         return ApiResponse.onSuccess(userService.updateUserDetails(userId, userRequestDto));
     }
 
-    //test용
-    @GetMapping("/test/get-token-from-user-id")
-    public String testCreateUserToken(@RequestParam Long userId){
-        String userToken =jwtTokenProvider.createRefreshToken(userId, RoleType.USER.name());
-        return userToken;
-    }
-
-
-
 }
