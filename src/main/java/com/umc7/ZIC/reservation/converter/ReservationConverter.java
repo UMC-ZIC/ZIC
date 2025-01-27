@@ -39,16 +39,17 @@ public class ReservationConverter {
      * @return
      */
     public static Reservation toReservationToggle(Reservation reservation, Status status) {
-        return Reservation.builder()
-                .id(reservation.getId())
-                .reservationNumber(reservation.getReservationNumber())
-                .practiceRoomDetail(reservation.getPracticeRoomDetail())
-                .user(reservation.getUser())
-                .status(status)
-                .date(reservation.getDate())
-                .startTime(reservation.getStartTime())
-                .endTime(reservation.getEndTime())
-                .build();
+        return reservation.toggleStatus(status);
+    }
+
+    /**
+     * Reservation 엔티티에서 예약 데이터들의 status를 변경
+     * @param reservationList
+     * @param status
+     * @return
+     */
+    public static List<Reservation> toReservationListToggle(List<Reservation> reservationList, Status status) {
+        return reservationList.stream().map(reservation -> toReservationToggle(reservation, status)).toList();
     }
 
     /**

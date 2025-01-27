@@ -17,6 +17,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ReservationCommandServiceImpl implements ReservationCommandService {
@@ -45,5 +48,14 @@ public class ReservationCommandServiceImpl implements ReservationCommandService 
         ReservationDetail newReservationDetail = ReservationConverter.toReservationDetail(responseDTO, newReservation);
 
         return reservationDetailRepository.save(newReservationDetail);
+    }
+
+    @Override
+    public List<Reservation> reservationToggleStatus(LocalDateTime time, Status status) {
+        List<Reservation> reservationList = reservationRepository.findByStatusAndCreatedAtBefore(Status.PENDING, time);
+
+        List<Reservation> newReservationList = ReservationConverter.toReservationListToggle(reservationList, status);
+
+        return reservationRepository.saveAll(newReservationList);
     }
 }

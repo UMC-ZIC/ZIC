@@ -59,4 +59,10 @@ public class Reservation extends BaseEntity {
     // 양방향 연결
     @OneToOne(mappedBy = "reservation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ReservationDetail reservationDetail;
+
+    // Status 변경
+    public Reservation toggleStatus(Status status) {
+        this.status = status;
+        return this;
+    }
 }

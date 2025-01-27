@@ -95,7 +95,6 @@ public class ReservationRestController {
         return ApiResponse.onSuccess(ReservationConverter.toPaymentDTO(reservationDetail, result));
     }
 
-    // TODO : 결제 승인 취소 API 구현하기
     @Operation(summary = "결제 취소 API",
             description = "KaKao Pay 결제 취소 API입니다. " +
                     "<br><h2>JWT 토큰 필요합니다.</h2> ")

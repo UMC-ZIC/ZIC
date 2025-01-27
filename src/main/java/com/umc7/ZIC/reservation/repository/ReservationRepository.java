@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
@@ -18,4 +20,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      * @return
      */
     Page<Reservation> findAllByUserIdAndDateAndStatus(Long user_id, LocalDate date, Status status, PageRequest pageRequest);
+
+    /**
+     * 특정 status를 갖고 있고 생성된지 일정 시간이 지난 예약 목록을 조회하는 Repository
+     * @param status
+     * @param date
+     * @return
+     */
+    List<Reservation> findByStatusAndCreatedAtBefore(Status status, LocalDateTime date);
 }
