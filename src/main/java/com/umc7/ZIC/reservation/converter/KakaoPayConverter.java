@@ -24,7 +24,8 @@ public class KakaoPayConverter {
             String cid, String partner_order_id,
             String partner_user_id, String item,
             LocalTime startTime, LocalTime endTime,
-            int price) {
+            int price, String redirectUrl) {
+
         Duration duration = Duration.between(startTime, endTime);
         Long hours = duration.toHours();
         String quantity = String.valueOf(hours);
@@ -41,9 +42,9 @@ public class KakaoPayConverter {
         parameters.put("total_amount", String.valueOf(amount + vat));
         parameters.put("vat_amount", String.valueOf(vat));
         parameters.put("tax_free_amount", String.valueOf(amount));
-        parameters.put("approval_url", "http://localhost:8080/reservation/payment/success"); // 성공 시 redirect url - 추후에 프론트엔드 url로 변경
-        parameters.put("cancel_url", "http://localhost:8080/reservation/payment/cancel"); // 취소 시 redirect url
-        parameters.put("fail_url", "http://localhost:8080/reservation/payment/fail"); // 실패 시 redirect url
+        parameters.put("approval_url", redirectUrl); // 성공 시 redirect url - 추후에 프론트엔드 url로 변경
+        parameters.put("cancel_url", redirectUrl); // 취소 시 redirect url
+        parameters.put("fail_url", redirectUrl); // 실패 시 redirect url
 
         return parameters;
     }

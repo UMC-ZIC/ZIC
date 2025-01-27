@@ -47,3 +47,4 @@ logging:
     org.springframework.security: INFO #
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
+    com.zaxxer.hikari: INFO

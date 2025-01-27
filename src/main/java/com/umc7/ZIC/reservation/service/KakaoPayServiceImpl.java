@@ -33,6 +33,10 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     @Value("${KAKAO_PAY_SECRET_KEY}")
     private String secret_Key_Dev;
 
+    // KaKao Pay Redirect URL
+    @Value("${KAKAO_PAY_REDIRECT_URL}")
+    private String kakaoPayRedirectUrl;
+
     @Override
     public PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPayReady(ReservationRequestDTO.reservationRegistDTO request, Long userid) {
         PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPaymentResponseDTO;
@@ -43,7 +47,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
         // JSON BODY 생성
         Map<String, String> parameters = KakaoPayConverter.toReadyParam(
-                cid, request.reservationNumber(), user.getName(), itemName, request.startTime(), request.endTime(), request.price()
+                cid, request.reservationNumber(), user.getName(), itemName, request.startTime(), request.endTime(), request.price(), kakaoPayRedirectUrl
         );
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders(secret_Key_Dev));
