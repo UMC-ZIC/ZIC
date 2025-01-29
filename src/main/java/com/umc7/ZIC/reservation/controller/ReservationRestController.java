@@ -1,8 +1,7 @@
 package com.umc7.ZIC.reservation.controller;
 
-import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.ApiResponse;
-import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
+import com.umc7.ZIC.common.validation.annotation.CheckPage;
 import com.umc7.ZIC.reservation.converter.ReservationConverter;
 import com.umc7.ZIC.reservation.domain.Reservation;
 import com.umc7.ZIC.reservation.domain.ReservationDetail;
@@ -13,6 +12,7 @@ import com.umc7.ZIC.reservation.dto.ReservationResponseDTO;
 import com.umc7.ZIC.reservation.service.KakaoPayService;
 import com.umc7.ZIC.reservation.service.ReservationCommandService;
 import com.umc7.ZIC.reservation.service.ReservationQueryService;
+import com.umc7.ZIC.reservation.validation.validationSequence.ValidationOrder;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,12 +20,14 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/reservation")
 @Tag(name = "예약", description = "예약 API")
 public class ReservationRestController {
@@ -45,14 +47,9 @@ public class ReservationRestController {
     @GetMapping("")
     public ApiResponse<ReservationResponseDTO.ReservationList> getReservationList(
             @RequestParam(name = "date") LocalDate date,
-            @RequestParam(name = "page") Integer page
+            @CheckPage @RequestParam(name = "page") Integer page
     ) {
-        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
-            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
-        }
-
-        Long userId = jwtTokenProvider.getUserIdFromToken();
-        Page<Reservation> reservationList = reservationQueryService.getReservationList(userId, date, page - 1);
+        Page<Reservation> reservationList = reservationQueryService.getReservationList(jwtTokenProvider.getUserIdFromToken(), date, page - 1);
 
         return ApiResponse.onSuccess(ReservationConverter.toReservationList(reservationList));
     }
@@ -63,14 +60,10 @@ public class ReservationRestController {
                     "<br>partner_order_id는 프론트엔드에서 생성한 무작위 문자열입니다." +
                     "<br><h2>JWT 토큰 필요합니다.</h2> ")
     @PostMapping("/payment/kakao/ready")
-    public ApiResponse<ReservationResponseDTO.reservationDTO<Object>> readyToKakaoPay(@RequestBody ReservationRequestDTO.reservationRegistDTO request) {
-        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
-            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
-        }
-        Long userId = jwtTokenProvider.getUserIdFromToken();
-
-        PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPaymentReadyResponseDTO = kakaoPayService.kakaoPayReady(request, userId);
-        Reservation reservation = reservationCommandService.registReservation(request, userId);
+    public ApiResponse<ReservationResponseDTO.reservationDTO<Object>> readyToKakaoPay(
+            @RequestBody @Validated(ValidationOrder.OrderedReservationValidation.class) ReservationRequestDTO.reservationRegistDTO request) {
+        PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPaymentReadyResponseDTO = kakaoPayService.kakaoPayReady(request, jwtTokenProvider.getUserIdFromToken());
+        Reservation reservation = reservationCommandService.registReservation(request, jwtTokenProvider.getUserIdFromToken());
         ReservationResponseDTO.reservationResultDTO reservationResult = ReservationConverter.toReservationResult(reservation);
 
         return ApiResponse.onSuccess(ReservationConverter.toReservationDTO(kakaoPaymentReadyResponseDTO, reservationResult));
@@ -83,13 +76,9 @@ public class ReservationRestController {
                     "<br>pg_token : 예약 요청으로 url param을 통해 받은 토큰. " +
                     "<br><h2>JWT 토큰 필요합니다.</h2> ")
     @PostMapping("/payment/kakao/approve")
-    public ApiResponse<PaymentResponseDTO.KakaoPaymentResultDTO<Object>> approveToKakaoPay(@RequestBody PaymentRequestDTO.KakaoPaymentApproveRequestDTO request) {
-        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
-            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
-        }
-        Long userId = jwtTokenProvider.getUserIdFromToken();
-
-        PaymentResponseDTO.KakaoPaymentApproveResponseDTO result = kakaoPayService.kakaoPayApprove(request, userId);
+    public ApiResponse<PaymentResponseDTO.KakaoPaymentResultDTO<Object>> approveToKakaoPay(
+            @RequestBody @Validated(ValidationOrder.OrderedKakaoPaymentValidation.class) PaymentRequestDTO.KakaoPaymentApproveRequestDTO request) {
+        PaymentResponseDTO.KakaoPaymentApproveResponseDTO result = kakaoPayService.kakaoPayApprove(request, jwtTokenProvider.getUserIdFromToken());
         ReservationDetail reservationDetail = reservationCommandService.registReservationDetail(request, result);
 
         return ApiResponse.onSuccess(ReservationConverter.toPaymentDTO(reservationDetail, result));
@@ -99,10 +88,8 @@ public class ReservationRestController {
             description = "KaKao Pay 결제 취소 API입니다. " +
                     "<br><h2>JWT 토큰 필요합니다.</h2> ")
     @PostMapping("/payment/kakao/cancel")
-    public ApiResponse<ReservationResponseDTO.reservationDTO<PaymentResponseDTO.KakaoPaymentCancelResponseDTO>> cancelToKakaoPay(@RequestBody PaymentRequestDTO.KakaoPaymentCancelRequestDTO request) {
-        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
-            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
-        }
+    public ApiResponse<ReservationResponseDTO.reservationDTO<PaymentResponseDTO.KakaoPaymentCancelResponseDTO>> cancelToKakaoPay(
+            @RequestBody @Validated(ValidationOrder.OrderedKakaoPaymentValidation.class) PaymentRequestDTO.KakaoPaymentCancelRequestDTO request) {
 
         return ApiResponse.onSuccess(kakaoPayService.kakaoPayCancel(request));
     }

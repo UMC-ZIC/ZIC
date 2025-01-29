@@ -20,8 +20,13 @@ public class ReservationScheduler {
 
         LocalDateTime thirtyMinutes = LocalDateTime.now().minusMinutes(3); // TODO : 시간 변경하기
 
-        List<Reservation> reservationList = reservationCommandService.reservationToggleStatus(thirtyMinutes, Status.PENDING);
+        List<Reservation> reservationList = reservationCommandService.reservationToggleStatus(thirtyMinutes, Status.FAIL);
 
-        System.out.println(reservationList); // TODO : 나중에 삭제하기
+        System.out.println("------------------------------------------------------------------------------------------");
+        reservationList.forEach(reservation -> System.out.println("{[Id : " + reservation.getId() +
+                "] | [Status : " + reservation.getStatus() +
+                "] | [StartTime : " + reservation.getStartTime() +
+                "] | [EndTime : " + reservation.getEndTime() + "]}")); // TODO : 나중에 삭제하기
+        System.out.println("------------------------------------------------------------------------------------------");
     }
 }

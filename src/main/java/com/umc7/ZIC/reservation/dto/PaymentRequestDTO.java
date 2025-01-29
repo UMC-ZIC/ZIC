@@ -1,5 +1,10 @@
 package com.umc7.ZIC.reservation.dto;
 
+import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.validation.annotation.CheckReservationData;
+import com.umc7.ZIC.reservation.validation.annotation.CheckReservationStatus;
+import com.umc7.ZIC.reservation.validation.annotation.ExistReservation;
+import com.umc7.ZIC.reservation.validation.validationSequence.ValidationStep;
 import lombok.Builder;
 
 public class PaymentRequestDTO {
@@ -13,12 +18,14 @@ public class PaymentRequestDTO {
      */
     @Builder
     public record KakaoPaymentApproveRequestDTO(
+            @ExistReservation(groups = ValidationStep.ExistValidation.class)
+            @CheckReservationStatus(value = Status.PENDING, groups = ValidationStep.StatusValidation.class)
             Long reservationId,
             String tid,
             String partner_order_id,
             String pg_token
     ) {}
-
+    
     /**
      * Kakao Pay 결제 취소 요청하기 위한 클라이언트로 부터 받을 DTO
      * @param reservationId DB에 저장된 예약 id
@@ -28,7 +35,10 @@ public class PaymentRequestDTO {
      * @param cancel_vat_amount 취소 부과세 금액
      */
     @Builder
+    @CheckReservationData(groups = ValidationStep.dataValidation.class)
     public record KakaoPaymentCancelRequestDTO(
+            @ExistReservation(groups = ValidationStep.ExistValidation.class)
+            @CheckReservationStatus(value = Status.SUCCESS, groups = ValidationStep.StatusValidation.class)
             Long reservationId,
             String tid,
             Integer cancel_amount,

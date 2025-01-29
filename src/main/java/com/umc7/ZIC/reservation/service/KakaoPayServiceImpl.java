@@ -1,5 +1,9 @@
 package com.umc7.ZIC.reservation.service;
 
+import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
+import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomDetailHandler;
+import com.umc7.ZIC.apiPayload.exception.handler.ReservationHandler;
+import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomDetailRepository;
 import com.umc7.ZIC.reservation.converter.KakaoPayConverter;
@@ -46,13 +50,15 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     public PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPayReady(ReservationRequestDTO.reservationRegistDTO request, Long userid) {
         PaymentResponseDTO.KakaoPaymentReadyResponseDTO kakaoPaymentResponseDTO;
         
-        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findById(request.practiceRoomDetail()).get();
-        User user = userRepository.findById(userid).get();
+        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findById(request.practiceRoomDetail())
+                .orElseThrow(() -> new PracticeRoomDetailHandler(ErrorStatus.PRACTICEROOMDETAIL_NOT_FOUND));
+        User user = userRepository.findById(userid)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
         String itemName = practiceRoomDetail.getPracticeRoom().getName() + " " + practiceRoomDetail.getName();
 
         // JSON BODY 생성
         Map<String, String> parameters = KakaoPayConverter.toReadyParam(
-                cid, request.reservationNumber(), user.getName(), itemName, request.startTime(), request.endTime(), request.price(), kakaoPayRedirectUrl
+                cid, request.reservationNumber(), user.getName(), itemName, request.startTime(), request.endTime(), practiceRoomDetail.getFee(), kakaoPayRedirectUrl
         );
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, KakaoPayConverter.getHeaders(secret_Key_Dev));
@@ -71,7 +77,8 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     @Override
     public PaymentResponseDTO.KakaoPaymentApproveResponseDTO kakaoPayApprove(PaymentRequestDTO.KakaoPaymentApproveRequestDTO request, Long userid) {
         PaymentResponseDTO.KakaoPaymentApproveResponseDTO kakaoPaymentResponseDTO;
-        User user = userRepository.findById(userid).get();
+        User user = userRepository.findById(userid)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         Map<String, String> parameters = KakaoPayConverter.toApproveParam(cid, request, user.getName());
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, KakaoPayConverter.getHeaders(secret_Key_Dev));
@@ -90,7 +97,8 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     @Override
     public ReservationResponseDTO.reservationDTO<PaymentResponseDTO.KakaoPaymentCancelResponseDTO> kakaoPayCancel(PaymentRequestDTO.KakaoPaymentCancelRequestDTO request) {
         PaymentResponseDTO.KakaoPaymentCancelResponseDTO kakaoPaymentCancelResponseDTO;
-        Reservation reservation = reservationRepository.findById(request.reservationId()).get();
+        Reservation reservation = reservationRepository.findById(request.reservationId())
+                .orElseThrow(() -> new ReservationHandler(ErrorStatus.RESERVATION_NOT_FOUND));
 
         Map<String, String> parameters = KakaoPayConverter.toCancelParam(cid, request);
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, KakaoPayConverter.getHeaders(secret_Key_Dev));
