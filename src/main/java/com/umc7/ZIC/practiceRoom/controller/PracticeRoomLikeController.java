@@ -1,8 +1,11 @@
 package com.umc7.ZIC.practiceRoom.controller;
 
+import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.ApiResponse;
+import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomLikeResponseDto;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomLikeService;
+import com.umc7.ZIC.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +20,17 @@ import org.springframework.web.bind.annotation.*;
 public class PracticeRoomLikeController {
 
     private final PracticeRoomLikeService practiceRoomLikeService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/{practiceRoomId}/like")
     @Operation(summary = "연습실 좋아요/취소 API", description = "사용자가 연습실에 좋아요를 누르거나 취소할 때 사용하는 (두번 누르면 취소)API")
     public ApiResponse<PracticeRoomLikeResponseDto.LikeResponseDto> toggleLikePracticeRoom(
-            @PathVariable Long practiceRoomId,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = Long.parseLong(userDetails.getUsername());
+            @PathVariable Long practiceRoomId) {
+        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
+            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
+        }
+
+        Long userId = jwtTokenProvider.getUserIdFromToken();
         PracticeRoomLikeResponseDto.LikeResponseDto response = practiceRoomLikeService.createPracticeRoomLike(practiceRoomId, userId);
         return ApiResponse.onSuccess(response);
     }
