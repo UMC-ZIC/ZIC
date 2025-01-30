@@ -8,6 +8,7 @@ import com.umc7.ZIC.practiceRoom.domain.QPracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.QPracticeRoomDetail;
 import com.umc7.ZIC.reservation.domain.QReservation;
 import com.umc7.ZIC.reservation.domain.QReservationDetail;
+import com.umc7.ZIC.reservation.domain.enums.Status;
 import com.umc7.ZIC.user.domain.QUser;
 import com.umc7.ZIC.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +65,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .from(qPracticeRoom)
                 .join(qPracticeRoom.PracticeRoomDetailList, qPracticeRoomDetail)
                 .leftJoin(qPracticeRoomDetail.reservationList, qReservation)
-                .on(qReservation.date.between(startOfMonth, endOfMonth))
+                .on(qReservation.date.between(startOfMonth, endOfMonth).and(qReservation.status.eq(Status.SUCCESS)))
                 .leftJoin(qReservation.reservationDetail, qReservationDetail)
                 .where(qPracticeRoom.user.id.eq(userId))
                 .groupBy(
@@ -133,6 +134,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .from(qPracticeRoom)
                 .join(qPracticeRoom.PracticeRoomDetailList, qPracticeRoomDetail)
                 .leftJoin(qPracticeRoomDetail.reservationList, qReservation)
+                .on(qReservation.status.eq(Status.SUCCESS))
                 .leftJoin(qReservation.reservationDetail, qReservationDetail)
                 .where(qPracticeRoom.user.id.eq(userId)
                         .and(qReservation.date.between(startDate, endDate))) // 지난 12개월 데이터를 조회

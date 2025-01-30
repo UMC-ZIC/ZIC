@@ -44,6 +44,11 @@ public class ReservationResponseDTO {
             T paymentResponse
     ) {}
 
+    /**
+     * DB에서 조회한 예약 내역 및 상세 내역 목록 객체
+     * @param reservationResult
+     * @param reservationDetailResult
+     */
     @Builder
     public record ReservationListDTO(
             ReservationDTO reservationResult,
@@ -94,6 +99,15 @@ public class ReservationResponseDTO {
         ) {}
     }
 
+    /**
+     * 클라이언트에게 전달할 애약 목록
+     * @param resultList
+     * @param listSize
+     * @param totalPage
+     * @param totalElements
+     * @param isFirst
+     * @param isLast
+     */
     @Builder
     public record ReservationList(
             List<ReservationListDTO> resultList,

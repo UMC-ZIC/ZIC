@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/details", "/api/owner/details").hasRole("PENDING")
                         .requestMatchers("/api/user/**").hasRole("USER")
                         .requestMatchers("/api/owner/**").hasRole("OWNER")
+                        .requestMatchers("/api/reservation/**").hasAnyRole("USER", "OWNER")
                         .anyRequest().permitAll() //설정한 나머지는 아무나 가능.
                 )
                 .csrf(AbstractHttpConfigurer::disable)
