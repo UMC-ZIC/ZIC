@@ -35,19 +35,16 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
 
     //연습실 등록
     @Override
-    public PracticeRoomResponseDto.CreateResponseDto createPracticeRoom(PracticeRoomRequestDto.CreateRequestDto createRequest, Long userId, Long regionId) {
-
-        userId = 1L; //임시 하드코딩
-        regionId = 1L;//임시 하드코딩
+    public PracticeRoomResponseDto.CreateResponseDto createPracticeRoom(PracticeRoomRequestDto.CreateRequestDto createRequest, Long userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-        Region region = regionRepository.findById(regionId)
-                .orElseThrow(() -> new RegionHandler(ErrorStatus.REGION_NOT_FOUND));
 
-//        if (!user.getRole().equals(RoleType.OWNER)){
-//            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
-//        }
+        Region region = user.getRegion();
+
+        if (!user.getRole().equals(RoleType.OWNER)){
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+        }
         try {
             PracticeRoom practiceRoom = createRequest.toEntity(user, region);
 
@@ -64,9 +61,6 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
     @Override
     public PracticeRoomResponseDto.UpdateResponseDto updatePracticeRoom(PracticeRoomRequestDto.UpdateRequestDto updateRequest, Long practiceRoomId, Long userId) {
 
-        practiceRoomId = 1L;//임시 하드코딩
-        userId = 1L;//임시 하드코딩
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
@@ -78,7 +72,6 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
         if(!user.getId().equals(practiceRoom.getUser().getId())) {
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_AUTHORIZATION_FAILED);
         }
-
 
         //엔티티 수정
         practiceRoom.update(
@@ -96,8 +89,7 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
     //연습실 삭제
     @Override
     public void deletePracticeRoom(Long practiceRoomId,Long userId) {
-        practiceRoomId = 1L;//임시 하드코딩
-        userId = 1L;//임시 하드코딩
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
@@ -128,7 +120,7 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
             return practiceRoomPage.map(PracticeRoomResponseDto.GetResponseDto::from); // 메서드 레퍼런스 사용
         } catch (Exception e) {
             log.error("getPracticeRoomList error: {}", e.getMessage());
-            throw new UserHandler(ErrorStatus.USER_NOT_FOUND);
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND);
         }
     }
 }

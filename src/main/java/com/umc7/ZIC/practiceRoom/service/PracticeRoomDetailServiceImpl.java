@@ -35,9 +35,6 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
     @Override
     public PracticeRoomDetailResponseDto.CreateResponseDto createPracticeRoomDetail(PracticeRoomDetailRequestDto.CreateRequestDetailDto createRequest, Long practiceRoomId, Long userId) {
 
-        userId = 1L; //임시 하드코딩
-        practiceRoomId = 1L;//임시 하드코딩
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
@@ -72,11 +69,11 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
 
     //연습실 단일 조회
     @Override
-    public PracticeRoomDetailResponseDto.GetResponseDto getPracticeRoomDetail(Long room_id,Long practiceRoomId) {
+    public PracticeRoomDetailResponseDto.GetResponseDto getPracticeRoomDetail(Long roomId,Long practiceRoomId) {
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
                 .orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
 
-        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findByIdAndPracticeRoom(room_id, practiceRoom)
+        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findByIdAndPracticeRoom(roomId, practiceRoom)
                 .orElseThrow(() -> new PracticeRoomDetailHandler(ErrorStatus.PRACTICEROOMDETAIL_NOT_FOUND));
 
         return PracticeRoomDetailResponseDto.GetResponseDto.from(practiceRoomDetail);
@@ -84,11 +81,19 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
 
     //연습실 정보 수정
     @Override
-    public PracticeRoomDetailResponseDto.UpdateResponseDto updatePracticeRoomDetail(PracticeRoomDetailRequestDto.UpdateRequestDetailDto updateRequest, Long practiceRoomId, Long room_id) {
+    public PracticeRoomDetailResponseDto.UpdateResponseDto updatePracticeRoomDetail(PracticeRoomDetailRequestDto.UpdateRequestDetailDto updateRequest, Long practiceRoomId, Long roomId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
                 .orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
 
-        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findByIdAndPracticeRoom(room_id, practiceRoom)
+        // 소유자 권한 및 연습실 소유 여부 확인
+        if (!user.getRole().equals(RoleType.OWNER) || !practiceRoom.getUser().getId().equals(userId)) {
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+        }
+
+        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findByIdAndPracticeRoom(roomId, practiceRoom)
                 .orElseThrow(() -> new PracticeRoomDetailHandler(ErrorStatus.PRACTICEROOMDETAIL_NOT_FOUND));
 
         practiceRoomDetail.update(
@@ -103,12 +108,21 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
         return PracticeRoomDetailResponseDto.UpdateResponseDto.from(updatedPracticeRoomDetail);
     }
 
+    // 연습실 내부 방 삭제
     @Override
-    public void deletePracticeRoomDetail(Long practiceRoomId, Long room_id) {
+    public void deletePracticeRoomDetail(Long practiceRoomId, Long roomId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
                 .orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
 
-        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findByIdAndPracticeRoom(room_id, practiceRoom)
+        // 소유자 권한 및 연습실 소유 여부 확인
+        if (!user.getRole().equals(RoleType.OWNER) || !practiceRoom.getUser().getId().equals(userId)) {
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+        }
+
+        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findByIdAndPracticeRoom(roomId, practiceRoom)
                 .orElseThrow(() -> new PracticeRoomDetailHandler(ErrorStatus.PRACTICEROOMDETAIL_NOT_FOUND));
 
         practiceRoomDetailRepository.delete(practiceRoomDetail);
