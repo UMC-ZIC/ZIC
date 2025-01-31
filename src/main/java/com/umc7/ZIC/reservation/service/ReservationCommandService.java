@@ -2,7 +2,7 @@ package com.umc7.ZIC.reservation.service;
 
 import com.umc7.ZIC.reservation.domain.Reservation;
 import com.umc7.ZIC.reservation.domain.ReservationDetail;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.dto.PaymentRequestDTO;
 import com.umc7.ZIC.reservation.dto.PaymentResponseDTO;
 import com.umc7.ZIC.reservation.dto.ReservationRequestDTO;
@@ -34,5 +34,5 @@ public interface ReservationCommandService {
      * @param status 변경할 Status
      * @return
      */
-    List<Reservation> reservationToggleStatus(LocalDateTime time, Status status);
+    List<Reservation> reservationToggleStatus(LocalDateTime time, ReservationStatus status);
 }

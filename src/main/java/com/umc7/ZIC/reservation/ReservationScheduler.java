@@ -1,7 +1,7 @@
 package com.umc7.ZIC.reservation;
 
 import com.umc7.ZIC.reservation.domain.Reservation;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.service.ReservationCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,18 +15,21 @@ import java.util.List;
 public class ReservationScheduler {
     private final ReservationCommandService reservationCommandService;
 
-    @Scheduled(fixedRate = 10000 * 6) // 1분마다 실행
+    @Scheduled(fixedRate = 10000 * 6 * 5) // 5분마다 실행
     public void updatePendingReservations() {
 
-        LocalDateTime thirtyMinutes = LocalDateTime.now().minusMinutes(3); // TODO : 시간 변경하기
+        LocalDateTime thirtyMinutes = LocalDateTime.now().minusMinutes(30);
 
-        List<Reservation> reservationList = reservationCommandService.reservationToggleStatus(thirtyMinutes, Status.FAIL);
+        reservationCommandService.reservationToggleStatus(thirtyMinutes, ReservationStatus.FAIL);
 
+        /*
+        // TODO : 주석처리
+        List<Reservation> reservationList = reservationCommandService.reservationToggleStatus(thirtyMinutes, ReservationStatus.FAIL);
         System.out.println("------------------------------------------------------------------------------------------");
         reservationList.forEach(reservation -> System.out.println("{[Id : " + reservation.getId() +
                 "] | [Status : " + reservation.getStatus() +
                 "] | [StartTime : " + reservation.getStartTime() +
-                "] | [EndTime : " + reservation.getEndTime() + "]}")); // TODO : 나중에 삭제하기
-        System.out.println("------------------------------------------------------------------------------------------");
+                "] | [EndTime : " + reservation.getEndTime() + "]}"));
+                */
     }
 }

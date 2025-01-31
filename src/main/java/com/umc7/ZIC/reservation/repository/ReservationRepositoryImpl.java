@@ -3,7 +3,7 @@ package com.umc7.ZIC.reservation.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.umc7.ZIC.reservation.domain.QReservation;
 import com.umc7.ZIC.reservation.domain.Reservation;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +27,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .selectFrom(qReservation)
                 .where(
                         qReservation.practiceRoomDetail.id.eq(practiceRoomDetailId),
-                        qReservation.status.eq(Status.SUCCESS),
+                        qReservation.status.eq(ReservationStatus.SUCCESS),
                         qReservation.date.eq(date),
                         qReservation.startTime.goe(startTime).and(qReservation.startTime.lt(endTime))
                                 .or(qReservation.endTime.gt(startTime).and(qReservation.endTime.loe(endTime)))

@@ -68,7 +68,6 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
     }
 
     //연습실 단일 조회
-    // TODO : Long room_id,Long practiceRoomId 연습실과 내부 방 2종류의 id를 받는 이유가 뭔가요?
     @Override
     public PracticeRoomDetailResponseDto.GetResponseDto getPracticeRoomDetail(Long practiceRoomDetailId) {
 

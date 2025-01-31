@@ -3,7 +3,7 @@ package com.umc7.ZIC.reservation.validation.validator;
 import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.handler.ReservationHandler;
 import com.umc7.ZIC.reservation.domain.Reservation;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.service.ReservationQueryService;
 import com.umc7.ZIC.reservation.validation.annotation.CheckReservationStatus;
 import jakarta.validation.ConstraintValidator;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ReservationStatusCheckValidator implements ConstraintValidator<CheckReservationStatus, Long> {
     private final ReservationQueryService reservationQueryService;
-    private Status statusFromAnnotation;
+    private ReservationStatus statusFromAnnotation;
 
     @Override
     public void initialize(CheckReservationStatus constraintAnnotation) {

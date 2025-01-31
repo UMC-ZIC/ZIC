@@ -1,7 +1,7 @@
 package com.umc7.ZIC.reservation.repository;
 
 import com.umc7.ZIC.reservation.domain.Reservation;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +19,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
      * @param pageRequest
      * @return
      */
-    Page<Reservation> findAllByUserIdAndDateAndStatus(Long user_id, LocalDate date, Status status, PageRequest pageRequest);
+    Page<Reservation> findAllByUserIdAndDateAndStatus(Long user_id, LocalDate date, ReservationStatus status, PageRequest pageRequest);
 
     /**
      * 특정 status를 갖고 있고 생성된지 일정 시간이 지난 예약 목록을 조회하는 Repository
@@ -27,5 +27,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
      * @param date
      * @return
      */
-    List<Reservation> findByStatusAndCreatedAtBefore(Status status, LocalDateTime date);
+    List<Reservation> findByStatusAndCreatedAtBefore(ReservationStatus status, LocalDateTime date);
 }

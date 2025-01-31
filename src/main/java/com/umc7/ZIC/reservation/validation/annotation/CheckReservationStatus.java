@@ -1,6 +1,6 @@
 package com.umc7.ZIC.reservation.validation.annotation;
 
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.validation.validator.ReservationStatusCheckValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 
 /**
  * 해당 예약의 상태가 value를 통해 입력한 값과 같은지 검증
- * value - Status.PENDING 또는 Status.SUCCESS만 입력
+ * value - ReservationStatus.PENDING 또는 ReservationStatus.SUCCESS만 입력
  */
 @Documented
 @Constraint(validatedBy = ReservationStatusCheckValidator.class)
@@ -21,5 +21,5 @@ public @interface CheckReservationStatus {
     Class<? extends Payload>[] payload() default {};
     
     // Status 값 받아오기
-    Status value();
+    ReservationStatus value();
 }

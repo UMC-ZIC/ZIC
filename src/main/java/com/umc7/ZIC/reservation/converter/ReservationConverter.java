@@ -3,7 +3,7 @@ package com.umc7.ZIC.reservation.converter;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import com.umc7.ZIC.reservation.domain.Reservation;
 import com.umc7.ZIC.reservation.domain.ReservationDetail;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.dto.PaymentResponseDTO;
 import com.umc7.ZIC.reservation.dto.ReservationRequestDTO;
 import com.umc7.ZIC.reservation.dto.ReservationResponseDTO;
@@ -38,7 +38,7 @@ public class ReservationConverter {
      * @param status
      * @return
      */
-    public static Reservation toReservationToggle(Reservation reservation, Status status) {
+    public static Reservation toReservationToggle(Reservation reservation, ReservationStatus status) {
         return reservation.toggleStatus(status);
     }
 
@@ -48,7 +48,7 @@ public class ReservationConverter {
      * @param status
      * @return
      */
-    public static List<Reservation> toReservationListToggle(List<Reservation> reservationList, Status status) {
+    public static List<Reservation> toReservationListToggle(List<Reservation> reservationList, ReservationStatus status) {
         return reservationList.stream().map(reservation -> toReservationToggle(reservation, status)).toList();
     }
 

@@ -9,7 +9,7 @@ import com.umc7.ZIC.practiceRoom.repository.PracticeRoomDetailRepository;
 import com.umc7.ZIC.reservation.converter.KakaoPayConverter;
 import com.umc7.ZIC.reservation.converter.ReservationConverter;
 import com.umc7.ZIC.reservation.domain.Reservation;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.dto.PaymentRequestDTO;
 import com.umc7.ZIC.reservation.dto.PaymentResponseDTO;
 import com.umc7.ZIC.reservation.dto.ReservationRequestDTO;
@@ -111,7 +111,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
                 PaymentResponseDTO.KakaoPaymentCancelResponseDTO.class
         );
 
-        Reservation toggleReservation = ReservationConverter.toReservationToggle(reservation, Status.CANCEL);
+        Reservation toggleReservation = ReservationConverter.toReservationToggle(reservation, ReservationStatus.CANCEL);
         Reservation newReservation = reservationRepository.save(toggleReservation);
 
         return ReservationConverter.toReservationDTO(kakaoPaymentCancelResponseDTO, ReservationConverter.toReservationResult(newReservation));
