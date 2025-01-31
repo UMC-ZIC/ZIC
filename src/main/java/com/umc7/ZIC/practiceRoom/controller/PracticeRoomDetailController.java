@@ -16,7 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/practice-rooms/{practiceRoomId}")
+@RequestMapping("/api/practice-room-details")
 @RequiredArgsConstructor
 @Tag(name = "연습실 내부 방", description = "연습실 내부 방 CRUD")
 public class PracticeRoomDetailController {
@@ -25,11 +25,11 @@ public class PracticeRoomDetailController {
     private final JwtTokenProvider jwtTokenProvider;
 
     //연습실 내부 방 등록
-    @PostMapping("/rooms")
+    @PostMapping
     @Operation(summary = "연습실 내부 방 등록 API", description = "연습실에 연습방을 등록할때 사용하는 API.")
     public ApiResponse<PracticeRoomDetailResponseDto.CreateResponseDto> createPracticeRoomDetail(
             @RequestBody @Valid PracticeRoomDetailRequestDto.CreateRequestDetailDto createRequest,
-            @PathVariable Long practiceRoomId) {
+            @RequestParam("practiceRoomId") Long practiceRoomId) {
 
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
             throw new UserHandler(ErrorStatus._UNAUTHORIZED);
@@ -41,53 +41,50 @@ public class PracticeRoomDetailController {
     }
 
     //연습실 내부 방 목록 조회
-    @GetMapping("/rooms")
+    @GetMapping
     @Operation(summary = "연습실 내부 방 목록 조회 API", description = "연습실 내부 방 목록을 조회하는API.")
     public ApiResponse<Page<PracticeRoomDetailResponseDto.GetResponseDto>> getPracticeRoomDetailList(
             @ModelAttribute PageRequestDto request,
-            @PathVariable Long practiceRoomId) {
+            @RequestParam("practiceRoomId") Long practiceRoomId) {
         Page<PracticeRoomDetailResponseDto.GetResponseDto> response = practiceRoomDetailService.getPracticeRoomDetailList(request, practiceRoomId);
         return ApiResponse.onSuccess(response);
     }
 
     //연습실 내부 방 단일 조회
-    @GetMapping("/rooms/{roomId}")
+    @GetMapping("/{practiceRoomDetailId}")
     @Operation(summary = "연습실 내부 방 단일 조회 API", description = "연습실 내부 방을 단일 조회하는 API.")
     public ApiResponse<PracticeRoomDetailResponseDto.GetResponseDto> getPracticeRoomDetail(
-            @PathVariable Long roomId,
-            @PathVariable Long practiceRoomId) {
-        PracticeRoomDetailResponseDto.GetResponseDto response = practiceRoomDetailService.getPracticeRoomDetail(roomId, practiceRoomId);
+            @PathVariable Long practiceRoomDetailId) {
+        PracticeRoomDetailResponseDto.GetResponseDto response = practiceRoomDetailService.getPracticeRoomDetail(practiceRoomDetailId);
         return ApiResponse.onSuccess(response);
     }
 
     //연습실 내부 방 정보 수정
-    @PatchMapping("/rooms/{roomId}")
+    @PatchMapping("/{practiceRoomDetailId}")
     @Operation(summary = "연습실 내부 방 정보 수정 API", description = "연습실 내부 방 정보를 수정하는 API.")
     public ApiResponse<PracticeRoomDetailResponseDto.UpdateResponseDto> updatePracticeRoomDetail(
             @RequestBody @Valid PracticeRoomDetailRequestDto.UpdateRequestDetailDto updateRequest,
-            @PathVariable Long practiceRoomId,
-            @PathVariable Long roomId) {
+            @PathVariable Long practiceRoomDetailId) {
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
             throw new UserHandler(ErrorStatus._UNAUTHORIZED);
         }
 
         Long userId = jwtTokenProvider.getUserIdFromToken();
-        PracticeRoomDetailResponseDto.UpdateResponseDto response = practiceRoomDetailService.updatePracticeRoomDetail(updateRequest, practiceRoomId, roomId, userId);
+        PracticeRoomDetailResponseDto.UpdateResponseDto response = practiceRoomDetailService.updatePracticeRoomDetail(updateRequest, practiceRoomDetailId, userId);
         return ApiResponse.onSuccess(response);
     }
 
     //연습실 내부 방 삭제
-    @DeleteMapping("/rooms/{roomId}")
+    @DeleteMapping("/{practiceRoomDetailId}")
     @Operation(summary = "연습실 내부 방 삭제 API", description = "연습실 내부 방을 삭제하는 API.")
     public ApiResponse<Void> deletePracticeRoomDetail(
-            @PathVariable Long practiceRoomId,
-            @PathVariable Long roomId) {
+            @PathVariable Long practiceRoomDetailId) {
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
             throw new UserHandler(ErrorStatus._UNAUTHORIZED);
         }
 
         Long userId = jwtTokenProvider.getUserIdFromToken();
-        practiceRoomDetailService.deletePracticeRoomDetail(practiceRoomId, roomId, userId);
+        practiceRoomDetailService.deletePracticeRoomDetail(practiceRoomDetailId, userId);
         return ApiResponse.onSuccess(null);
     }
 }
