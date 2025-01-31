@@ -16,8 +16,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI UMCstudyAPI() {
         Info info = new Info()
-                .title("UMC Server WorkBook API")
-                .description("UMC Server WorkBook API 명세서")
+                .title("Zic Server API")
+                .description("Zic Server API 명세서")
                 .version("1.0.0");
 
         String jwtSchemeName = "JWT TOKEN";
@@ -27,9 +27,9 @@ public class SwaggerConfig {
         Components components = new Components()
                 .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
                         .name(jwtSchemeName)
-                        .type(SecurityScheme.Type.HTTP) // HTTP 방식
-                        .scheme("bearer")
-                        .bearerFormat("JWT"));
+                        .type(SecurityScheme.Type.APIKEY) // APIKEY 방식
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization"));
 
         return new OpenAPI()
                 .addServersItem(new Server().url("/"))
