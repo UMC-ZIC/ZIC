@@ -1,11 +1,8 @@
 package com.umc7.ZIC.user.controller;
 
-import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.ApiResponse;
-import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.converter.UserConverter;
-import com.umc7.ZIC.user.domain.enums.RoleType;
 import com.umc7.ZIC.user.dto.UserRequestDto;
 import com.umc7.ZIC.user.dto.UserResponseDto;
 import com.umc7.ZIC.user.service.UserService;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,12 +40,6 @@ public class OwnerController {
     public ApiResponse<UserResponseDto.OwnerEarningDTO> ownerJWTRevenue(
             @RequestParam(name = "date") LocalDate date
     ) {
-        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
-            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
-        } else if (!Objects.equals(jwtTokenProvider.getUserTypeFromToken(), RoleType.OWNER.name())) {
-            throw new UserHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
-        }
-
         Long userId = jwtTokenProvider.getUserIdFromToken();
         List<UserResponseDto.OwnerEarning> ownerEarningList = userService.getOwnerEarnings(userId, date);
         List<UserResponseDto.OwnerMonthlyEarning> ownerMonthlyEarningList = userService.getOwnerMonthlyEarnings(userId);

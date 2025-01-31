@@ -1,6 +1,6 @@
 package com.umc7.ZIC.reservation.dto;
 
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ public class ReservationResponseDTO {
             String reservationNumber,
             Long practiceRoomDetail,
             Long user,
-            Status status,
+            ReservationStatus status,
             LocalDate date,
             LocalTime startTime,
             LocalTime endTime
@@ -60,7 +60,7 @@ public class ReservationResponseDTO {
                 String reservationNumber,
                 PracticeRoomDTO practiceRoom,
                 PracticeRoomDetailDTO practiceRoomDetail,
-                Status status,
+                ReservationStatus status,
                 Long user,
                 LocalDate date,
                 LocalTime startTime,

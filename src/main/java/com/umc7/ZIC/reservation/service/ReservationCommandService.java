@@ -2,9 +2,13 @@ package com.umc7.ZIC.reservation.service;
 
 import com.umc7.ZIC.reservation.domain.Reservation;
 import com.umc7.ZIC.reservation.domain.ReservationDetail;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.dto.PaymentRequestDTO;
 import com.umc7.ZIC.reservation.dto.PaymentResponseDTO;
 import com.umc7.ZIC.reservation.dto.ReservationRequestDTO;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ReservationCommandService {
 
@@ -23,4 +27,12 @@ public interface ReservationCommandService {
      * @return ReservationDetail
      */
     ReservationDetail registReservationDetail(PaymentRequestDTO.KakaoPaymentApproveRequestDTO requestDTO, PaymentResponseDTO.KakaoPaymentApproveResponseDTO responseDTO);
+
+    /**
+     * 예약 엔티티에서 Status가 PENDING인 데이터들을 FAIL로 변경하는 Service
+     * @param time 생성된 시간으로 현재 시간 차이가 time 이상일 경우 변경
+     * @param status 변경할 Status
+     * @return
+     */
+    List<Reservation> reservationToggleStatus(LocalDateTime time, ReservationStatus status);
 }

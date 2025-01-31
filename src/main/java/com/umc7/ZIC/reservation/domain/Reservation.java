@@ -3,7 +3,7 @@ package com.umc7.ZIC.reservation.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.umc7.ZIC.common.domain.BaseEntity;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
-import com.umc7.ZIC.reservation.domain.enums.Status;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,7 +40,7 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     @Column(columnDefinition = "VARCHAR(15) DEFAULT 'PENDING'", length = 15)
-    private Status status = Status.PENDING;
+    private ReservationStatus status = ReservationStatus.PENDING;
 
     // 예약 날짜
     @Column(nullable = false)
@@ -59,4 +59,10 @@ public class Reservation extends BaseEntity {
     // 양방향 연결
     @OneToOne(mappedBy = "reservation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ReservationDetail reservationDetail;
+
+    // Status 변경
+    public Reservation toggleStatus(ReservationStatus status) {
+        this.status = status;
+        return this;
+    }
 }
