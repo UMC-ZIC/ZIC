@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 public interface PracticeRoomService {
 
     // 연습실 등록
-    PracticeRoomResponseDto.CreateResponseDto createPracticeRoom(PracticeRoomRequestDto.CreateRequestDto request, Long userId, Long regionId);
+    PracticeRoomResponseDto.CreateResponseDto createPracticeRoom(PracticeRoomRequestDto.CreateRequestDto request, Long userId);
     // 연습실 수정
     PracticeRoomResponseDto.UpdateResponseDto updatePracticeRoom(PracticeRoomRequestDto.UpdateRequestDto request, Long practiceRoomId, Long userId);
     // 연습실 삭제
