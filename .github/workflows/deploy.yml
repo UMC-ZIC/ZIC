@@ -54,9 +54,8 @@ jobs:
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          cat private_key.pem
           echo "$EC2_SSH_KEY" > private_key.pem
-          echo "EC2_SSH_KEY length: ${#EC2_SSH_KEY}"
+          cat private_key.pem
           chmod 600 private_key.pem
           jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)
           scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/umc7thServer.jar
