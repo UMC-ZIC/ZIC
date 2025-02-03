@@ -59,10 +59,8 @@ jobs:
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          curl -s https://api.github.com/meta | jq -r '.actions[]'
           echo "Step 1: Creating private_key.pem"
           echo "$EC2_SSH_KEY" > private_key.pem
-          cat $EC2_SSH_KEY
           echo "$EC2_USERNAME"
           echo "$EC2_HOST"
           chmod 600 private_key.pem
