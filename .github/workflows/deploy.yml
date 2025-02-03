@@ -43,39 +43,37 @@ jobs:
           path: build/libs/*.jar
 
   deploy:
-    needs: build  # 'build' 작업이 끝난 후 실행되도록 설정
-    runs-on: ubuntu-latest  # GitHub Actions에서 사용할 실행 환경 (Ubuntu 사용)
+    needs: build  # build 작업이 성공적으로 완료된 후 실행
+    runs-on: ubuntu-latest
 
     steps:
-      # 4단계: EC2에 JAR 파일을 업로드하고 새로운 버전 실행
-      - name: Deploy to EC2
+      - name: Download build artifact  # 이전 단계에서 업로드한 아티팩트 다운로드
+        uses: actions/download-artifact@v4
+        with:
+          name: umc7thServer
+          path: build/libs/
+
+      - name: Deploy to EC2  # EC2에 배포
         env:
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}  # GitHub secrets에 저장된 SSH 키
-          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}  # EC2 사용자 이름
-          EC2_HOST: ${{ secrets.EC2_HOST }}  # EC2 호스트 주소 (IP)
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          # 1) SSH 키 파일 생성 (GitHub secrets에서 가져온 SSH 키)
           echo "Step 1: Creating private_key.pem"
           echo "$EC2_SSH_KEY" > private_key.pem
-          chmod 600 private_key.pem  # 보안 설정: private_key.pem 파일에 대한 읽기 권한만 부여
-  
-          # 2) 빌드된 JAR 파일 찾기
+          chmod 600 private_key.pem
+          
           echo "Step 2: Finding the JAR file"
-          jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)  # 'plain.jar' 파일 제외
-  
-          # 3) JAR 파일을 EC2로 업로드
+          jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)
+          
           echo "Step 3: Uploading the JAR file to EC2"
           scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/umc7thServer.jar
-  
-          # 4) EC2에서 기존 Java 프로세스를 종료하고 새 버전 실행
+          
           echo "Step 4: Stopping old Java process and starting new one"
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
-            source ~/.bashrc  # .bashrc 파일을 소스하여 환경변수 적용
-            pgrep java | xargs -r kill -15  # 기존 실행 중인 Java 프로세스 종료
-            sleep 10  # 잠시 대기
-            nohup java -jar /home/$EC2_USERNAME/umc7thServer.jar > app.log 2>&1 &  # 새 버전 실행 (백그라운드에서 실행)
+            pgrep java | xargs -r kill -15  # 기존에 실행 중인 Java 프로세스 종료
+            sleep 10
+            nohup java -jar /home/$EC2_USERNAME/umc7thServer.jar > app.log 2>&1 &  # 새 버전 애플리케이션 실행
           "
-          
-          # 5) 민감한 정보를 안전하게 삭제 (private_key.pem 파일)
-          echo "Step 5: Delete Key File"
-          rm -f private_key.pem  # SSH 키 파일 삭제
+          echo "Step 5: Cleaning up"
+          rm -f private_key.pem  # 민감한 정보 삭제
