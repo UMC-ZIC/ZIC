@@ -49,9 +49,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 카카오 계정에서 이메일 추출
         Map<String, Object> kakaoAccount;
         String email;
+        String nickname;
         try {
             kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
             email = (String) kakaoAccount.get("email");
+            nickname = (String) ((Map<String, Object>) kakaoAccount.get("profile")).get("nickname");
             if (email == null) {
                 throw new OAuth2AuthenticationException(new OAuth2Error("missing_email", "이메일을 찾을 수 없습니다.", null));
             }
@@ -59,9 +61,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             log.error("NullPointerException 발생: {}", e.getMessage());
             throw new OAuth2AuthenticationException(new OAuth2Error("missing_kakao_account", "카카오 계정 정보를 찾을 수 없습니다.", null), e);
         }
-
+        log.info(nickname);
         // 카카오 아이디로 User 조회 및 가입.
-        User user = saveOrUpdateUser(kakaoId, email);
+        User user = saveOrUpdateUser(kakaoId, email, nickname);
 
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole().name());
@@ -70,6 +72,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> modifiedAttributes = new HashMap<>(attributes);
         modifiedAttributes.put("email", email);
         modifiedAttributes.put("jwtToken", jwtToken); // JWT 토큰 추가
+        modifiedAttributes.put("nickname", nickname); // 닉네임 추가
 
         // DefaultOAuth2User 대신 CustomOAuth2User 객체 반환
         return new CustomOAuth2User(
@@ -80,12 +83,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         );
     }
 
-    private User saveOrUpdateUser(Long kakaoId, String email) {
+    private User saveOrUpdateUser(Long kakaoId, String email, String nickname) {
         return userRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> {
                     // 새로운 사용자 등록
                     User newUser = User.builder()
-                            .name("임시이름") // 임시 이름
+                            .name(nickname) // 임시 이름
                             .kakaoId(kakaoId)
                             .email(email)
                             .role(RoleType.PENDING) // 기본 역할을 PENDING으로 설정
