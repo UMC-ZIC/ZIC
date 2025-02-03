@@ -1,9 +1,13 @@
 name: CI/CD Pipeline
 
+#on:
+#  pull_request:
+#    branches: [ main ]
+#    types: [ closed ]  # main 브랜치에 PR 병합될 때 실행
+
 on:
-  pull_request:
-    branches: [ main ]
-    types: [ closed ]  # main 브랜치에 PR 병합될 때 실행
+  push:
+    branches: [ develop ]  # develop 브랜치에 push가 일어날 때 실행
 
 jobs:
   build:
