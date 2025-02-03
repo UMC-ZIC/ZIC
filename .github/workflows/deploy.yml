@@ -7,7 +7,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ develop ]  # develop 브랜치에 push가 일어날 때 실행
+    branches: [ test#63-aws-test ]  # develop 브랜치에 push가 일어날 때 실행
 
 jobs:
   build:
@@ -45,31 +45,8 @@ jobs:
   deploy:
     needs: build  # 'build' 작업이 끝난 후 실행되도록 설정
     runs-on: ubuntu-latest  # GitHub Actions에서 사용할 실행 환경 (Ubuntu 사용)
-  
+
     steps:
-      # 1단계: AWS CLI 설치
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update  # 패키지 목록 갱신
-          sudo apt-get install -y awscli  # AWS CLI 설치
-  
-      # 2단계: GitHub Actions IP 주소 확인
-      - name: Get GitHub Actions IP
-        id: get_ip  # 이 단계를 통해 IP를 추출하고, 나중에 다른 단계에서 사용할 수 있도록 저장
-        run: |
-          IP=$(curl -s https://api.github.com/meta | jq -r '.actions[]' | head -n 1)  # GitHub Actions IP 추출
-          echo "GITHUB_IP=$IP" >> $GITHUB_ENV  # 추출된 IP를 환경 변수로 설정하여 이후 단계에서 사용
-  
-      # 3단계: GitHub Actions IP를 EC2 보안 그룹에 추가 (SSH 허용)
-      - name: Allow SSH from GitHub Actions
-        env:
-          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}  # GitHub secrets에 저장된 보안 그룹 ID 사용
-        run: |
-          # 보안 그룹에 GitHub Actions IP를 추가하여 SSH 연결 허용 (포트 22)
-          aws ec2 authorize-security-group-ingress \
-            --group-id $SECURITY_GROUP_ID \
-            --protocol tcp --port 22 --cidr $GITHUB_IP/32  # 32는 단일 IP를 의미 (CIDR 표기법)
-  
       # 4단계: EC2에 JAR 파일을 업로드하고 새로운 버전 실행
       - name: Deploy to EC2
         env:
@@ -100,17 +77,5 @@ jobs:
           "
           
           # 5) 민감한 정보를 안전하게 삭제 (private_key.pem 파일)
+          echo "Step 5: Delete Key File"
           rm -f private_key.pem  # SSH 키 파일 삭제
-  
-      # 5단계: GitHub Actions IP를 EC2 보안 그룹에서 제거 (보안 강화)
-      - name: Remove GitHub Actions IP from Security Group
-        if: always()  # 항상 실행되도록 설정 (성공/실패와 관계없이 실행)
-        env:
-          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}  # 보안 그룹 ID
-        run: |
-          # GitHub Actions IP를 보안 그룹에서 제거하여 보안을 강화
-          echo "Step 5: Delete CitHub Action IP in Security Group"
-          aws ec2 revoke-security-group-ingress \
-            --group-id $SECURITY_GROUP_ID \
-            --protocol tcp --port 22 --cidr $GITHUB_IP/32  # 추가했던 IP를 삭제
-

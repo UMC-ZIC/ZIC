@@ -35,15 +35,15 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     private final ReservationRepository reservationRepository;
 
     // KaKao Pay 가맹점 테스트 코드 : TC0ONETIME
-    @Value("${KAKAO_PAY_CID}")
+    @Value("${KAKAO_PAY.CID}")
     private String cid;
 
     // KaKao Pay Secret_Key_DEV
-    @Value("${KAKAO_PAY_SECRET_KEY}")
+    @Value("${KAKAO_PAY.SECRET_KEY}")
     private String secret_Key_Dev;
 
     // KaKao Pay Redirect URL
-    @Value("${KAKAO_PAY_REDIRECT_URL}")
+    @Value("${KAKAO_PAY.REDIRECT_URL}")
     private String kakaoPayRedirectUrl;
 
     @Override

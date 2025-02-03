@@ -39,6 +39,11 @@ spring:
 jwt:
   secret: ${JWT_SECRET_KEY}
 
+KAKAO_PAY:
+  CID: ${KAKAO_PAY_CID}
+  REDIRECT_URL: ${KAKAO_PAY_REDIRECT_URL}
+  SECRET_KEY: ${KAKAO_PAY_SECRET_KEY}
+
 logging:
   level:
     root: INFO #
