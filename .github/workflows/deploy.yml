@@ -55,6 +55,7 @@ jobs:
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
+          echo "EC2_SSH_KEY length: ${#EC2_SSH_KEY}"
           echo "Step 1: Creating private_key.pem"
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
