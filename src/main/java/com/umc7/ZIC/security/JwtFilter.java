@@ -25,7 +25,7 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         // 헤더에서 JWT 를 받아 옴
         String token = jwtTokenProvider.resolveAccessToken();
-        log.info("헤더 토큰"+token);
+        // log.info("헤더 토큰"+token);
         // 여기서 예외 발생시 securityconfig에서 설정한 다음 필터 체인인 ExceptionHandlerFilter으로 바로 넘어감.
 
         // 유효 토큰 확인
