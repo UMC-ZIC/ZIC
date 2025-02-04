@@ -11,11 +11,12 @@ public record PracticeRoomResponseDto() {
             Long practiceRoomId,
             String name,
             String address,
+            String image,
             LocalDateTime createdAt
 
     ) {
         public static CreateResponseDto from(PracticeRoom practiceRoom) {
-            return new CreateResponseDto(practiceRoom.getId(), practiceRoom.getName(), practiceRoom.getAddress(), practiceRoom.getCreatedAt());
+            return new CreateResponseDto(practiceRoom.getId(), practiceRoom.getName(), practiceRoom.getAddress(), practiceRoom.getImage(), practiceRoom.getCreatedAt());
         }
     }
     /**
@@ -25,6 +26,7 @@ public record PracticeRoomResponseDto() {
             Long practiceRoomId,
             String name,
             String address,
+            String image,
             Double latitude, // 위도
             Double longitude, // 경도
             RegionType region, // 지역 (Region 엔티티의 regionName)
@@ -32,7 +34,7 @@ public record PracticeRoomResponseDto() {
     ) {
 
         public static UpdateResponseDto from(PracticeRoom practiceRoom) {
-            return new UpdateResponseDto(practiceRoom.getId(), practiceRoom.getName(), practiceRoom.getAddress(), practiceRoom.getLatitude(), practiceRoom.getLongitude(), practiceRoom.getRegion().getName(), practiceRoom.getUpdatedAt());
+            return new UpdateResponseDto(practiceRoom.getId(), practiceRoom.getName(), practiceRoom.getAddress(), practiceRoom.getImage(), practiceRoom.getLatitude(), practiceRoom.getLongitude(), practiceRoom.getRegion().getName(), practiceRoom.getUpdatedAt());
         }
     }
 
@@ -43,6 +45,7 @@ public record PracticeRoomResponseDto() {
             Long practiceRoomId, // 연습실 ID
             String name, // 연습실 이름
             String address, // 연습실 주소
+            String image, //연습실 image url
             Double latitude, // 위도
             Double longitude, // 경도
             RegionType region, // 지역 (Region 엔티티의 regionName)
@@ -55,6 +58,7 @@ public record PracticeRoomResponseDto() {
                     practiceRoom.getId(),
                     practiceRoom.getName(),
                     practiceRoom.getAddress(),
+                    practiceRoom.getImage(),
                     practiceRoom.getLatitude(),
                     practiceRoom.getLongitude(),
                     practiceRoom.getRegion().getName(),
