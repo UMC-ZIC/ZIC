@@ -17,6 +17,7 @@ public record PracticeRoomRequestDto(
             String name,
             @NotBlank(message = "주소는 필수입니다.")
             String address,
+            String image,
             @NotNull(message = "위도는 필수입니다.")
             @Min(value = -90, message = "위도는 -90 이상이어야 합니다.")
             @Max(value = 90, message = "위도는 90 이하여야 합니다.")
@@ -31,6 +32,7 @@ public record PracticeRoomRequestDto(
             return PracticeRoom.builder()
                     .user(user)
                     .region(region)
+                    .image(image)
                     .name(this.name)
                     .address(this.address)
                     .latitude(this.latitude)
@@ -41,6 +43,7 @@ public record PracticeRoomRequestDto(
         public record UpdateRequestDto(
                 String name,
                 String address,
+                String image,
                 @Min(value = -90, message = "위도는 -90 이상이어야 합니다.")
                 @Max(value = 90, message = "위도는 90 이하여야 합니다.")
                 Double latitude,
