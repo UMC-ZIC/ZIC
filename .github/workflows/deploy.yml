@@ -1,13 +1,11 @@
 name: CI/CD Pipeline
 
-#on:
-#  pull_request:
-#    branches: [ main ]
-#    types: [ closed ]  # main 브랜치에 PR 병합될 때 실행
-
 on:
-  push:
-    branches: [ develop ]  # develop 브랜치에 push가 일어날 때 실행
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]  # main 브랜치에 PR 병합될 때 실행
+  #push:
+  #  branches: [ develop ]  # develop 브랜치에 push가 일어날 때 실행
 
 jobs:
   build:
@@ -39,78 +37,41 @@ jobs:
       - name: Upload build artifact  # 빌드된 아티팩트 업로드
         uses: actions/upload-artifact@v4
         with:
-          name: umc7thServer
+          name: zic
           path: build/libs/*.jar
 
   deploy:
-    needs: build  # 'build' 작업이 끝난 후 실행되도록 설정
-    runs-on: ubuntu-latest  # GitHub Actions에서 사용할 실행 환경 (Ubuntu 사용)
-  
+    needs: build  # build 작업이 성공적으로 완료된 후 실행
+    runs-on: ubuntu-latest
+
     steps:
-      # 1단계: AWS CLI 설치
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update  # 패키지 목록 갱신
-          sudo apt-get install -y awscli  # AWS CLI 설치
-  
-      # 2단계: GitHub Actions IP 주소 확인
-      - name: Get GitHub Actions IP
-        id: get_ip  # 이 단계를 통해 IP를 추출하고, 나중에 다른 단계에서 사용할 수 있도록 저장
-        run: |
-          IP=$(curl -s https://api.github.com/meta | jq -r '.actions[]' | head -n 1)  # GitHub Actions IP 추출
-          echo "GITHUB_IP=$IP" >> $GITHUB_ENV  # 추출된 IP를 환경 변수로 설정하여 이후 단계에서 사용
-  
-      # 3단계: GitHub Actions IP를 EC2 보안 그룹에 추가 (SSH 허용)
-      - name: Allow SSH from GitHub Actions
+      - name: Download build artifact  # 이전 단계에서 업로드한 아티팩트 다운로드
+        uses: actions/download-artifact@v4
+        with:
+          name: zic
+          path: build/libs/
+
+      - name: Deploy to EC2  # EC2에 배포
         env:
-          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}  # GitHub secrets에 저장된 보안 그룹 ID 사용
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          # 보안 그룹에 GitHub Actions IP를 추가하여 SSH 연결 허용 (포트 22)
-          aws ec2 authorize-security-group-ingress \
-            --group-id $SECURITY_GROUP_ID \
-            --protocol tcp --port 22 --cidr $GITHUB_IP/32  # 32는 단일 IP를 의미 (CIDR 표기법)
-  
-      # 4단계: EC2에 JAR 파일을 업로드하고 새로운 버전 실행
-      - name: Deploy to EC2
-        env:
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}  # GitHub secrets에 저장된 SSH 키
-          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}  # EC2 사용자 이름
-          EC2_HOST: ${{ secrets.EC2_HOST }}  # EC2 호스트 주소 (IP)
-        run: |
-          # 1) SSH 키 파일 생성 (GitHub secrets에서 가져온 SSH 키)
           echo "Step 1: Creating private_key.pem"
           echo "$EC2_SSH_KEY" > private_key.pem
-          chmod 600 private_key.pem  # 보안 설정: private_key.pem 파일에 대한 읽기 권한만 부여
-  
-          # 2) 빌드된 JAR 파일 찾기
+          chmod 600 private_key.pem
+          
           echo "Step 2: Finding the JAR file"
-          jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)  # 'plain.jar' 파일 제외
-  
-          # 3) JAR 파일을 EC2로 업로드
+          jar_file=$(find build/libs -name '*.jar' ! -name '*plain.jar' | head -n 1)
+          
           echo "Step 3: Uploading the JAR file to EC2"
-          scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/umc7thServer.jar
-  
-          # 4) EC2에서 기존 Java 프로세스를 종료하고 새 버전 실행
+          scp -i private_key.pem -o StrictHostKeyChecking=no "$jar_file" $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/zic.jar
+          
           echo "Step 4: Stopping old Java process and starting new one"
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
-            source ~/.bashrc  # .bashrc 파일을 소스하여 환경변수 적용
-            pgrep java | xargs -r kill -15  # 기존 실행 중인 Java 프로세스 종료
-            sleep 10  # 잠시 대기
-            nohup java -jar /home/$EC2_USERNAME/umc7thServer.jar > app.log 2>&1 &  # 새 버전 실행 (백그라운드에서 실행)
+            pgrep java | xargs -r kill -15  # 기존에 실행 중인 Java 프로세스 종료
+            sleep 10
+            nohup java -jar /home/$EC2_USERNAME/zic.jar > app.log 2>&1 &  # 새 버전 애플리케이션 실행
           "
-          
-          # 5) 민감한 정보를 안전하게 삭제 (private_key.pem 파일)
-          rm -f private_key.pem  # SSH 키 파일 삭제
-  
-      # 5단계: GitHub Actions IP를 EC2 보안 그룹에서 제거 (보안 강화)
-      - name: Remove GitHub Actions IP from Security Group
-        if: always()  # 항상 실행되도록 설정 (성공/실패와 관계없이 실행)
-        env:
-          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}  # 보안 그룹 ID
-        run: |
-          # GitHub Actions IP를 보안 그룹에서 제거하여 보안을 강화
-          echo "Step 5: Delete CitHub Action IP in Security Group"
-          aws ec2 revoke-security-group-ingress \
-            --group-id $SECURITY_GROUP_ID \
-            --protocol tcp --port 22 --cidr $GITHUB_IP/32  # 추가했던 IP를 삭제
-
+          echo "Step 5: Cleaning up"
+          rm -f private_key.pem  # 민감한 정보 삭제
