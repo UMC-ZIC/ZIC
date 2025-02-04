@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>KakaoPay Ready</title>
+        <script>
+            async function submitForm(event) {
+                event.preventDefault(); // 폼 기본 동작 방지
+
+                const formData = {
+                    reservationId: document.getElementById("reservationId").value,
+                    tid: document.getElementById("tid").value,
+                    partner_order_id: document.getElementById("partner_order_id").value,
+                    partner_user_id: document.getElementById("partner_user_id").value,
+                    pg_token: document.getElementById("pg_token").value
+                };
+
+                const response = await fetch('/api/reservation/payment/approve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert("결제가 승인되었습니다.");
+                } else {
+                    alert("결제 승인에 실패했습니다.");
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container" style="display: flex; justify-content: center; align-content: center; align-items: center; flex-direction: column; margin: 200px auto;">
+            <h1>카카오 결제 승인 요청</h1>
+
+            <form onsubmit="submitForm(event)">
+                <div>
+                    <label for="reservationId">DB상 예약 id</label>
+                    <input type="text" id="reservationId" name="reservationId" required/>
+                </div>
+
+                <div>
+                    <label for="tid">tid</label>
+                    <input type="text" id="tid" name="tid" required/>
+                </div>
+
+                <div>
+                    <label for="partner_order_id">Kakao 결제용 고유 번호</label>
+                    <input type="text" id="partner_order_id" name="partner_order_id" required/>
+                </div>
+
+                <div>
+                    <label for="pg_token">pg_token</label>
+                    <input type="text" id="pg_token" name="pg_token" required/>
+                </div>
+
+
+                <button type="submit">결제 승인하기</button>
+            </form>
+        </div>
+    </body>
+</html>
