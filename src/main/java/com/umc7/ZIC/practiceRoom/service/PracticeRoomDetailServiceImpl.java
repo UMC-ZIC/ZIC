@@ -146,7 +146,7 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
         // 30분 단위로 시간 슬롯을 확인
         while (startTime.isBefore(endTime)) {
             LocalTime currentStartTime = startTime;
-            LocalTime currentEndTime = startTime.plusMinutes(30);
+            LocalTime currentEndTime = startTime.plusHours(1);
             // 현재 시간 슬롯이 예약 가능한지 확인
             boolean isAvailable = true;
             for (Reservation reservation : reservations) {
@@ -167,7 +167,7 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
                 while (currentEndTime.isBefore(endTime)) {
                     boolean canExtend = true;
                     for (Reservation reservation : reservations) {
-                        if (currentEndTime.isBefore(reservation.getEndTime()) && currentEndTime.plusMinutes(30).isAfter(reservation.getStartTime())) {
+                        if (currentEndTime.isBefore(reservation.getEndTime()) && currentEndTime.plusHours(1).isAfter(reservation.getStartTime())) {
                             canExtend = false;
                             break;
                         }
@@ -181,7 +181,7 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
                 startTime = currentEndTime;
             } else {
                 // 다음 시간 슬롯으로 이동.
-                startTime = startTime.plusMinutes(30);
+                startTime = startTime.plusHours(1);
             }
         }
 
