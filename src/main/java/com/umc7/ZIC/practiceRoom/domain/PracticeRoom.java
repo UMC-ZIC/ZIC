@@ -37,6 +37,9 @@ public class PracticeRoom extends BaseEntity {
     @Column(length = 40, nullable = false)
     private String address;
 
+    @Column(length = 1000)
+    private String image;
+
     @Min(value = -90)
     @Max(value = 90)
     private Double latitude;
