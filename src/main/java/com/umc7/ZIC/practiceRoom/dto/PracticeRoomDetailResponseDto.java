@@ -7,21 +7,23 @@ import java.time.LocalDateTime;
 
 public record PracticeRoomDetailResponseDto() {
 
-    public record CreateResponseDto(
+    public record CreateDetailResponseDto(
             Long practiceRoomDetailId,
             String name,
+            Integer fee,
             LocalDateTime createdAt
     ) {
-        public static CreateResponseDto from(PracticeRoomDetail practiceRoomDetail) {
-            return new CreateResponseDto(
+        public static CreateDetailResponseDto from(PracticeRoomDetail practiceRoomDetail) {
+            return new CreateDetailResponseDto(
                     practiceRoomDetail.getId(),
                     practiceRoomDetail.getName(),
+                    practiceRoomDetail.getFee(),
                     practiceRoomDetail.getCreatedAt()
             );
         }
     }
 
-    public record GetResponseDto(
+    public record GetDetailResponseDto(
             Long practiceRoomDetailId,
             String name,
             String image,
@@ -30,8 +32,8 @@ public record PracticeRoomDetailResponseDto() {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        public static GetResponseDto from(PracticeRoomDetail practiceRoomDetail) {
-            return new GetResponseDto(
+        public static GetDetailResponseDto from(PracticeRoomDetail practiceRoomDetail) {
+            return new GetDetailResponseDto(
                     practiceRoomDetail.getId(),
                     practiceRoomDetail.getName(),
                     practiceRoomDetail.getImage(),
@@ -43,7 +45,7 @@ public record PracticeRoomDetailResponseDto() {
         }
     }
 
-    public record UpdateResponseDto(
+    public record UpdateDetailResponseDto(
             Long practiceRoomDetailId,
             String name,
             String image,
@@ -51,8 +53,8 @@ public record PracticeRoomDetailResponseDto() {
             RoomStatus status,
             LocalDateTime updatedAt
     ) {
-        public static UpdateResponseDto from(PracticeRoomDetail practiceRoomDetail) {
-            return new UpdateResponseDto(
+        public static UpdateDetailResponseDto from(PracticeRoomDetail practiceRoomDetail) {
+            return new UpdateDetailResponseDto(
                     practiceRoomDetail.getId(),
                     practiceRoomDetail.getName(),
                     practiceRoomDetail.getImage(),

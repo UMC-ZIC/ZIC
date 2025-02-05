@@ -18,7 +18,7 @@ public class PracticeRoomDetailStatusCheckValidator implements ConstraintValidat
     @Override
     public boolean isValid(Long aLong, ConstraintValidatorContext context) {
         try {
-            PracticeRoomDetailResponseDto.GetResponseDto practiceRoomDetail = practiceRoomDetailService.getPracticeRoomDetail(aLong);
+            PracticeRoomDetailResponseDto.GetDetailResponseDto practiceRoomDetail = practiceRoomDetailService.getPracticeRoomDetail(aLong);
 
             if (practiceRoomDetail.status() == RoomStatus.AVAILABLE) {
                 return true;
