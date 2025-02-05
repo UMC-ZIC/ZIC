@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
         saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
         updateAuthorities(user);
         PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
-                (savedUser.getName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null);
+                (savedUser.getName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
         practiceRoomService.createPracticeRoom(createPracticeReqDto, savedUser.getId());
         String jwtToken = jwtTokenProvider.createAccessToken(userId, RoleType.OWNER.name());
         return UserConverter.toRegisterUserDetails(user, jwtToken);
