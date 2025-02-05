@@ -9,6 +9,7 @@ import com.umc7.ZIC.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +18,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "대여자", description = "대여자 api")
 @RequestMapping("/api/owner")
 public class OwnerController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
     //추가정보 기입
+    @Operation(summary = "유저 회원가입 할 때 사용하는 API", description = "유저가 로그인 후 추가 정보 기입후 최종 가입 할 때 사용하는 API")
     @PatchMapping("/details")
     public ApiResponse<UserResponseDto.userDetailsDto> ownerDetails(@RequestBody UserRequestDto.ownerDetailsDto ownerRequestDto){
         Long userId = jwtTokenProvider.getUserIdFromToken();
