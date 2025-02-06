@@ -6,10 +6,7 @@ import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
-import com.umc7.ZIC.practiceRoom.dto.AvailableTimeSlot;
-import com.umc7.ZIC.practiceRoom.dto.PageRequestDto;
-import com.umc7.ZIC.practiceRoom.dto.PracticeRoomDetailRequestDto;
-import com.umc7.ZIC.practiceRoom.dto.PracticeRoomDetailResponseDto;
+import com.umc7.ZIC.practiceRoom.dto.*;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomDetailRepository;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomRepository;
 import com.umc7.ZIC.reservation.domain.Reservation;
@@ -63,15 +60,21 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
 
     //연습실 내부 방 목록 조회
     @Override
-    public Page<PracticeRoomDetailResponseDto.GetDetailResponseDto> getPracticeRoomDetailList(PageRequestDto request, Long practiceRoomId) {
+    public PageResponseDto<PracticeRoomDetailResponseDto.GetDetailResponseDto> getPracticeRoomDetailList(PageRequestDto request, Long practiceRoomId) {
 
+        //연습실이 있는지 확인
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
                 .orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
 
+        //PageRequestDto 객체로부터 Pageable 객체를 생성
         Pageable pageable = request.toPageable();
         Page<PracticeRoomDetail> practiceRoomDetailPage = practiceRoomDetailRepository.findAllByPracticeRoomId(practiceRoomId, pageable);
 
-        return practiceRoomDetailPage.map(PracticeRoomDetailResponseDto.GetDetailResponseDto::from);
+        // 조회된 내부 방 목록(Page<PracticeRoomDetail>)을 DTO 목록(Page<PracticeRoomDetailResponseDto.GetDetailResponseDto>)으로 변환.
+        Page<PracticeRoomDetailResponseDto.GetDetailResponseDto> practiceRoomDetailDtoPage = practiceRoomDetailPage.map(PracticeRoomDetailResponseDto.GetDetailResponseDto::from);
+
+        //DTO 목록(Page<DTO>)을 최종 응답 객체(PageResponseDto<DTO>)로 변환하여 반환.
+        return PageResponseDto.from(practiceRoomDetailDtoPage);
     }
 
     //연습실 단일 조회
