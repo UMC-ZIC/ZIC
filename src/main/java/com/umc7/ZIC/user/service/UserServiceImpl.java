@@ -11,6 +11,9 @@ import com.umc7.ZIC.common.repository.InstrumentRepository;
 import com.umc7.ZIC.common.repository.RegionRepository;
 import com.umc7.ZIC.common.util.InstrumentUtil;
 import com.umc7.ZIC.common.util.RegionUtil;
+import com.umc7.ZIC.practiceRoom.dto.PracticeRoomRequestDto;
+import com.umc7.ZIC.practiceRoom.service.PracticeRoomService;
+import com.umc7.ZIC.practiceRoom.service.PracticeRoomServiceImpl;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.converter.UserConverter;
 import com.umc7.ZIC.user.converter.UserInstrumentConverter;
@@ -44,6 +47,7 @@ public class UserServiceImpl implements UserService {
     private final RegionRepository regionRepository;
     private final UserInstrumentRepository userInstrumentRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PracticeRoomService practiceRoomService;
 
 
     @Override
@@ -101,6 +105,9 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
         updateAuthorities(user);
+        PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
+                (savedUser.getName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
+        practiceRoomService.createPracticeRoom(createPracticeReqDto, savedUser.getId());
         String jwtToken = jwtTokenProvider.createAccessToken(userId, RoleType.OWNER.name());
         return UserConverter.toRegisterUserDetails(user, jwtToken);
     }
