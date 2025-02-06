@@ -26,8 +26,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers( "/kakao-login/home","/kakao-login/page").permitAll()
-                        .requestMatchers("/api/user/details", "/api/owner/details").hasRole("PENDING")
+                        .requestMatchers( "/api/kakao/home","/api/kakao/page","/api/kakao/login/oauth2","/api/kakao/page").permitAll()
+                        .requestMatchers("/api/user/details", "/api/owner/details","/api/user/login").hasRole("PENDING")
                         .requestMatchers("/api/user/**").hasRole("USER")
                         .requestMatchers("/api/owner/**").hasRole("OWNER")
                         .requestMatchers("/api/reservation/**").hasAnyRole("USER", "OWNER")
@@ -41,8 +41,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
-                        .loginPage("/kakao-login/page")
-                        .defaultSuccessUrl("/kakao-login/success", true)
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/api/kakao/login/oauth2"))
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(customOAuth2UserService))
                         .successHandler(oAuth2AuthenticationSuccessHandler)
