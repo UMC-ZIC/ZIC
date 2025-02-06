@@ -113,11 +113,17 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
 
     //연습실 목록 조회
     @Override
-    public Page<PracticeRoomResponseDto.GetResponseDto> getPracticeRoomList(PageRequestDto request) {
+    public PageResponseDto<PracticeRoomResponseDto.GetResponseDto> getPracticeRoomList(PageRequestDto request) {
         try {
             Pageable pageable = request.toPageable();
             Page<PracticeRoom> practiceRoomPage = practiceRoomRepository.findAllPracticeRoom(pageable);
-            return practiceRoomPage.map(PracticeRoomResponseDto.GetResponseDto::from); // 메서드 레퍼런스 사용
+
+            // PracticeRoom 엔티티의 Page를 PracticeRoomResponseDto.GetResponseDto DTO의 Page로 변환,
+            // map() 메서드를 사용하여 각 PracticeRoom 객체를 PracticeRoomResponseDto.GetResponseDto 객체로 변환
+            Page<PracticeRoomResponseDto.GetResponseDto> practiceRoomDtoPage = practiceRoomPage.map(PracticeRoomResponseDto.GetResponseDto::from);
+
+            // PageResponseDto.from() 정적 팩토리 메서드를 사용하여 Page<DTO> 객체를 PageResponseDto<DTO> 객체로 변환
+            return PageResponseDto.from(practiceRoomDtoPage);
         } catch (Exception e) {
             log.error("getPracticeRoomList error: {}", e.getMessage());
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND);
