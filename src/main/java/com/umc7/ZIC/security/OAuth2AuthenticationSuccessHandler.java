@@ -3,7 +3,6 @@ package com.umc7.ZIC.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc7.ZIC.user.domain.User;
-import com.umc7.ZIC.user.domain.enums.RoleType;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +12,6 @@ import org.springframework.security.core.Authentication;
 
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,7 +29,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         try {
@@ -48,14 +46,15 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             response.setContentType(CONTENT_TYPE);
             response.setCharacterEncoding(CHARACTER_ENCODING);
 
-            Map<String, Object> responseBody = new HashMap<>();
-            responseBody.put("token", jwtToken);
-            responseBody.put("role", role);
-            responseBody.put("username", username); // 유저 이름 추가
-            responseBody.put("userId", userId); // 유저 ID Long 타입으로 추가
-
-            response.getWriter().write(objectMapper.writeValueAsString(responseBody));
-            response.getWriter().flush();
+            response.sendRedirect("http://localhost:3000/auth/"+jwtToken);
+//            Map<String, Object> responseBody = new HashMap<>();
+//            responseBody.put("token", jwtToken);
+//            responseBody.put("role", role);
+//            responseBody.put("username", username); // 유저 이름 추가
+//            responseBody.put("userId", userId); // 유저 ID Long 타입으로 추가
+//
+//            response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+//            response.getWriter().flush();
 
             log.info("Authentication successful for user: {}", userId);
         } catch (Exception e) {
