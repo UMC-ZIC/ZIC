@@ -3,10 +3,7 @@ package com.umc7.ZIC.practiceRoom.controller;
 import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.ApiResponse;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
-import com.umc7.ZIC.practiceRoom.dto.AvailableTimeSlot;
-import com.umc7.ZIC.practiceRoom.dto.PageRequestDto;
-import com.umc7.ZIC.practiceRoom.dto.PracticeRoomDetailRequestDto;
-import com.umc7.ZIC.practiceRoom.dto.PracticeRoomDetailResponseDto;
+import com.umc7.ZIC.practiceRoom.dto.*;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomDetailService;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,11 +46,11 @@ public class PracticeRoomDetailController {
 
     //연습실 내부 방 목록 조회
     @GetMapping
-    @Operation(summary = "연습실 내부 방 목록 조회 API", description = "연습실 내부 방 목록을 조회하는API.")
-    public ApiResponse<Page<PracticeRoomDetailResponseDto.GetDetailResponseDto>> getPracticeRoomDetailList(
+    @Operation(summary = "연습실 내부 방 목록(페이징) 조회 API", description = "연습실 내부 방 목록을 조회하는API.")
+    public ApiResponse<PageResponseDto<PracticeRoomDetailResponseDto.GetDetailResponseDto>> getPracticeRoomDetailList(
             @ModelAttribute PageRequestDto request,
             @RequestParam("practiceRoomId") Long practiceRoomId) {
-        Page<PracticeRoomDetailResponseDto.GetDetailResponseDto> response = practiceRoomDetailService.getPracticeRoomDetailList(request, practiceRoomId);
+        PageResponseDto<PracticeRoomDetailResponseDto.GetDetailResponseDto> response = practiceRoomDetailService.getPracticeRoomDetailList(request, practiceRoomId);
         return ApiResponse.onSuccess(response);
     }
 
