@@ -27,6 +27,7 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final ExceptionFilter exceptionHandlerFilter; // ExceptionHandlerFilter 필드 추가
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final OAuith2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
@@ -46,10 +47,10 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
-                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/api/kakao/login/oauth2"))
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(customOAuth2UserService))
                         .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler)
                         .permitAll()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
