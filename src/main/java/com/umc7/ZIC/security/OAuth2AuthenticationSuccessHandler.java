@@ -32,6 +32,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        log.info("onAuthenticationSuccess--------------------------------------");
         try {
             CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
             User user = customOAuth2User.getUser();
@@ -46,7 +47,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             response.setContentType(CONTENT_TYPE);
             response.setCharacterEncoding(CHARACTER_ENCODING);
 
-            response.sendRedirect("http://localhost:3000/auth/"+jwtToken);
+            response.sendRedirect("http://localhost:5173/start?token="+jwtToken);
 //            Map<String, Object> responseBody = new HashMap<>();
 //            responseBody.put("token", jwtToken);
 //            responseBody.put("role", role);
