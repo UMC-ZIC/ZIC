@@ -65,8 +65,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*"); // 모든 출처 허용 (필요시 특정 도메인으로 변경)
-        // 허용할 Origin 도메인 설정
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "https://localhost:3000",
@@ -76,7 +74,7 @@ public class SecurityConfig {
                 "https://localhost:8080",
                 "http://43.200.3.214:8080",
                 "https://43.200.3.214:8080",
-                "http://zic-eight.vercel.app/",
+                "http://zic-eight.vercel.app",
                 "https://zic-eight.vercel.app"
         ));
         configuration.addAllowedMethod("*");
