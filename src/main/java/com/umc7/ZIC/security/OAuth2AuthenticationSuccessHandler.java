@@ -8,10 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,6 +30,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect_uri}")
+    private String frontRedirectUrl;
 
 
     @Override
@@ -43,11 +47,17 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             // JWT 토큰 생성
             String jwtToken = jwtTokenProvider.createAccessToken(userId, role);
 
-            // JSON 응답 작성
-            response.setContentType(CONTENT_TYPE);
-            response.setCharacterEncoding(CHARACTER_ENCODING);
 
-            response.sendRedirect("http://localhost:5173/start?token="+jwtToken);
+            //request.getServerName()는 도메인 이름 불러옴
+            String targetUrl = UriComponentsBuilder.fromUriString(setRedirectUrl(request.getServerName()))
+                    .queryParam("jwtAccessToken", jwtToken)
+                    //todo 유저 닉네임
+                    .build().toUriString();
+            log.info(targetUrl);
+            response.sendRedirect(targetUrl);
+            // JSON 응답 작성
+//            response.setContentType(CONTENT_TYPE);
+//            response.setCharacterEncoding(CHARACTER_ENCODING);
 //            Map<String, Object> responseBody = new HashMap<>();
 //            responseBody.put("token", jwtToken);
 //            responseBody.put("role", role);
@@ -67,5 +77,21 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
             log.error("Authentication failed", e);
         }
+    }
+
+    private String setRedirectUrl(String url) {
+        String redirect_url = null;
+
+        //개발 로컬호스트 용
+        if (url.equals("localhost")) {
+            redirect_url = "http://localhost:8080/api/kakao/home";
+        }
+        //프론트 배포 용
+        else {
+            log.info("url: " + url);
+            log.info("frontRedirectUrl: " + frontRedirectUrl);
+            redirect_url = frontRedirectUrl + "/oauth/loading";
+        }
+        return redirect_url;
     }
 }

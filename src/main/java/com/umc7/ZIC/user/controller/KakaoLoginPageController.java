@@ -30,9 +30,9 @@ public class KakaoLoginPageController {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect_uri}")
     private String redirect_uri;
 
-    private final UserService userService;
+//    private final UserService userService;
 
-    private final KakaoService kakaoService;
+//    private final KakaoService kakaoService;
 
     
     // 테스트를 위함
@@ -55,15 +55,15 @@ public class KakaoLoginPageController {
         return "home";
     }
 
-    @GetMapping("/login/oauth2")
-    public ApiResponse<UserResponseDto.userDetailsDto> oauth2(@RequestParam("code") String code, @RequestParam("state") String state) {
-        log.info("Wwwwwwwwwwwwww");
-        String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(code);
-        KakaoUserInfoResponseDto kakaoUserInfo = kakaoService.getUserInfo(kakaoAccessToken);
-        UserResponseDto.userDetailsDto userDetailsDto = userService.kaKaoGetUser(kakaoUserInfo);
-        log.info(userDetailsDto.toString());
-        return ApiResponse.onSuccess(userDetailsDto);
-    }
+//    @GetMapping("/login/oauth2")
+//    public ApiResponse<UserResponseDto.userDetailsDto> oauth2(@RequestParam("code") String code, @RequestParam("state") String state) {
+//        log.info("Wwwwwwwwwwwwww");
+//        String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(code);
+//        KakaoUserInfoResponseDto kakaoUserInfo = kakaoService.getUserInfo(kakaoAccessToken);
+//        UserResponseDto.userDetailsDto userDetailsDto = userService.kaKaoGetUser(kakaoUserInfo);
+//        log.info(userDetailsDto.toString());
+//        return ApiResponse.onSuccess(userDetailsDto);
+//    }
 
     @GetMapping("/success")
     public String success() {
