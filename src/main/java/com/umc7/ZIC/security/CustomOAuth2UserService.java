@@ -65,13 +65,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 카카오 아이디로 User 조회 및 가입.
         User user = saveOrUpdateUser(kakaoId, email, nickname);
 
-        // JWT 토큰 생성
-        String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole().name());
 
         // 이메일을 Principal로 사용하기 위해 attributes 수정
         Map<String, Object> modifiedAttributes = new HashMap<>(attributes);
         modifiedAttributes.put("email", email);
-        modifiedAttributes.put("jwtToken", jwtToken); // JWT 토큰 추가
         modifiedAttributes.put("nickname", nickname); // 닉네임 추가
 
         // DefaultOAuth2User 대신 CustomOAuth2User 객체 반환
