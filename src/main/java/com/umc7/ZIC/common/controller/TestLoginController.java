@@ -19,14 +19,14 @@ public class TestLoginController {
     //test용
     @GetMapping("/owner/get-token-from-user-id")
     public String testCreateOwnerToken(@RequestParam Long userId){
-        String userToken =jwtTokenProvider.createRefreshToken(userId, RoleType.OWNER.name());
+        String userToken =jwtTokenProvider.createAccessToken(userId, RoleType.OWNER.name());
         return userToken;
     }
 
     //test용
     @GetMapping("/user/get-token-from-user-id")
     public String testCreateUserToken(@RequestParam Long userId){
-        String userToken =jwtTokenProvider.createRefreshToken(userId, RoleType.USER.name());
+        String userToken =jwtTokenProvider.createAccessToken(userId, RoleType.USER.name());
         return userToken;
     }
 }
