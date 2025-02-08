@@ -42,7 +42,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             String username = user.getName();
 
             // JWT 토큰 생성
-            String jwtToken = jwtTokenProvider.createAccessToken(userId, role);
+            String jwtToken = jwtTokenProvider.createAccessToken(userId, role, username);
 
             // JSON 응답 작성
             response.setContentType(CONTENT_TYPE);
