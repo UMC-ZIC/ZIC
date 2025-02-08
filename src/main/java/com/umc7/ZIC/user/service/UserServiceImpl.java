@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
         saveUserInstruments(savedUser, userDetailsDto.instrumentList());
 
 
-        String jwtToken = jwtTokenProvider.createAccessToken(userId, RoleType.USER.name());
+        String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
 
         return UserConverter.toRegisterUserDetails(user, jwtToken);
     }
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
         PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
                 (savedUser.getName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
         practiceRoomService.createPracticeRoom(createPracticeReqDto, savedUser.getId());
-        String jwtToken = jwtTokenProvider.createAccessToken(userId, RoleType.OWNER.name());
+        String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
         return UserConverter.toRegisterUserDetails(user, jwtToken);
     }
 
