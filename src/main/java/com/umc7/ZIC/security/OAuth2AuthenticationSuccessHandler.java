@@ -30,7 +30,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect_uri}")
+
+    @Value("${frontend.redirect-url}")
     private String frontRedirectUrl;
 
 
