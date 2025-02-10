@@ -90,7 +90,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         else {
             log.info("url: " + url);
             log.info("frontRedirectUrl: " + frontRedirectUrl);
-            redirect_url = frontRedirectUrl + "/oauth/loading";
+            redirect_url = frontRedirectUrl + "/login/oauth/loading";
         }
         return redirect_url;
     }
