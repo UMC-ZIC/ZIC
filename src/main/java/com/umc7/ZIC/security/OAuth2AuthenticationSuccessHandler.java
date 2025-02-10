@@ -3,18 +3,13 @@ package com.umc7.ZIC.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc7.ZIC.user.domain.User;
-import com.umc7.ZIC.user.domain.enums.RoleType;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
