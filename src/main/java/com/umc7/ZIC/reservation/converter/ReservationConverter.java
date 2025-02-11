@@ -178,4 +178,62 @@ public class ReservationConverter {
                         .build())
                 .build();
     }
+
+
+    //Owner 전용 변환 메서드 추가
+    // Page<Reservation>을 OwnerReservationListDTO로 변환하는 메서드
+    public static ReservationResponseDTO.OwnerReservationListDTO toOwnerReservationList(Page<Reservation> reservationList) { // 추가
+
+        List<ReservationResponseDTO.OwnerReservationDTO> ownerReservations = reservationList.stream()
+                .map(ReservationConverter::toOwnerReservationDetailResult).toList(); // OwnerReservationDTO로 변환
+
+        return ReservationResponseDTO.OwnerReservationListDTO.builder() // OwnerReservationListDTO 생성
+                .resultList(ownerReservations)
+                .listSize(ownerReservations.size())
+                .totalPage(reservationList.getTotalPages())
+                .totalElements(reservationList.getTotalElements())
+                .isFirst(reservationList.isFirst())
+                .isLast(reservationList.isLast())
+                .build();
+    }
+
+    // Reservation 객체를 OwnerReservationDTO로 변환하는 메서드
+    public static ReservationResponseDTO.OwnerReservationDTO toOwnerReservationDetailResult(Reservation reservation) { // 추가
+        // 기존 PracticeRoomDTO, PracticeRoomDetailDTO 생성 로직
+        ReservationResponseDTO.OwnerReservationDTO.PracticeRoomDTO practiceRoomDTO
+                = ReservationResponseDTO.OwnerReservationDTO.PracticeRoomDTO.builder()
+                .PracticeRoomId(reservation.getPracticeRoomDetail().getPracticeRoom().getId())
+                .PracticeRoomName(reservation.getPracticeRoomDetail().getPracticeRoom().getName())
+                .PracticeRoomOwnerId(reservation.getPracticeRoomDetail().getPracticeRoom().getUser().getId())
+                .PracticeRoomOwnerName(reservation.getPracticeRoomDetail().getPracticeRoom().getUser().getName())
+                .address(ReservationResponseDTO.OwnerReservationDTO.PracticeRoomDTO.Address.builder()
+                        .region(reservation.getPracticeRoomDetail().getPracticeRoom().getRegion().getName().getKoreanName())
+                        .address(reservation.getPracticeRoomDetail().getPracticeRoom().getAddress())
+                        .build())
+                .build();
+
+        ReservationResponseDTO.OwnerReservationDTO.PracticeRoomDetailDTO practiceRoomDetailDTO
+                = ReservationResponseDTO.OwnerReservationDTO.PracticeRoomDetailDTO.builder()
+                .practiceRoomDetailId(reservation.getPracticeRoomDetail().getId())
+                .practiceRoomDetailName(reservation.getPracticeRoomDetail().getName())
+                .practiceRoomDetailImage(reservation.getPracticeRoomDetail().getImage())
+                .build();
+
+        return ReservationResponseDTO.OwnerReservationDTO.builder() // OwnerReservationDTO 생성
+                .id(reservation.getId())
+                .reservationNumber(reservation.getReservationNumber())
+                .practiceRoom(practiceRoomDTO)
+                .practiceRoomDetail(practiceRoomDetailDTO)
+                .user(reservation.getUser().getId()) // 필요에 따라 대여자의 ID 또는 예약한 사용자의 ID
+                .status(reservation.getStatus())
+                .date(reservation.getDate())
+                .startTime(reservation.getStartTime())
+                .endTime(reservation.getEndTime())
+                .practiceRoomId(reservation.getPracticeRoomDetail().getPracticeRoom().getId())
+                .practiceRoomDetailId(reservation.getPracticeRoomDetail().getId())
+                .practiceRoomDetailName(reservation.getPracticeRoomDetail().getName())
+                .reservationUserName(reservation.getUser().getName())
+                .amount(reservation.getReservationDetail().getAmount())
+                .build();
+    }
 }
