@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
         User user = userRepository.findByKakaoId(userInfo.id()).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        String jwtAccessToken = jwtTokenProvider.createAccessToken(user.getId(),user.getRole().name());
+        String jwtAccessToken = jwtTokenProvider.createAccessToken(user.getId(),user.getRole().name(), user.getName());
 
         return UserConverter.toResponseUser(user, jwtAccessToken);
     }
