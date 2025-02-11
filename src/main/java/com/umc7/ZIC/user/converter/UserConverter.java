@@ -3,7 +3,6 @@ package com.umc7.ZIC.user.converter;
 
 import com.umc7.ZIC.user.domain.User;
 import com.umc7.ZIC.user.dto.UserResponseDto;
-import com.umc7.ZIC.user.dto.UserResponseDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -17,6 +16,15 @@ public class UserConverter {
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
                 .token(jwtToken).build();
+    }
+
+    public static UserResponseDto.userDetailsDto toResponseUser(User user, String jwtToken){
+        return UserResponseDto.userDetailsDto.builder()
+                .userId(user.getId())
+                .userName(user.getName())
+                .userRole(user.getRole().toString())
+                .token(jwtToken)
+                .build();
     }
 
     /**
