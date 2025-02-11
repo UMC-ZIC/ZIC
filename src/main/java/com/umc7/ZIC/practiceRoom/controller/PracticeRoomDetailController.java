@@ -106,7 +106,7 @@ public class PracticeRoomDetailController {
 
     //연습실 내부 방 이용상태 정보 수정
     @PatchMapping("/status/{practiceRoomDetailId}")
-    @Operation(summary = "연습실 내부 방 정보 수정 API", description = "연습실 내부 방 정보를 수정하는 API.")
+    @Operation(summary = "연습실 내부 방 이용가능, 이용중지 전용 API", description = "연습실 내부 방 이용가능 상태를 전환하는 API 이용상태일때 호출하면 이용중지, 이용중지일때 호출하면 이용가능 상태로 변경.")
     public ApiResponse<PracticeRoomDetailResponseDto.UpdateDetailResponseDto> updateStatusPracticeRoomDetail(
             @PathVariable Long practiceRoomDetailId) {
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
