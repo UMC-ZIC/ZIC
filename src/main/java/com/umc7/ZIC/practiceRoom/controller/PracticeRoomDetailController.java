@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,7 +105,7 @@ public class PracticeRoomDetailController {
 
     //연습실 내부 방 이용상태 정보 수정
     @PatchMapping("/status/{practiceRoomDetailId}")
-    @Operation(summary = "연습실 내부 방 이용가능, 이용중지 전용 API", description = "연습실 내부 방 이용가능 상태를 전환하는 API 이용상태일때 호출하면 이용중지, 이용중지일때 호출하면 이용가능 상태로 변경.")
+    @Operation(summary = "연습실 내부 방 이용가능, 이용중지 전용 API", description = "호출 시마다 이용 가능/이용 중지 상태가 번갈아 전환됩니다..")
     public ApiResponse<PracticeRoomDetailResponseDto.UpdateDetailResponseDto> updateStatusPracticeRoomDetail(
             @PathVariable Long practiceRoomDetailId) {
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
