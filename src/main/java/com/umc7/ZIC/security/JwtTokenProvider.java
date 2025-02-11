@@ -44,7 +44,7 @@ public class JwtTokenProvider {
 
 
     // Jwt AccessToken 생성
-    public String createAccessToken(Long userId, String userType) {
+    public String createAccessToken(Long userId, String userType, String username) {
         return Jwts.builder()
                 .setHeaderParam("type", "accessToken")
                 .claim("userId", userId)
@@ -56,7 +56,7 @@ public class JwtTokenProvider {
     }
 
     // Jwt RefreshToken 생성
-    public String createRefreshToken(Long userId, String userType) {
+    public String createRefreshToken(Long userId, String userType, String username) {
         return Jwts.builder()
                 .setHeaderParam("type", "refreshToken")
                 .claim("userId", userId)

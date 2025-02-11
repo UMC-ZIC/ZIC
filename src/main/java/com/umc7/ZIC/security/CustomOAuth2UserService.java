@@ -21,7 +21,6 @@ import java.util.Map;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -50,10 +49,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> kakaoAccount;
         String email;
         String nickname;
+        Map<String, Object> profile;
+//        String profileImageUrl;
+        String profileTumbnailImageUrl;
+
         try {
             kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+            profile = (Map<String, Object>) kakaoAccount.get("profile");
+
             email = (String) kakaoAccount.get("email");
-            nickname = (String) ((Map<String, Object>) kakaoAccount.get("profile")).get("nickname");
+            nickname = (String) profile.get("nickname");
+//            profileImageUrl = (String) profile.get("profile_image_url");
+            profileTumbnailImageUrl = (String) profile.get("thumbnail_image_url");
             if (email == null) {
                 throw new OAuth2AuthenticationException(new OAuth2Error("missing_email", "이메일을 찾을 수 없습니다.", null));
             }
@@ -63,15 +70,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
         log.info(nickname);
         // 카카오 아이디로 User 조회 및 가입.
-        User user = saveOrUpdateUser(kakaoId, email, nickname);
+        User user = saveOrUpdateUser(kakaoId, email, nickname, profileTumbnailImageUrl);
 
-        // JWT 토큰 생성
-        String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole().name());
 
         // 이메일을 Principal로 사용하기 위해 attributes 수정
         Map<String, Object> modifiedAttributes = new HashMap<>(attributes);
         modifiedAttributes.put("email", email);
-        modifiedAttributes.put("jwtToken", jwtToken); // JWT 토큰 추가
         modifiedAttributes.put("nickname", nickname); // 닉네임 추가
 
         // DefaultOAuth2User 대신 CustomOAuth2User 객체 반환
@@ -81,9 +85,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 "email", // email Principal로 설정
                 user // User 객체 추가
         );
+
     }
 
-    private User saveOrUpdateUser(Long kakaoId, String email, String nickname) {
+    private User saveOrUpdateUser(Long kakaoId, String email, String nickname, String profileImageUrl) {
         return userRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> {
                     // 새로운 사용자 등록
@@ -92,6 +97,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                             .kakaoId(kakaoId)
                             .email(email)
                             .role(RoleType.PENDING) // 기본 역할을 PENDING으로 설정
+                            .profilePic(profileImageUrl) //필요시 null 일 경우 기본 프로필 사진 url 저장
                             .build();
 
                     return userRepository.save(newUser);

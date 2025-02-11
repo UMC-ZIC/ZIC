@@ -5,6 +5,7 @@ import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.ApiResponse;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.practiceRoom.dto.PageRequestDto;
+import com.umc7.ZIC.practiceRoom.dto.PageResponseDto;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomRequestDto;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomResponseDto;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomService;
@@ -80,9 +81,9 @@ public class PracticeRoomController {
 
     //연습실 리스트 조회
     @GetMapping
-    @Operation(summary = "연습실을 리스트 형식으로조회할때 사용하는 API", description = "PracticeRoomId로 연습실을 리스트 형식으로 조회할 때 사용하는 API")
-    public ApiResponse<Page<PracticeRoomResponseDto.GetResponseDto>> getPracticeRoomList(@ModelAttribute PageRequestDto request) {
-        Page<PracticeRoomResponseDto.GetResponseDto> response = practiceRoomService.getPracticeRoomList(request);
+    @Operation(summary = "연습실을 목록(페이징) 형식으로조회할때 사용하는 API", description = "PracticeRoomId로 연습실을 목록(페이징) 형식으로 조회할 때 사용하는 API")
+    public ApiResponse<PageResponseDto<PracticeRoomResponseDto.GetResponseDto>> getPracticeRoomList(@ModelAttribute PageRequestDto request) {
+        PageResponseDto<PracticeRoomResponseDto.GetResponseDto> response = practiceRoomService.getPracticeRoomList(request);
         return ApiResponse.onSuccess(response);
     }
 }

@@ -3,21 +3,16 @@ package com.umc7.ZIC.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc7.ZIC.user.domain.User;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @RequiredArgsConstructor
@@ -34,7 +29,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Value("${frontend.redirect-url}")
     private String frontRedirectUrl;
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("onAuthenticationSuccess--------------------------------------");
@@ -46,7 +40,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             String username = user.getName();
 
             // JWT 토큰 생성
-            String jwtToken = jwtTokenProvider.createAccessToken(userId, role);
+            String jwtToken = jwtTokenProvider.createAccessToken(userId, role, username);
 
 
             //request.getServerName()는 도메인 이름 불러옴
