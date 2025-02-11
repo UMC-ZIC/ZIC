@@ -56,4 +56,8 @@ public class PracticeRoomDetail extends BaseEntity {
         }
         return successReservations;
     }
+
+    public void updateStatus(RoomStatus status) {
+        this.status = status;
+    }
 }

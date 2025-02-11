@@ -117,4 +117,59 @@ public class ReservationResponseDTO {
             Boolean isFirst,
             Boolean isLast
     ) {}
+    // Owner 전용 예약 목록 DTO
+    @Builder
+    public record OwnerReservationListDTO( // 추가: Owner 전용 예약 목록 DTO
+                                           List<OwnerReservationDTO> resultList,
+                                           Integer listSize,
+                                           Integer totalPage,
+                                           Long totalElements,
+                                           Boolean isFirst,
+                                           Boolean isLast
+    ) {}
+
+
+    // Owner 전용 예약 정보 DTO
+    @Builder
+    public record OwnerReservationDTO( // 추가: Owner 전용 예약 정보 DTO
+                                       Long id,
+                                       String reservationNumber,
+                                       PracticeRoomDTO practiceRoom,
+                                       PracticeRoomDetailDTO practiceRoomDetail,
+                                       ReservationStatus status,
+                                       Long user, // 대여자의 ID
+                                       LocalDate date,
+                                       LocalTime startTime,
+                                       LocalTime endTime,
+                                       Long practiceRoomId,
+                                       Long practiceRoomDetailId,
+                                       String practiceRoomDetailName,
+                                       String reservationUserName,
+                                       Integer amount
+    ){
+        // (내부 PracticeRoomDTO, PracticeRoomDetailDTO는 이전과 동일)
+        @Builder
+        public record PracticeRoomDTO(
+                Long PracticeRoomId,
+                String PracticeRoomName,
+                Long PracticeRoomOwnerId,
+                String PracticeRoomOwnerName,
+                Address address
+
+        ) {
+            @Builder
+            public record Address(
+                    String region,
+                    String address
+            ) {}
+        }
+
+        @Builder
+        public record PracticeRoomDetailDTO(
+                Long practiceRoomDetailId,
+                String practiceRoomDetailName,
+                String practiceRoomDetailImage
+        ) {}
+    }
 }
+

@@ -34,7 +34,7 @@ public class PracticeRoom extends BaseEntity {
     @Column(length = 40, nullable = false)
     private String name;
 
-    @Column(length = 40, nullable = false)
+    @Column(length = 255, nullable = false)
     private String address;
 
     @Column(length = 1000)

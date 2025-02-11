@@ -4,16 +4,14 @@ import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.common.domain.enums.RegionType;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.user.domain.User;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 public record PracticeRoomRequestDto(
 
 ) {
     public record CreateRequestDto(
             @NotBlank(message ="연습실 이름은 필수입니다." )
+            @Size(max = 40, message = "이름은 40자 이하여야 합니다.")
             String name,
             @NotBlank(message = "주소는 필수입니다.")
             String address,
