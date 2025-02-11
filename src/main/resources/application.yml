@@ -28,6 +28,7 @@ spring:
             scope:
               - profile_nickname
               - account_email
+              - profile_image
             client-name: Kakao
         provider:
           kakao:
@@ -53,3 +54,6 @@ logging:
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
     com.zaxxer.hikari: INFO
+
+frontend:
+  redirect-url: ${FRONTEND_REDIRECT_URL}

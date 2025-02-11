@@ -20,6 +20,7 @@ import com.umc7.ZIC.user.converter.UserInstrumentConverter;
 import com.umc7.ZIC.user.domain.User;
 import com.umc7.ZIC.user.domain.UserInstrument;
 import com.umc7.ZIC.user.domain.enums.RoleType;
+import com.umc7.ZIC.user.dto.KakaoUserInfoResponseDto;
 import com.umc7.ZIC.user.dto.UserRequestDto;
 import com.umc7.ZIC.user.dto.UserResponseDto;
 import com.umc7.ZIC.user.repository.UserInstrumentRepository;
@@ -36,6 +37,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -110,6 +112,23 @@ public class UserServiceImpl implements UserService {
         practiceRoomService.createPracticeRoom(createPracticeReqDto, savedUser.getId());
         String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
         return UserConverter.toRegisterUserDetails(user, jwtToken);
+    }
+
+    @Override
+    public UserResponseDto.userDetailsDto getUser(Long UserId, String jwtToken) {
+        User user = userRepository.findById(UserId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        UserResponseDto.userDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
+
+        return userDetailsDto;
+    }
+
+    @Override
+    public UserResponseDto.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
+        User user = userRepository.findByKakaoId(userInfo.id()).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        String jwtAccessToken = jwtTokenProvider.createAccessToken(user.getId(),user.getRole().name(), user.getName());
+
+        return UserConverter.toResponseUser(user, jwtAccessToken);
     }
 
 

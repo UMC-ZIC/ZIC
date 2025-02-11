@@ -44,6 +44,9 @@ public class User extends BaseEntity {
     @Column(length = 50, nullable = true)
     private String address;
 
+    @Column(length = 300, nullable = true)
+    private String profilePic;
+
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(15) DEFAULT 'PENDING'", length = 15)
     private RoleType role;

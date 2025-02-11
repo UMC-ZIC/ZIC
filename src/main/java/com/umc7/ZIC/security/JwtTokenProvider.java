@@ -49,6 +49,7 @@ public class JwtTokenProvider {
                 .setHeaderParam("type", "accessToken")
                 .claim("userId", userId)
                 .claim("userType", userType)
+                .claim("userName", username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))  // Access 토큰 발행 시간
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALID_TIME)) // Access 토큰 만료 시간
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -61,6 +62,7 @@ public class JwtTokenProvider {
                 .setHeaderParam("type", "refreshToken")
                 .claim("userId", userId)
                 .claim("userType", userType)
+                .claim("userName", username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))  // Refresh 토큰 발행 시간
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID_TIME)) // Refresh 토큰 만료 시간
                 .signWith(secretKey, SignatureAlgorithm.HS256)
