@@ -93,4 +93,22 @@ public class ReservationRestController {
 
         return ApiResponse.onSuccess(kakaoPayService.kakaoPayCancel(request));
     }
+
+    @Operation(summary = "대여자의 예약 목록 조회 API",
+            description = "특정 대여자가 등록한 연습실의 예약 목록을 조회하는 API입니다. (Owner 타입 유저)" +
+                    "<br>query String 으로 날짜와 page 번호를 주세요" +
+                    "<br><h2>JWT 토큰 필요합니다.</h2> ")
+    @Parameters({
+            @Parameter(name = "date", description = "조회할 예약 날짜, yyyy-MM-dd 형식으로 입력 ex) 2025-01-01, query String 입니다!"),
+            @Parameter(name = "page", description = "페이지 번호, 1 이상의 숫자 입력, query String 입니다!")
+    })
+    @GetMapping("/owner")
+    public ApiResponse<ReservationResponseDTO.OwnerReservationListDTO> getOwnerReservationList(  // OwnerReservationListDTO
+                                                                                                 @RequestParam(name = "date") LocalDate date,
+                                                                                                 @CheckPage @RequestParam(name = "page") Integer page
+    ) {
+        Page<Reservation> reservationList = reservationQueryService.getOwnerReservationList(jwtTokenProvider.getUserIdFromToken(), date, page - 1);
+
+        return ApiResponse.onSuccess(ReservationConverter.toOwnerReservationList(reservationList)); // Owner 전용 Converter 사용
+    }
 }
