@@ -14,4 +14,6 @@ public interface PracticeRoomDetailService {
     PracticeRoomDetailResponseDto.UpdateDetailResponseDto updatePracticeRoomDetail(PracticeRoomDetailRequestDto.UpdateRequestDetailDto updateRequest, Long practiceRoomDetailId, Long userId);
     void deletePracticeRoomDetail(Long practiceRoomDetailId, Long userId);
     List<AvailableTimeSlot> getPracticeRoomDetailAvailableTimeSlots(Long practiceRoomDetailId, LocalDate date);
+    PracticeRoomDetailResponseDto.UpdateDetailResponseDto updateStatusPracticeRoomDetail(Long practiceRoomDetailId, Long userId);
+
 }

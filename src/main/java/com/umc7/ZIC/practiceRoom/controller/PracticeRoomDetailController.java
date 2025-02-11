@@ -103,4 +103,18 @@ public class PracticeRoomDetailController {
         List<AvailableTimeSlot> availableTimeSlots = practiceRoomDetailService.getPracticeRoomDetailAvailableTimeSlots(practiceRoomDetailId, date);
         return ApiResponse.onSuccess(availableTimeSlots);
     }
+
+    //연습실 내부 방 이용상태 정보 수정
+    @PatchMapping("/status/{practiceRoomDetailId}")
+    @Operation(summary = "연습실 내부 방 정보 수정 API", description = "연습실 내부 방 정보를 수정하는 API.")
+    public ApiResponse<PracticeRoomDetailResponseDto.UpdateDetailResponseDto> updateStatusPracticeRoomDetail(
+            @PathVariable Long practiceRoomDetailId) {
+        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
+            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
+        }
+
+        Long userId = jwtTokenProvider.getUserIdFromToken();
+        PracticeRoomDetailResponseDto.UpdateDetailResponseDto response = practiceRoomDetailService.updateStatusPracticeRoomDetail(practiceRoomDetailId, userId);
+        return ApiResponse.onSuccess(response);
+    }
 }

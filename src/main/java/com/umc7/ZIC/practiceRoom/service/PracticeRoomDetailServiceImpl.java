@@ -6,6 +6,7 @@ import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
+import com.umc7.ZIC.practiceRoom.domain.enums.RoomStatus;
 import com.umc7.ZIC.practiceRoom.dto.*;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomDetailRepository;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomRepository;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -189,5 +191,32 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
         }
 
         return availableTimeSlots;
+    }
+
+    //연습실 이용상태 수정
+    @Override
+    public PracticeRoomDetailResponseDto.UpdateDetailResponseDto updateStatusPracticeRoomDetail(Long practiceRoomDetailId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        PracticeRoomDetail practiceRoomDetail = practiceRoomDetailRepository.findById(practiceRoomDetailId)
+                .orElseThrow(() -> new PracticeRoomDetailHandler(ErrorStatus.PRACTICEROOMDETAIL_NOT_FOUND));
+
+        PracticeRoom practiceRoom = practiceRoomDetail.getPracticeRoom();
+
+        // 소유자 권한 및 연습실 소유 여부 확인
+        if (!user.getRole().equals(RoleType.OWNER) || !practiceRoom.getUser().getId().equals(userId)) {
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+        }
+
+        if(practiceRoomDetail.getStatus().equals(RoomStatus.AVAILABLE)){
+            practiceRoomDetail.updateStatus(RoomStatus.SUSPENDED);
+        } else if (practiceRoomDetail.getStatus().equals(RoomStatus.SUSPENDED)) {
+            practiceRoomDetail.updateStatus(RoomStatus.AVAILABLE);
+        }
+
+        PracticeRoomDetail updatedPracticeRoomDetail = practiceRoomDetailRepository.save(practiceRoomDetail);
+
+        return PracticeRoomDetailResponseDto.UpdateDetailResponseDto.from(updatedPracticeRoomDetail);
     }
 }
