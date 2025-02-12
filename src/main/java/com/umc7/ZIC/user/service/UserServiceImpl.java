@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
         saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
         updateAuthorities(user);
         PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
-                (savedUser.getName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
+                (savedUser.getBusinessName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
 
         PracticeRoom savedPracticeRoom;
         try {
