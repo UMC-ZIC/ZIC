@@ -21,6 +21,7 @@ import com.umc7.ZIC.practiceRoom.repository.PracticeRoomInstrumentRepository;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomRepository;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomService;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomServiceImpl;
+import com.umc7.ZIC.reservation.repository.ReservationRepository;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.converter.UserConverter;
 import com.umc7.ZIC.user.converter.UserInstrumentConverter;
@@ -59,6 +60,7 @@ public class UserServiceImpl implements UserService {
     private final PracticeRoomService practiceRoomService;
     private final PracticeRoomInstrumentRepository practiceRoomInstrumentRepository;
     private final PracticeRoomRepository practiceRoomRepository;
+    private final ReservationRepository reservationRepository;
 
 
     @Override
@@ -167,6 +169,18 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto.OwnerMonthlyEarning> getOwnerMonthlyEarnings(Long userId) {
         return userRepository.findOwnerMonthlyEarningByUserId(userId);
     }
+
+    @Override
+    public UserResponseDto.UserMyPageDto getUserMypage(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> userThisMonthPracticeDetailList = reservationRepository.findUserThisMonthPracticeDetailsByUserId(userId);
+        List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> findTop3PracticeRoomsByUserId = reservationRepository.findTop3PracticeRoomsByUserId(userId);
+        UserResponseDto.UserMyPageDto userMyPageDto = UserConverter.UserMyPageDto(findTop3PracticeRoomsByUserId, userThisMonthPracticeDetailList, user);
+
+
+        return userMyPageDto;
+    }
+
 
     Region getRegion(String regionName) {
         return regionRepository.findByName(RegionUtil.fromKoreanName(regionName))

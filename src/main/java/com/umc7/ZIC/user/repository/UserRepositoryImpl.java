@@ -30,12 +30,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     private final QReservationDetail qReservationDetail = QReservationDetail.reservationDetail;
 
     @Override
-    public UserResponseDto.user findUserByEmail(String email) {
+    public UserResponseDto.User findUserByEmail(String email) {
         BooleanBuilder predicate = new BooleanBuilder();
         predicate.and(user.email.eq(email));
 
         return jpaQueryFactory
-                .select(Projections.constructor(UserResponseDto.user.class,
+                .select(Projections.constructor(UserResponseDto.User.class,
                         user.id,
                         user.email,
                         user.name,

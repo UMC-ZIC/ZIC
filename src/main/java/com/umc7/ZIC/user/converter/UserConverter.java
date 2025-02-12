@@ -51,4 +51,30 @@ public class UserConverter {
                 .monthlyEarning(ownerMonthlyEarning)
                 .build();
     }
+
+    public static UserResponseDto.UserMyPageDto.UserThisMonthPractice toUserMyPageDTO(List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> userThisMonthPracticeDetailList) {
+        int totalPracticeCount = userThisMonthPracticeDetailList.stream()
+                .mapToInt(UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail::practiceCount)
+                .sum();
+
+        return UserResponseDto.UserMyPageDto.UserThisMonthPractice.builder()
+                .userThisMonthPracticeList(userThisMonthPracticeDetailList)
+                .totalPracticeCount(totalPracticeCount)
+                .build();
+    }
+
+    public static UserResponseDto.UserMyPageDto.FrequentPracticeRooms toFrequentPracticeRooms(List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> top3Room){
+        return UserResponseDto.UserMyPageDto.FrequentPracticeRooms.builder()
+                .frequentPracticeRoomDetailList(top3Room)
+                .build();
+    }
+
+    public static UserResponseDto.UserMyPageDto UserMyPageDto(List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> top3Room, List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> userThisMonthPracticeDetailList, User user){
+        return UserResponseDto.UserMyPageDto.builder()
+                .userName(user.getName())
+                .userThisMonthPractices(toUserMyPageDTO(userThisMonthPracticeDetailList))
+                .frequentPracticeRooms(toFrequentPracticeRooms(top3Room))
+                .build();
+    }
+
 }

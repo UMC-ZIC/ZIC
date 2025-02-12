@@ -40,4 +40,11 @@ public class UserController {
 
         return ApiResponse.onSuccess(userService.getUser(userId, jwtToken));
     }
+
+    @GetMapping("/mypage")
+    public ApiResponse<UserResponseDto.UserMyPageDto> mypage(){
+        Long userId = jwtTokenProvider.getUserIdFromToken();
+
+        return ApiResponse.onSuccess(userService.getUserMypage(userId));
+    }
 }

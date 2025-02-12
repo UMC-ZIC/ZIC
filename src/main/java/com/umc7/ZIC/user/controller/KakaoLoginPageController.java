@@ -56,13 +56,13 @@ public class KakaoLoginPageController {
     }
 
 //    @GetMapping("/login/oauth2")
-//    public ApiResponse<UserResponseDto.userDetailsDto> oauth2(@RequestParam("code") String code, @RequestParam("state") String state) {
+//    public ApiResponse<UserResponseDto.UserDetailsDto> oauth2(@RequestParam("code") String code, @RequestParam("state") String state) {
 //        log.info("Wwwwwwwwwwwwww");
 //        String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(code);
 //        KakaoUserInfoResponseDto kakaoUserInfo = kakaoService.getUserInfo(kakaoAccessToken);
-//        UserResponseDto.userDetailsDto userDetailsDto = userService.kaKaoGetUser(kakaoUserInfo);
-//        log.info(userDetailsDto.toString());
-//        return ApiResponse.onSuccess(userDetailsDto);
+//        UserResponseDto.UserDetailsDto UserDetailsDto = userService.kaKaoGetUser(kakaoUserInfo);
+//        log.info(UserDetailsDto.toString());
+//        return ApiResponse.onSuccess(UserDetailsDto);
 //    }
 
     @GetMapping("/success")
