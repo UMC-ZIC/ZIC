@@ -27,7 +27,7 @@ public class OwnerController {
     //추가정보 기입
     @Operation(summary = "유저 회원가입 할 때 사용하는 API", description = "유저가 로그인 후 추가 정보 기입후 최종 가입 할 때 사용하는 API")
     @PatchMapping("/details")
-    public ApiResponse<UserResponseDto.userDetailsDto> ownerDetails(@RequestBody UserRequestDto.ownerDetailsDto ownerRequestDto){
+    public ApiResponse<UserResponseDto.User.OwnerDetailsDto> ownerDetails(@RequestBody UserRequestDto.ownerDetailsDto ownerRequestDto){
         Long userId = jwtTokenProvider.getUserIdFromToken();
         return ApiResponse.onSuccess(userService.updateOwnerDetails(userId, ownerRequestDto));
     }

@@ -2,6 +2,7 @@ package com.umc7.ZIC.user.service;
 
 import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.handler.InstrumentHandler;
+import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.RegionHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.common.domain.Instrument;
@@ -11,9 +12,14 @@ import com.umc7.ZIC.common.repository.InstrumentRepository;
 import com.umc7.ZIC.common.repository.RegionRepository;
 import com.umc7.ZIC.common.util.InstrumentUtil;
 import com.umc7.ZIC.common.util.RegionUtil;
+import com.umc7.ZIC.practiceRoom.converter.PracticeRoomInstrumentConverter;
+import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
+import com.umc7.ZIC.practiceRoom.domain.PracticeRoomInstrument;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomRequestDto;
+import com.umc7.ZIC.practiceRoom.repository.PracticeRoomInstrumentRepository;
+import com.umc7.ZIC.practiceRoom.repository.PracticeRoomRepository;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomService;
-import com.umc7.ZIC.practiceRoom.service.PracticeRoomServiceImpl;
+import com.umc7.ZIC.reservation.repository.ReservationRepository;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.converter.UserConverter;
 import com.umc7.ZIC.user.converter.UserInstrumentConverter;
@@ -37,7 +43,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -50,10 +55,13 @@ public class UserServiceImpl implements UserService {
     private final UserInstrumentRepository userInstrumentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PracticeRoomService practiceRoomService;
+    private final PracticeRoomInstrumentRepository practiceRoomInstrumentRepository;
+    private final PracticeRoomRepository practiceRoomRepository;
+    private final ReservationRepository reservationRepository;
 
 
     @Override
-    public UserResponseDto.userDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
+    public UserResponseDto.User.UserDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -76,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto.userDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
+    public UserResponseDto.User.OwnerDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -108,22 +116,39 @@ public class UserServiceImpl implements UserService {
         saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
         updateAuthorities(user);
         PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
-                (savedUser.getName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
-        practiceRoomService.createPracticeRoom(createPracticeReqDto, savedUser.getId());
+                (savedUser.getBusinessName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
+
+        PracticeRoom savedPracticeRoom;
+        try {
+            PracticeRoom practiceRoom = createPracticeReqDto.toEntity(user, user.getRegion());
+
+            savedPracticeRoom = practiceRoomRepository.save(practiceRoom);
+
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+        }
+
+
+        for (String roomInstrument : ownerDetailsDto.instrumentList()){
+            PracticeRoomInstrument practiceRoomInstrument = PracticeRoomInstrumentConverter.toPracticeRoomInstrument(savedPracticeRoom, getInstrument(roomInstrument));
+            practiceRoomInstrumentRepository.save(practiceRoomInstrument);
+        }
+
         String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
-        return UserConverter.toRegisterUserDetails(user, jwtToken);
+        return UserConverter.toRegisterOwnerDetails(user, jwtToken, savedPracticeRoom.getId());
     }
 
     @Override
-    public UserResponseDto.userDetailsDto getUser(Long UserId, String jwtToken) {
+    public UserResponseDto.User.UserDetailsDto getUser(Long UserId, String jwtToken) {
         User user = userRepository.findById(UserId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-        UserResponseDto.userDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
+        UserResponseDto.User.UserDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
 
         return userDetailsDto;
     }
 
     @Override
-    public UserResponseDto.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
+    public UserResponseDto.User.UserDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
         User user = userRepository.findByKakaoId(userInfo.id()).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         String jwtAccessToken = jwtTokenProvider.createAccessToken(user.getId(),user.getRole().name(), user.getName());
@@ -142,9 +167,26 @@ public class UserServiceImpl implements UserService {
         return userRepository.findOwnerMonthlyEarningByUserId(userId);
     }
 
+    @Override
+    public UserResponseDto.UserMyPageDto getUserMypage(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> userThisMonthPracticeDetailList = reservationRepository.findUserThisMonthPracticeDetailsByUserId(userId);
+        List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> findTop3PracticeRoomsByUserId = reservationRepository.findTop3PracticeRoomsByUserId(userId);
+        UserResponseDto.UserMyPageDto userMyPageDto = UserConverter.UserMyPageDto(findTop3PracticeRoomsByUserId, userThisMonthPracticeDetailList, user);
+
+
+        return userMyPageDto;
+    }
+
+
     Region getRegion(String regionName) {
         return regionRepository.findByName(RegionUtil.fromKoreanName(regionName))
                 .orElseThrow(() -> new RegionHandler(ErrorStatus.REGION_NOT_FOUND));
+    }
+
+    Instrument getInstrument(String instrumentName) {
+        return instrumentRepository.findByName(InstrumentUtil.fromKoreanName(instrumentName))
+                .orElseThrow(() -> new InstrumentHandler(ErrorStatus.INSTRUMENT_NOT_FOUND));
     }
 
 

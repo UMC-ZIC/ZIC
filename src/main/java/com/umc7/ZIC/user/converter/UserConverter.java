@@ -9,17 +9,29 @@ import java.util.List;
 
 @Slf4j
 public class UserConverter {
-    public static UserResponseDto.userDetailsDto toRegisterUserDetails(User user, String jwtToken){
+    public static UserResponseDto.User.UserDetailsDto toRegisterUserDetails(User user, String jwtToken){
 
-        return UserResponseDto.userDetailsDto.builder()
+        return UserResponseDto.User.UserDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
-                .token(jwtToken).build();
+                .token(jwtToken)
+                .build();
     }
 
-    public static UserResponseDto.userDetailsDto toResponseUser(User user, String jwtToken){
-        return UserResponseDto.userDetailsDto.builder()
+    public static UserResponseDto.User.OwnerDetailsDto toRegisterOwnerDetails(User user, String jwtToken, Long practiceRoomId){
+
+        return UserResponseDto.User.OwnerDetailsDto.builder()
+                .userId(user.getId())
+                .userName(user.getName())
+                .userRole(user.getRole().toString())
+                .token(jwtToken)
+                .practiceRoomId(practiceRoomId)
+                .build();
+    }
+
+    public static UserResponseDto.User.UserDetailsDto toResponseUser(User user, String jwtToken){
+        return UserResponseDto.User.UserDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
@@ -39,4 +51,30 @@ public class UserConverter {
                 .monthlyEarning(ownerMonthlyEarning)
                 .build();
     }
+
+    public static UserResponseDto.UserMyPageDto.UserThisMonthPractice toUserMyPageDTO(List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> userThisMonthPracticeDetailList) {
+        int totalPracticeCount = userThisMonthPracticeDetailList.stream()
+                .mapToInt(UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail::practiceCount)
+                .sum();
+
+        return UserResponseDto.UserMyPageDto.UserThisMonthPractice.builder()
+                .userThisMonthPracticeList(userThisMonthPracticeDetailList)
+                .totalPracticeCount(totalPracticeCount)
+                .build();
+    }
+
+    public static UserResponseDto.UserMyPageDto.FrequentPracticeRooms toFrequentPracticeRooms(List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> top3Room){
+        return UserResponseDto.UserMyPageDto.FrequentPracticeRooms.builder()
+                .frequentPracticeRoomDetailList(top3Room)
+                .build();
+    }
+
+    public static UserResponseDto.UserMyPageDto UserMyPageDto(List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> top3Room, List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> userThisMonthPracticeDetailList, User user){
+        return UserResponseDto.UserMyPageDto.builder()
+                .userName(user.getName())
+                .userThisMonthPractices(toUserMyPageDTO(userThisMonthPracticeDetailList))
+                .frequentPracticeRooms(toFrequentPracticeRooms(top3Room))
+                .build();
+    }
+
 }

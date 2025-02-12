@@ -32,4 +32,9 @@ public class ReservationQueryServiceImpl implements ReservationQueryService {
     public Optional<List<Reservation>> overlappingReservation(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         return reservationRepository.findOverlappingReservations(practiceRoomDetailId, date, startTime, endTime);
     }
+
+    @Override
+    public Page<Reservation> getOwnerReservationList(Long userId, LocalDate localDate, Integer page) {
+        return reservationRepository.findReservationsByOwnerIdAndDateAndStatus(userId, localDate, ReservationStatus.SUCCESS,PageRequest.of(page, 10));
+    }
 }

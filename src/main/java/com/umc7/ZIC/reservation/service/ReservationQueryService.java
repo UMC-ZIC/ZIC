@@ -35,4 +35,14 @@ public interface ReservationQueryService {
      * @return
      */
     Optional<List<Reservation>> overlappingReservation(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime);
+
+    /**
+     * 유저 Id가 Owner 타입인 대여자가 등록한 연습실을 page를 통해 예약된 목록을 조회하는 Service
+     * @param userId
+     * @param localDate yyyy-MM-dd
+     * @param page
+     * @return
+     */
+    //user 객체의 type이 owner인 경우니 파라미터는 일단 userId로 표기하였습니다.
+    Page<Reservation> getOwnerReservationList(Long userId, LocalDate localDate, Integer page);
 }

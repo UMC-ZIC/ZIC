@@ -8,18 +8,28 @@ import java.util.List;
 public record UserResponseDto() {
 
     @Builder
-    public record user(
+    public record User(
             String email,
             String name,
             Long regionId
-    ){}
-    @Builder
-    public static record userDetailsDto(
-            Long userId,
-            String userName,
-            String userRole, //user인지 owner인지
-            String token
-    ){}
+    ){
+        @Builder
+        public record UserDetailsDto(
+                Long userId,
+                String userName,
+                String userRole, //user인지 owner인지
+                String token
+        ){}
+        @Builder
+        public record OwnerDetailsDto(
+                Long userId,
+                String userName,
+                String userRole, //user인지 owner인지
+                String token,
+                Long practiceRoomId
+        ){}
+    }
+
 
     /**
      * 연습실 주인의 연습실 방별 예약 횟수와 수익
@@ -68,4 +78,35 @@ public record UserResponseDto() {
             List<OwnerEarning> practiceRoomEarning,
             List<OwnerMonthlyEarning> monthlyEarning
     ) {}
+
+    @Builder
+    public record UserMyPageDto(
+            String userName,
+            UserThisMonthPractice userThisMonthPractices,
+            FrequentPracticeRooms frequentPracticeRooms
+    ){
+        @Builder
+        public record UserThisMonthPractice(
+                List<UserThisMonthPracticeDetail> userThisMonthPracticeList,
+                int totalPracticeCount
+        ){
+            @Builder
+            public record UserThisMonthPracticeDetail(
+                    String practiceRoomName,
+                    String practiceRoomNameDetail,
+                    int practiceCount
+            ){}
+        }
+
+        @Builder
+        public record FrequentPracticeRooms(
+                List<FrequentPracticeRoomDetail> frequentPracticeRoomDetailList
+        ){
+            @Builder
+            public record FrequentPracticeRoomDetail(
+                    String roomName
+            ){}
+        }
+    }
+
 }
