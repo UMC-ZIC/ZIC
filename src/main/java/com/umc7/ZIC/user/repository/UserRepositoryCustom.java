@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserRepositoryCustom {
 
-    UserResponseDto.user findUserByEmail(String email);
+    UserResponseDto.User findUserByEmail(String email);
 
     /**
      * 연습실 주인 연습실 방별 수익 및 예약 횟수 조회 Repository

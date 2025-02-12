@@ -2,6 +2,7 @@ package com.umc7.ZIC.reservation.repository;
 
 
 import com.umc7.ZIC.reservation.domain.Reservation;
+import com.umc7.ZIC.user.dto.UserResponseDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,4 +20,8 @@ public interface ReservationRepositoryCustom {
      * @return
      */
     Optional<List<Reservation>> findOverlappingReservations(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime);
+
+
+    List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> findUserThisMonthPracticeDetailsByUserId(Long userId);
+    List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> findTop3PracticeRoomsByUserId(Long userId);
 }

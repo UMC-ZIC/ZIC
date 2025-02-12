@@ -21,6 +21,7 @@ import com.umc7.ZIC.practiceRoom.repository.PracticeRoomInstrumentRepository;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomRepository;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomService;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomServiceImpl;
+import com.umc7.ZIC.reservation.repository.ReservationRepository;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.converter.UserConverter;
 import com.umc7.ZIC.user.converter.UserInstrumentConverter;
@@ -59,10 +60,11 @@ public class UserServiceImpl implements UserService {
     private final PracticeRoomService practiceRoomService;
     private final PracticeRoomInstrumentRepository practiceRoomInstrumentRepository;
     private final PracticeRoomRepository practiceRoomRepository;
+    private final ReservationRepository reservationRepository;
 
 
     @Override
-    public UserResponseDto.userDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
+    public UserResponseDto.UserDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -85,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto.userDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
+    public UserResponseDto.UserDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -140,15 +142,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto.userDetailsDto getUser(Long UserId, String jwtToken) {
+    public UserResponseDto.UserDetailsDto getUser(Long UserId, String jwtToken) {
         User user = userRepository.findById(UserId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-        UserResponseDto.userDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
+        UserResponseDto.UserDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
 
         return userDetailsDto;
     }
 
     @Override
-    public UserResponseDto.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
+    public UserResponseDto.UserDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
         User user = userRepository.findByKakaoId(userInfo.id()).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         String jwtAccessToken = jwtTokenProvider.createAccessToken(user.getId(),user.getRole().name(), user.getName());
@@ -166,6 +168,18 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto.OwnerMonthlyEarning> getOwnerMonthlyEarnings(Long userId) {
         return userRepository.findOwnerMonthlyEarningByUserId(userId);
     }
+
+    @Override
+    public UserResponseDto.UserMyPageDto getUserMypage(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> userThisMonthPracticeDetailList = reservationRepository.findUserThisMonthPracticeDetailsByUserId(userId);
+        List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> findTop3PracticeRoomsByUserId = reservationRepository.findTop3PracticeRoomsByUserId(userId);
+        UserResponseDto.UserMyPageDto userMyPageDto = UserConverter.UserMyPageDto(findTop3PracticeRoomsByUserId, userThisMonthPracticeDetailList, user);
+
+
+        return userMyPageDto;
+    }
+
 
     Region getRegion(String regionName) {
         return regionRepository.findByName(RegionUtil.fromKoreanName(regionName))
