@@ -9,17 +9,29 @@ import java.util.List;
 
 @Slf4j
 public class UserConverter {
-    public static UserResponseDto.userDetailsDto toRegisterUserDetails(User user, String jwtToken){
+    public static UserResponseDto.user.userDetailsDto toRegisterUserDetails(User user, String jwtToken){
 
-        return UserResponseDto.userDetailsDto.builder()
+        return UserResponseDto.user.userDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
-                .token(jwtToken).build();
+                .token(jwtToken)
+                .build();
     }
 
-    public static UserResponseDto.userDetailsDto toResponseUser(User user, String jwtToken){
-        return UserResponseDto.userDetailsDto.builder()
+    public static UserResponseDto.user.OwnerDetailsDto toRegisterOwnerDetails(User user, String jwtToken, Long practiceRoomId){
+
+        return UserResponseDto.user.OwnerDetailsDto.builder()
+                .userId(user.getId())
+                .userName(user.getName())
+                .userRole(user.getRole().toString())
+                .token(jwtToken)
+                .practiceRoomId(practiceRoomId)
+                .build();
+    }
+
+    public static UserResponseDto.user.userDetailsDto toResponseUser(User user, String jwtToken){
+        return UserResponseDto.user.userDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())

@@ -12,14 +12,24 @@ public record UserResponseDto() {
             String email,
             String name,
             Long regionId
-    ){}
-    @Builder
-    public static record userDetailsDto(
-            Long userId,
-            String userName,
-            String userRole, //user인지 owner인지
-            String token
-    ){}
+    ){
+        @Builder
+        public record userDetailsDto(
+                Long userId,
+                String userName,
+                String userRole, //user인지 owner인지
+                String token
+        ){}
+        @Builder
+        public record OwnerDetailsDto(
+                Long userId,
+                String userName,
+                String userRole, //user인지 owner인지
+                String token,
+                Long practiceRoomId
+        ){}
+    }
+
 
     /**
      * 연습실 주인의 연습실 방별 예약 횟수와 수익
