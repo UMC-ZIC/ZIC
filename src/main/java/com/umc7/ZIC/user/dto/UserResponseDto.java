@@ -8,13 +8,13 @@ import java.util.List;
 public record UserResponseDto() {
 
     @Builder
-    public record user(
+    public record User(
             String email,
             String name,
             Long regionId
     ){}
     @Builder
-    public static record userDetailsDto(
+    public record UserDetailsDto(
             Long userId,
             String userName,
             String userRole, //user인지 owner인지
@@ -68,4 +68,35 @@ public record UserResponseDto() {
             List<OwnerEarning> practiceRoomEarning,
             List<OwnerMonthlyEarning> monthlyEarning
     ) {}
+
+    @Builder
+    public record UserMyPageDto(
+            String userName,
+            UserThisMonthPractice userThisMonthPractices,
+            FrequentPracticeRooms frequentPracticeRooms
+    ){
+        @Builder
+        public record UserThisMonthPractice(
+                List<UserThisMonthPracticeDetail> userThisMonthPracticeList,
+                int totalPracticeCount
+        ){
+            @Builder
+            public record UserThisMonthPracticeDetail(
+                    String practiceRoomName,
+                    String practiceRoomNameDetail,
+                    int practiceCount
+            ){}
+        }
+
+        @Builder
+        public record FrequentPracticeRooms(
+                List<FrequentPracticeRoomDetail> frequentPracticeRoomDetailList
+        ){
+            @Builder
+            public record FrequentPracticeRoomDetail(
+                    String roomName
+            ){}
+        }
+    }
+
 }
