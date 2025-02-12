@@ -27,7 +27,7 @@ public class UserController {
 
     @Operation(summary = "유저 회원가입 할 때 사용하는 API", description = "유저가 로그인 후 추가 정보 기입후 최종 가입 할 때 사용하는 API")
     @PatchMapping("/details")
-    public ApiResponse<UserResponseDto.UserDetailsDto> userDetails(@RequestBody UserRequestDto.userDetailsDto userRequestDto){
+    public ApiResponse<UserResponseDto.User.UserDetailsDto> userDetails(@RequestBody UserRequestDto.userDetailsDto userRequestDto){
         Long userId = jwtTokenProvider.getUserIdFromToken();
 
         return ApiResponse.onSuccess(userService.updateUserDetails(userId, userRequestDto));
@@ -35,7 +35,7 @@ public class UserController {
 
 
     @GetMapping("/details")
-    public ApiResponse<UserResponseDto.UserDetailsDto> test(@RequestParam("user-id") Long userId, @RequestParam("jwt-token") String jwtToken){
+    public ApiResponse<UserResponseDto.User.UserDetailsDto> test(@RequestParam("user-id") Long userId, @RequestParam("jwt-token") String jwtToken){
 
 
         return ApiResponse.onSuccess(userService.getUser(userId, jwtToken));

@@ -16,11 +16,9 @@ import com.umc7.ZIC.practiceRoom.converter.PracticeRoomInstrumentConverter;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomInstrument;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomRequestDto;
-import com.umc7.ZIC.practiceRoom.dto.PracticeRoomResponseDto;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomInstrumentRepository;
 import com.umc7.ZIC.practiceRoom.repository.PracticeRoomRepository;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomService;
-import com.umc7.ZIC.practiceRoom.service.PracticeRoomServiceImpl;
 import com.umc7.ZIC.reservation.repository.ReservationRepository;
 import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.converter.UserConverter;
@@ -45,7 +43,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -64,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponseDto.UserDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
+    public UserResponseDto.User.UserDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -87,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto.UserDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
+    public UserResponseDto.User.OwnerDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -137,20 +134,21 @@ public class UserServiceImpl implements UserService {
             PracticeRoomInstrument practiceRoomInstrument = PracticeRoomInstrumentConverter.toPracticeRoomInstrument(savedPracticeRoom, getInstrument(roomInstrument));
             practiceRoomInstrumentRepository.save(practiceRoomInstrument);
         }
+
         String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
-        return UserConverter.toRegisterUserDetails(user, jwtToken);
+        return UserConverter.toRegisterOwnerDetails(user, jwtToken, savedPracticeRoom.getId());
     }
 
     @Override
-    public UserResponseDto.UserDetailsDto getUser(Long UserId, String jwtToken) {
+    public UserResponseDto.User.UserDetailsDto getUser(Long UserId, String jwtToken) {
         User user = userRepository.findById(UserId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-        UserResponseDto.UserDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
+        UserResponseDto.User.UserDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
 
         return userDetailsDto;
     }
 
     @Override
-    public UserResponseDto.UserDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
+    public UserResponseDto.User.UserDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
         User user = userRepository.findByKakaoId(userInfo.id()).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         String jwtAccessToken = jwtTokenProvider.createAccessToken(user.getId(),user.getRole().name(), user.getName());

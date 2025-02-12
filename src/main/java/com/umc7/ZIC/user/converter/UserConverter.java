@@ -9,17 +9,29 @@ import java.util.List;
 
 @Slf4j
 public class UserConverter {
-    public static UserResponseDto.UserDetailsDto toRegisterUserDetails(User user, String jwtToken){
+    public static UserResponseDto.User.UserDetailsDto toRegisterUserDetails(User user, String jwtToken){
 
-        return UserResponseDto.UserDetailsDto.builder()
+        return UserResponseDto.User.UserDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
-                .token(jwtToken).build();
+                .token(jwtToken)
+                .build();
     }
 
-    public static UserResponseDto.UserDetailsDto toResponseUser(User user, String jwtToken){
-        return UserResponseDto.UserDetailsDto.builder()
+    public static UserResponseDto.User.OwnerDetailsDto toRegisterOwnerDetails(User user, String jwtToken, Long practiceRoomId){
+
+        return UserResponseDto.User.OwnerDetailsDto.builder()
+                .userId(user.getId())
+                .userName(user.getName())
+                .userRole(user.getRole().toString())
+                .token(jwtToken)
+                .practiceRoomId(practiceRoomId)
+                .build();
+    }
+
+    public static UserResponseDto.User.UserDetailsDto toResponseUser(User user, String jwtToken){
+        return UserResponseDto.User.UserDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
