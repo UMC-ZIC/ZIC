@@ -14,7 +14,7 @@ public record UserResponseDto() {
             Long regionId
     ){
         @Builder
-        public record userDetailsDto(
+        public record UserDetailsDto(
                 Long userId,
                 String userName,
                 String userRole, //user인지 owner인지

@@ -9,9 +9,9 @@ import java.util.List;
 
 @Slf4j
 public class UserConverter {
-    public static UserResponseDto.user.userDetailsDto toRegisterUserDetails(User user, String jwtToken){
+    public static UserResponseDto.User.UserDetailsDto toRegisterUserDetails(User user, String jwtToken){
 
-        return UserResponseDto.user.userDetailsDto.builder()
+        return UserResponseDto.User.UserDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
@@ -19,9 +19,9 @@ public class UserConverter {
                 .build();
     }
 
-    public static UserResponseDto.user.OwnerDetailsDto toRegisterOwnerDetails(User user, String jwtToken, Long practiceRoomId){
+    public static UserResponseDto.User.OwnerDetailsDto toRegisterOwnerDetails(User user, String jwtToken, Long practiceRoomId){
 
-        return UserResponseDto.user.OwnerDetailsDto.builder()
+        return UserResponseDto.User.OwnerDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
@@ -30,8 +30,8 @@ public class UserConverter {
                 .build();
     }
 
-    public static UserResponseDto.user.userDetailsDto toResponseUser(User user, String jwtToken){
-        return UserResponseDto.user.userDetailsDto.builder()
+    public static UserResponseDto.User.UserDetailsDto toResponseUser(User user, String jwtToken){
+        return UserResponseDto.User.UserDetailsDto.builder()
                 .userId(user.getId())
                 .userName(user.getName())
                 .userRole(user.getRole().toString())
