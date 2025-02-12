@@ -2,6 +2,7 @@ package com.umc7.ZIC.user.service;
 
 import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.handler.InstrumentHandler;
+import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.RegionHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.common.domain.Instrument;
@@ -11,7 +12,13 @@ import com.umc7.ZIC.common.repository.InstrumentRepository;
 import com.umc7.ZIC.common.repository.RegionRepository;
 import com.umc7.ZIC.common.util.InstrumentUtil;
 import com.umc7.ZIC.common.util.RegionUtil;
+import com.umc7.ZIC.practiceRoom.converter.PracticeRoomInstrumentConverter;
+import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
+import com.umc7.ZIC.practiceRoom.domain.PracticeRoomInstrument;
 import com.umc7.ZIC.practiceRoom.dto.PracticeRoomRequestDto;
+import com.umc7.ZIC.practiceRoom.dto.PracticeRoomResponseDto;
+import com.umc7.ZIC.practiceRoom.repository.PracticeRoomInstrumentRepository;
+import com.umc7.ZIC.practiceRoom.repository.PracticeRoomRepository;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomService;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomServiceImpl;
 import com.umc7.ZIC.security.JwtTokenProvider;
@@ -50,6 +57,8 @@ public class UserServiceImpl implements UserService {
     private final UserInstrumentRepository userInstrumentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PracticeRoomService practiceRoomService;
+    private final PracticeRoomInstrumentRepository practiceRoomInstrumentRepository;
+    private final PracticeRoomRepository practiceRoomRepository;
 
 
     @Override
@@ -109,7 +118,23 @@ public class UserServiceImpl implements UserService {
         updateAuthorities(user);
         PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
                 (savedUser.getName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
-        practiceRoomService.createPracticeRoom(createPracticeReqDto, savedUser.getId());
+
+        PracticeRoom savedPracticeRoom;
+        try {
+            PracticeRoom practiceRoom = createPracticeReqDto.toEntity(user, user.getRegion());
+
+            savedPracticeRoom = practiceRoomRepository.save(practiceRoom);
+
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
+        }
+
+
+        for (String roomInstrument : ownerDetailsDto.instrumentList()){
+            PracticeRoomInstrument practiceRoomInstrument = PracticeRoomInstrumentConverter.toPracticeRoomInstrument(savedPracticeRoom, getInstrument(roomInstrument));
+            practiceRoomInstrumentRepository.save(practiceRoomInstrument);
+        }
         String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
         return UserConverter.toRegisterUserDetails(user, jwtToken);
     }
@@ -145,6 +170,11 @@ public class UserServiceImpl implements UserService {
     Region getRegion(String regionName) {
         return regionRepository.findByName(RegionUtil.fromKoreanName(regionName))
                 .orElseThrow(() -> new RegionHandler(ErrorStatus.REGION_NOT_FOUND));
+    }
+
+    Instrument getInstrument(String instrumentName) {
+        return instrumentRepository.findByName(InstrumentUtil.fromKoreanName(instrumentName))
+                .orElseThrow(() -> new InstrumentHandler(ErrorStatus.INSTRUMENT_NOT_FOUND));
     }
 
 
