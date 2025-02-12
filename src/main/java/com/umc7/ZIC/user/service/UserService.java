@@ -8,11 +8,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface UserService {
-    UserResponseDto.userDetailsDto updateUserDetails(Long UserId, UserRequestDto.userDetailsDto userDetailsDto);
-    UserResponseDto.userDetailsDto updateOwnerDetails(Long UserId, UserRequestDto.ownerDetailsDto ownerDetailsDto);
+    UserResponseDto.user.userDetailsDto updateUserDetails(Long UserId, UserRequestDto.userDetailsDto userDetailsDto);
+    UserResponseDto.user.OwnerDetailsDto updateOwnerDetails(Long UserId, UserRequestDto.ownerDetailsDto ownerDetailsDto);
 
-    UserResponseDto.userDetailsDto getUser(Long UserId, String jwtToken);
-    UserResponseDto.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo);
+    UserResponseDto.user.userDetailsDto getUser(Long UserId, String jwtToken);
+    UserResponseDto.user.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo);
     /**
      * 연습실 주인 연습실 방별 수익 및 예약 횟수 조회 Service
      * @param userId

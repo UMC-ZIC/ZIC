@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponseDto.userDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
+    public UserResponseDto.user.userDetailsDto updateUserDetails(Long userId, UserRequestDto.userDetailsDto userDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto.userDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
+    public UserResponseDto.user.OwnerDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         checkPendingStatus(user);
@@ -135,20 +135,21 @@ public class UserServiceImpl implements UserService {
             PracticeRoomInstrument practiceRoomInstrument = PracticeRoomInstrumentConverter.toPracticeRoomInstrument(savedPracticeRoom, getInstrument(roomInstrument));
             practiceRoomInstrumentRepository.save(practiceRoomInstrument);
         }
+
         String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
-        return UserConverter.toRegisterUserDetails(user, jwtToken);
+        return UserConverter.toRegisterOwnerDetails(user, jwtToken, savedPracticeRoom.getId());
     }
 
     @Override
-    public UserResponseDto.userDetailsDto getUser(Long UserId, String jwtToken) {
+    public UserResponseDto.user.userDetailsDto getUser(Long UserId, String jwtToken) {
         User user = userRepository.findById(UserId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-        UserResponseDto.userDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
+        UserResponseDto.user.userDetailsDto userDetailsDto= UserConverter.toResponseUser(user, jwtToken);
 
         return userDetailsDto;
     }
 
     @Override
-    public UserResponseDto.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
+    public UserResponseDto.user.userDetailsDto kaKaoGetUser(KakaoUserInfoResponseDto userInfo) {
         User user = userRepository.findByKakaoId(userInfo.id()).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         String jwtAccessToken = jwtTokenProvider.createAccessToken(user.getId(),user.getRole().name(), user.getName());
