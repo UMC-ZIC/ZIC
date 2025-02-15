@@ -1,7 +1,8 @@
-package com.umc7.ZIC.security;
+package com.umc7.ZIC.security.OAuth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.domain.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
