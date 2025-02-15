@@ -1,4 +1,4 @@
-package com.umc7.ZIC.security;
+package com.umc7.ZIC.security.OAuth;
 
 import com.umc7.ZIC.user.domain.User;
 import com.umc7.ZIC.user.domain.enums.RoleType;

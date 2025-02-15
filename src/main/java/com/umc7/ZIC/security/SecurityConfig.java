@@ -1,5 +1,8 @@
 package com.umc7.ZIC.security;
 
+import com.umc7.ZIC.security.OAuth.CustomOAuth2UserService;
+import com.umc7.ZIC.security.OAuth.OAuith2AuthenticationFailureHandler;
+import com.umc7.ZIC.security.OAuth.OAuth2AuthenticationSuccessHandler;
 import com.umc7.ZIC.security.handler.CustomAccessDeniedHandler;
 import com.umc7.ZIC.security.handler.CustomAuthenticationEntryPoint;
 import com.umc7.ZIC.security.handler.ExceptionFilter;
