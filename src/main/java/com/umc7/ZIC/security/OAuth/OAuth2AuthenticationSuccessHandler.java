@@ -62,7 +62,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 //
 //            response.getWriter().write(objectMapper.writeValueAsString(responseBody));
 //            response.getWriter().flush();
-
             log.info("Authentication successful for user: {}", userId);
         } catch (Exception e) {
             response.setContentType(CONTENT_TYPE);
@@ -70,7 +69,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write(ERROR_MESSAGE);
             response.getWriter().flush();
-
             log.error("Authentication failed", e);
         }
     }
@@ -80,7 +78,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         //개발 로컬호스트 용
         if (url.equals("localhost")) {
-            redirect_url = "http://localhost:8080/api/kakao/home";
+            redirect_url = "http://localhost:5173"+"/login/oauth/loading";
         }
         //프론트 배포 용
         else {
