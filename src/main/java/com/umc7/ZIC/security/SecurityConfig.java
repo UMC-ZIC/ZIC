@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
@@ -31,7 +32,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers( "/api/kakao/home","/api/kakao/page","/api/kakao/login/oauth2","/api/kakao/page").permitAll()
                         .requestMatchers("/api/user/details", "/api/owner/details","/api/user/login").hasRole("PENDING")
                         .requestMatchers("/api/user/**").hasRole("USER")
