@@ -41,6 +41,7 @@ public class UserController {
         return ApiResponse.onSuccess(userService.getUser(userId, jwtToken));
     }
 
+    @Operation(summary = "마이페이지 API", description = "마이페이지 이번달 연습 횟수, 자주 가는 연습실 API")
     @GetMapping("/mypage")
     public ApiResponse<UserResponseDto.UserMyPageDto> mypage(){
         Long userId = jwtTokenProvider.getUserIdFromToken();
