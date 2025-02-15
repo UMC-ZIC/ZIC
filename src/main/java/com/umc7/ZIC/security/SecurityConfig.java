@@ -79,7 +79,9 @@ public class SecurityConfig {
                 "http://43.200.3.214:8080",
                 "https://43.200.3.214:8080",
                 "http://zic-eight.vercel.app",
-                "https://zic-eight.vercel.app"
+                "https://zic-eight.vercel.app",
+                "https://zic-sellens-projects.vercel.app",
+                "http://zic-sellens-projects.vercel.app/"
         ));
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
