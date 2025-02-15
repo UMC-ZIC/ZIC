@@ -4,6 +4,7 @@ import com.umc7.ZIC.security.handler.CustomAccessDeniedHandler;
 import com.umc7.ZIC.security.handler.CustomAuthenticationEntryPoint;
 import com.umc7.ZIC.security.handler.ExceptionFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,6 +30,8 @@ public class SecurityConfig {
     private final ExceptionFilter exceptionHandlerFilter; // ExceptionHandlerFilter 필드 추가
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final OAuith2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    @Value("${frontend.redirect-url}")
+    private String frontURL;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
@@ -74,14 +77,7 @@ public class SecurityConfig {
                 "https://localhost:3000",
                 "http://localhost:5173",
                 "https://localhost:5173",
-                "http://localhost:8080",
-                "https://localhost:8080",
-                "http://43.200.3.214:8080",
-                "https://43.200.3.214:8080",
-                "http://zic-eight.vercel.app",
-                "https://zic-eight.vercel.app",
-                "https://zic-sellens-projects.vercel.app",
-                "http://zic-sellens-projects.vercel.app/"
+                frontURL
         ));
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
