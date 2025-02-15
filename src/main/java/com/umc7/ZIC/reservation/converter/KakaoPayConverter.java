@@ -42,6 +42,7 @@ public class KakaoPayConverter {
             String partner_user_id, String item,
             LocalTime startTime, LocalTime endTime,
             int price, String redirectUrl) {
+        System.out.println(redirectUrl);
 
         Duration duration = Duration.between(startTime, endTime);
         Long hours = duration.toHours();
