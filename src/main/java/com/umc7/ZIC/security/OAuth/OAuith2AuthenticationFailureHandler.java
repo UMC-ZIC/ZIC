@@ -1,4 +1,4 @@
-package com.umc7.ZIC.security;
+package com.umc7.ZIC.security.OAuth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

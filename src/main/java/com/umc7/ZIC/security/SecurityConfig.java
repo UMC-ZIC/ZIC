@@ -1,9 +1,13 @@
 package com.umc7.ZIC.security;
 
+import com.umc7.ZIC.security.OAuth.CustomOAuth2UserService;
+import com.umc7.ZIC.security.OAuth.OAuith2AuthenticationFailureHandler;
+import com.umc7.ZIC.security.OAuth.OAuth2AuthenticationSuccessHandler;
 import com.umc7.ZIC.security.handler.CustomAccessDeniedHandler;
 import com.umc7.ZIC.security.handler.CustomAuthenticationEntryPoint;
 import com.umc7.ZIC.security.handler.ExceptionFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
@@ -28,10 +33,14 @@ public class SecurityConfig {
     private final ExceptionFilter exceptionHandlerFilter; // ExceptionHandlerFilter 필드 추가
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final OAuith2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    @Value("${frontend.redirect-url}")
+    private String frontURL;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers( "/api/kakao/home","/api/kakao/page","/api/kakao/login/oauth2","/api/kakao/page").permitAll()
                         .requestMatchers("/api/user/details", "/api/owner/details","/api/user/login").hasRole("PENDING")
                         .requestMatchers("/api/user/**").hasRole("USER")
@@ -71,12 +80,7 @@ public class SecurityConfig {
                 "https://localhost:3000",
                 "http://localhost:5173",
                 "https://localhost:5173",
-                "http://localhost:8080",
-                "https://localhost:8080",
-                "http://43.200.3.214:8080",
-                "https://43.200.3.214:8080",
-                "http://zic-eight.vercel.app",
-                "https://zic-eight.vercel.app"
+                frontURL
         ));
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
