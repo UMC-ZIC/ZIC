@@ -4,6 +4,8 @@ import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomDetailHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
+import com.umc7.ZIC.practiceRoom.converter.PracticeRoomConvertor;
+import com.umc7.ZIC.practiceRoom.converter.PracticeRoomDetailConvertor;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import com.umc7.ZIC.practiceRoom.domain.enums.RoomStatus;
@@ -218,5 +220,16 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
         PracticeRoomDetail updatedPracticeRoomDetail = practiceRoomDetailRepository.save(practiceRoomDetail);
 
         return PracticeRoomDetailResponseDto.UpdateDetailResponseDto.from(updatedPracticeRoomDetail);
+    }
+
+    @Override
+    public PracticeRoomDetailResponseDto.GetOwnerDetailResponseDto getOwnerPracticeRoomDetailList(Long userId) {
+        PracticeRoom practiceRoom = practiceRoomRepository.findByUserId(userId).orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
+        List<PracticeRoomDetail> practiceRoomDetails = practiceRoomDetailRepository.findByPracticeRoomId(practiceRoom.getId());
+
+        return PracticeRoomDetailResponseDto.GetOwnerDetailResponseDto.builder()
+                .practiceRoomDTO(PracticeRoomConvertor.toPracticeRoom(practiceRoom))
+                .practiceRoomDetailDTO(PracticeRoomDetailConvertor.toPracticeRoomDetails(practiceRoomDetails))
+                .build();
     }
 }

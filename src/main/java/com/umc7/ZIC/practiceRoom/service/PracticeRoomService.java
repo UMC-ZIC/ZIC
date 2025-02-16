@@ -1,9 +1,6 @@
 package com.umc7.ZIC.practiceRoom.service;
 
-import com.umc7.ZIC.practiceRoom.dto.PageRequestDto;
-import com.umc7.ZIC.practiceRoom.dto.PageResponseDto;
-import com.umc7.ZIC.practiceRoom.dto.PracticeRoomRequestDto;
-import com.umc7.ZIC.practiceRoom.dto.PracticeRoomResponseDto;
+import com.umc7.ZIC.practiceRoom.dto.*;
 import org.springframework.data.domain.Page;
 
 public interface PracticeRoomService {

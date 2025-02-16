@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,4 +25,5 @@ public interface PracticeRoomDetailRepository extends JpaRepository<PracticeRoom
     // 연습실 내부 연습방 단일 조회 (방 ID와 연습실로 조회)
     Optional<PracticeRoomDetail> findByIdAndPracticeRoom(Long id, PracticeRoom practiceRoom);
 
+    List<PracticeRoomDetail> findByPracticeRoomId(Long practiceRoomId);
 }
