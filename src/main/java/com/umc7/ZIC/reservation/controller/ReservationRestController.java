@@ -111,6 +111,10 @@ public class ReservationRestController {
                                                                                                  @RequestParam(name = "date") LocalDate date,
                                                                                                  @CheckPage @RequestParam(name = "page") Integer page
     ) {
+        if (!Objects.equals(jwtTokenProvider.getUserTypeFromToken(), RoleType.OWNER.name())) {
+            throw new UserHandler(ErrorStatus.JWT_AUTHORIZATION_FAILED);
+        }
+
         Page<Reservation> reservationList = reservationQueryService.getOwnerReservationList(jwtTokenProvider.getUserIdFromToken(), date, page - 1);
 
         return ApiResponse.onSuccess(ReservationConverter.toOwnerReservationList(reservationList)); // Owner 전용 Converter 사용

@@ -44,7 +44,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
             "JOIN r.practiceRoomDetail prd " +
             "JOIN prd.practiceRoom pr " +
             "JOIN pr.user u "+ // User 엔티티와 조인 추가
-            "WHERE u.id = :userId " +  // user ID 조건
+            "WHERE pr.user.id = :userId " +  // user ID 조건
             "AND r.date = :date " +          // 예약 날짜 조건
             "AND r.status = :status")         // 예약 상태 조건
     //user의 타입이 owner 이니까 파라미터는 일단 userId로 표기하였습니다
