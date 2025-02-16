@@ -2,6 +2,8 @@ package com.umc7.ZIC.reservation.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.umc7.ZIC.practiceRoom.domain.QPracticeRoom;
+import com.umc7.ZIC.practiceRoom.domain.QPracticeRoomDetail;
 import com.umc7.ZIC.reservation.domain.QReservation;
 import com.umc7.ZIC.reservation.domain.Reservation;
 import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
@@ -23,6 +25,8 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     QReservation qReservation = QReservation.reservation;
+    QPracticeRoom qPracticeRoom = QPracticeRoom.practiceRoom;
+    QPracticeRoomDetail qPracticeRoomDetail = QPracticeRoomDetail.practiceRoomDetail;
 
     @Override
     public Optional<List<Reservation>> findOverlappingReservations(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime) {
@@ -75,5 +79,35 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .limit(3) // 상위 3개 선택
                 .fetch();
         return results;
+    }
+
+    @Override
+    public List<LocalDate> findReservationDateByUserIdAndMonth(Long userId, LocalDate date) {
+        return jpaQueryFactory
+                .select(qReservation.date)
+                .from(qReservation)
+                .where(
+                        qReservation.user.id.eq(userId),
+                        qReservation.status.eq(ReservationStatus.SUCCESS),
+                        qReservation.date.year().eq(date.getYear()),
+                        qReservation.date.month().eq(date.getMonthValue())
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<LocalDate> findReservationDateByOwnerIdAndMonth(Long userId, LocalDate date) {
+        return jpaQueryFactory
+                .select(qReservation.date)
+                .from(qReservation)
+                .join(qReservation.practiceRoomDetail, qPracticeRoomDetail)
+                .join(qPracticeRoomDetail.practiceRoom, qPracticeRoom)
+                .where(
+                        qPracticeRoom.user.id.eq(userId),
+                        qReservation.status.eq(ReservationStatus.SUCCESS),
+                        qReservation.date.year().eq(date.getYear()),
+                        qReservation.date.month().eq(date.getMonthValue())
+                )
+                .fetch();
     }
 }

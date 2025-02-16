@@ -10,6 +10,7 @@ import com.umc7.ZIC.reservation.dto.ReservationResponseDTO;
 import com.umc7.ZIC.user.domain.User;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class ReservationConverter {
@@ -234,6 +235,39 @@ public class ReservationConverter {
                 .practiceRoomDetailName(reservation.getPracticeRoomDetail().getName())
                 .reservationUserName(reservation.getUser().getName())
                 .amount(reservation.getReservationDetail().getAmount())
+                .build();
+    }
+
+    /**
+     * 특정 달에 예약한 예약 목록 객체 생성
+     * @param userId
+     * @param date
+     * @param reservationList
+     * @return
+     */
+    public static ReservationResponseDTO.ReservationMonthUserDTO toReservationMonthList(Long userId, String role, LocalDate date, List<LocalDate> reservationList) {
+        return ReservationResponseDTO.ReservationMonthUserDTO.builder()
+                .userId(userId)
+                .role(role)
+                .date(date)
+                .reservationDateList(reservationList)
+                .build();
+    }
+
+    /**
+     * 대여자가 등록한 연습실의 특정 달 동안 예약된 날짜 목록 객체 생성
+     * @param userId
+     * @param role
+     * @param date
+     * @param reservationList
+     * @return
+     */
+    public static ReservationResponseDTO.ReservationMonthOwnerDTO toOwnerReservationMonthList(Long userId, String role, LocalDate date, List<LocalDate> reservationList) {
+        return ReservationResponseDTO.ReservationMonthOwnerDTO.builder()
+                .userId(userId)
+                .role(role)
+                .date(date)
+                .reservationDateList(reservationList)
                 .build();
     }
 }
