@@ -24,4 +24,20 @@ public interface ReservationRepositoryCustom {
 
     List<UserResponseDto.UserMyPageDto.UserThisMonthPractice.UserThisMonthPracticeDetail> findUserThisMonthPracticeDetailsByUserId(Long userId);
     List<UserResponseDto.UserMyPageDto.FrequentPracticeRooms.FrequentPracticeRoomDetail> findTop3PracticeRoomsByUserId(Long userId);
+
+    /**
+     * 특정 달에 예약한 모든 예약 날짜를 조회하는 Repository
+     * @param userId
+     * @param date
+     * @return
+     */
+    List<LocalDate> findReservationDateByUserIdAndMonth(Long userId, LocalDate date);
+
+    /**
+     * 해당 대여자가 등록한 연습실에 예약된 특정 달 동안의 예약 날짜 조회 Repository
+     * @param userId
+     * @param date
+     * @return
+     */
+    List<LocalDate> findReservationDateByOwnerIdAndMonth(Long userId, LocalDate date);
 }

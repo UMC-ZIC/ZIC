@@ -1,6 +1,7 @@
 package com.umc7.ZIC.reservation.service;
 
 import com.umc7.ZIC.reservation.domain.Reservation;
+import com.umc7.ZIC.reservation.dto.ReservationResponseDTO;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
@@ -45,4 +46,22 @@ public interface ReservationQueryService {
      */
     //user 객체의 type이 owner인 경우니 파라미터는 일단 userId로 표기하였습니다.
     Page<Reservation> getOwnerReservationList(Long userId, LocalDate localDate, Integer page);
+
+    /**
+     * userId와 date를 입력 받아 해당 월에 예약한 날짜를 조회하는 Service
+     * @param userId
+     * @param role
+     * @param date
+     * @return
+     */
+    ReservationResponseDTO.ReservationMonthUserDTO getUserReservationMonth(Long userId, String role, LocalDate date);
+
+    /**
+     * 해당 대여자가 등록한 연습실에 예약된 특정 달 동안의 예약 날짜 조회 Service
+     * @param userId
+     * @param role
+     * @param date
+     * @return
+     */
+    ReservationResponseDTO.ReservationMonthOwnerDTO getOwnerReservationMonth(Long userId, String role, LocalDate date);
 }

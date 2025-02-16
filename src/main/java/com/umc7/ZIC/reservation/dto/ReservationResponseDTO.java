@@ -171,5 +171,35 @@ public class ReservationResponseDTO {
                 String practiceRoomDetailImage
         ) {}
     }
+
+    /**
+     * 특정 달동안 예약된 날짜 목록
+     * @param userId
+     * @param role
+     * @param date
+     * @param reservationDateList
+     */
+    @Builder
+    public record ReservationMonthUserDTO(
+            Long userId,
+            String role,
+            LocalDate date,
+            List<LocalDate> reservationDateList
+    ) {}
+
+    /**
+     * 대여자가 등록한 연습실에 특정 달 동안 예약한 예약 날짜 목록
+     * @param userId
+     * @param role
+     * @param date
+     * @param reservationDateList
+     */
+    @Builder
+    public record ReservationMonthOwnerDTO(
+            Long userId,
+            String role,
+            LocalDate date,
+            List<LocalDate> reservationDateList
+    ) {}
 }
 
