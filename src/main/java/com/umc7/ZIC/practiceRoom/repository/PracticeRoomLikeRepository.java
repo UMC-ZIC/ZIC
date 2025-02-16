@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,4 +20,8 @@ public interface PracticeRoomLikeRepository extends JpaRepository<PracticeRoomLi
     // 좋아요 갯수 조회 (연습실 ID로 조회)
     @Query("SELECT COUNT(prl) FROM PracticeRoomLike prl WHERE prl.practiceRoom.id = :practiceRoomId")
     Long countByPracticeRoomId(@Param("practiceRoomId") Long practiceRoomId);
+
+    // 좋아요 명단 조회
+    @Query("SELECT pl.user.id FROM PracticeRoomLike pl WHERE pl.practiceRoom.id = :practiceRoomId")
+    List<Long> findByPracticeRoomId(Long practiceRoomId);
 }

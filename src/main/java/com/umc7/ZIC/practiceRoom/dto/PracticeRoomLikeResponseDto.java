@@ -3,6 +3,7 @@ package com.umc7.ZIC.practiceRoom.dto;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomLike;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record PracticeRoomLikeResponseDto() {
 
@@ -23,10 +24,10 @@ public record PracticeRoomLikeResponseDto() {
     }
 
     public record LikeCountResponseDto(
-            Long count
+            List<Long> likeList
     ) {
-        public static LikeCountResponseDto from(Long count) {
-            return new LikeCountResponseDto(count);
+        public static LikeCountResponseDto from(List<Long> likeList) {
+            return new LikeCountResponseDto(likeList);
         }
     }
 }

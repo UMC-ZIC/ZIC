@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -61,8 +62,8 @@ public class PracticeRoomLikeServiceImpl implements PracticeRoomLikeService {
     public PracticeRoomLikeResponseDto.LikeCountResponseDto getLikeCount(Long practiceRoomId) {
 
         // 좋아요 개수 조회
-        Long likeCount = practiceRoomLikeRepository.countByPracticeRoomId(practiceRoomId);
+        List<Long> likeList = practiceRoomLikeRepository.findByPracticeRoomId(practiceRoomId);
 
-        return PracticeRoomLikeResponseDto.LikeCountResponseDto.from(likeCount);
+        return PracticeRoomLikeResponseDto.LikeCountResponseDto.from(likeList);
     }
 }
