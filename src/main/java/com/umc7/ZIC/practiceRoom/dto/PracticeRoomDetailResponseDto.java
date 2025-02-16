@@ -2,8 +2,10 @@ package com.umc7.ZIC.practiceRoom.dto;
 
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoomDetail;
 import com.umc7.ZIC.practiceRoom.domain.enums.RoomStatus;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record PracticeRoomDetailResponseDto() {
 
@@ -63,5 +65,30 @@ public record PracticeRoomDetailResponseDto() {
                     practiceRoomDetail.getUpdatedAt()
             );
         }
+    }
+
+    @Builder
+    public record GetOwnerDetailResponseDto(
+            PracticeRoomDTO practiceRoomDTO,
+            List<PracticeRoomDetailDTO> practiceRoomDetailDTO
+    ) {
+        @Builder
+        public record PracticeRoomDTO (
+                Long practiceRoomId,
+                String img,
+                String region,
+                String address,
+                Double longitude,
+                Double latitude
+        ) {}
+
+        @Builder
+        public record PracticeRoomDetailDTO (
+                Long practiceRoomDetailId,
+                String img,
+                String name,
+                Integer fee,
+                RoomStatus status
+        ) {}
     }
 }

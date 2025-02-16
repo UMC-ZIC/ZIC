@@ -6,6 +6,7 @@ import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.practiceRoom.dto.*;
 import com.umc7.ZIC.practiceRoom.service.PracticeRoomDetailService;
 import com.umc7.ZIC.security.JwtTokenProvider;
+import com.umc7.ZIC.user.domain.enums.RoleType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/practice-room-details")
@@ -115,5 +117,16 @@ public class PracticeRoomDetailController {
         Long userId = jwtTokenProvider.getUserIdFromToken();
         PracticeRoomDetailResponseDto.UpdateDetailResponseDto response = practiceRoomDetailService.updateStatusPracticeRoomDetail(practiceRoomDetailId, userId);
         return ApiResponse.onSuccess(response);
+    }
+
+    // 대여자 전용 연습실 내부 방 목록 조회
+    @GetMapping("/owner")
+    @Operation(summary = "대여자 전용 연습실 내부 방 목록 조회 API", description = "대여자 전용 연습실 내부 방 목록을 조회하는API.")
+    public ApiResponse<PracticeRoomDetailResponseDto.GetOwnerDetailResponseDto> getOwnerPracticeRoomDetailList() {
+        if (!Objects.equals(jwtTokenProvider.getUserTypeFromToken(), RoleType.OWNER.name())) {
+            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
+        }
+
+        return ApiResponse.onSuccess(practiceRoomDetailService.getOwnerPracticeRoomDetailList(jwtTokenProvider.getUserIdFromToken()));
     }
 }
