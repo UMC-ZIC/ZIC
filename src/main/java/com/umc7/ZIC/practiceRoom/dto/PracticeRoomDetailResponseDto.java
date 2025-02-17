@@ -77,6 +77,7 @@ public record PracticeRoomDetailResponseDto() {
                 Long practiceRoomId,
                 String img,
                 String region,
+                String name,
                 String address,
                 Double longitude,
                 Double latitude

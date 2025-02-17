@@ -13,6 +13,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +29,7 @@ import java.util.Objects;
 @Tag(name = "연습실 내부 방", description = "연습실 내부 방 CRUD")
 public class PracticeRoomDetailController {
 
+    private static final Logger log = LoggerFactory.getLogger(PracticeRoomDetailController.class);
     private final PracticeRoomDetailService practiceRoomDetailService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -35,11 +39,11 @@ public class PracticeRoomDetailController {
     public ApiResponse<PracticeRoomDetailResponseDto.CreateDetailResponseDto> createPracticeRoomDetail(
             @RequestBody @Valid PracticeRoomDetailRequestDto.CreateRequestDetailDto createRequest,
             @RequestParam("practiceRoomId") Long practiceRoomId) {
-
+        // TODO : 로그 확인
+    log.info("연습실 등록 이미지 확인 : "+ createRequest.image());
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
             throw new UserHandler(ErrorStatus._UNAUTHORIZED);
         }
-
         Long userId = jwtTokenProvider.getUserIdFromToken();
         PracticeRoomDetailResponseDto.CreateDetailResponseDto response = practiceRoomDetailService.createPracticeRoomDetail(createRequest, practiceRoomId, userId);
         return ApiResponse.onSuccess(response);
@@ -70,6 +74,8 @@ public class PracticeRoomDetailController {
     public ApiResponse<PracticeRoomDetailResponseDto.UpdateDetailResponseDto> updatePracticeRoomDetail(
             @RequestBody @Valid PracticeRoomDetailRequestDto.UpdateRequestDetailDto updateRequest,
             @PathVariable Long practiceRoomDetailId) {
+        // TODO : 로그 확인
+        log.info("연습실 정보 수정 : "+updateRequest.image());
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
             throw new UserHandler(ErrorStatus._UNAUTHORIZED);
         }
@@ -110,6 +116,8 @@ public class PracticeRoomDetailController {
     @Operation(summary = "연습실 내부 방 이용가능, 이용중지 전용 API", description = "호출 시마다 이용 가능/이용 중지 상태가 번갈아 전환됩니다..")
     public ApiResponse<PracticeRoomDetailResponseDto.UpdateDetailResponseDto> updateStatusPracticeRoomDetail(
             @PathVariable Long practiceRoomDetailId) {
+        // TODO : 로그 확인
+        log.info("이용 상태 변경 : " + practiceRoomDetailId);
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
             throw new UserHandler(ErrorStatus._UNAUTHORIZED);
         }

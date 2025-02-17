@@ -52,12 +52,11 @@ public class PracticeRoom extends BaseEntity {
     @OneToMany(mappedBy = "practiceRoom", cascade = CascadeType.ALL)
     private List<PracticeRoomDetail> PracticeRoomDetailList = new ArrayList<>();
 
-    public void update(String name, String address, Double latitude, Double longitude) {
+    public void update(String name, String address, Double latitude, Double longitude, String image) {
         this.name = name;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.image = image;
     }
-
-
 }

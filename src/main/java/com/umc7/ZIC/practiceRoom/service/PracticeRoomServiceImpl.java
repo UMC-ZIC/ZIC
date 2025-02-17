@@ -78,7 +78,8 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
                 updateRequest.name() != null ? updateRequest.name() : practiceRoom.getName(),
                 updateRequest.address() != null ? updateRequest.address() : practiceRoom.getAddress(),
                 updateRequest.latitude() != null ? updateRequest.latitude() : practiceRoom.getLatitude(),
-                updateRequest.longitude() != null ? updateRequest.longitude() : practiceRoom.getLongitude()
+                updateRequest.longitude() != null ? updateRequest.longitude() : practiceRoom.getLongitude(),
+                updateRequest.image() != null ? updateRequest.image() : practiceRoom.getImage()
         );
 
         PracticeRoom updatedPracticeRoom = practiceRoomRepository.save(practiceRoom);
