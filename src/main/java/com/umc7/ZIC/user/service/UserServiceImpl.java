@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
     private final PracticeRoomInstrumentRepository practiceRoomInstrumentRepository;
     private final PracticeRoomRepository practiceRoomRepository;
     private final ReservationRepository reservationRepository;
+    private final String defaultImg= "https://firebasestorage.googleapis.com/v0/b/muzic-6fce5.firebasestorage.app/o/zic%2Fdefault%2FZIC_default.jpg?alt=media&token=564dd5fe-c924-448e-98ff-d1b2eec7e10b";
 
 
     @Override
@@ -115,9 +116,11 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
         updateAuthorities(user);
-        PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
-                (savedUser.getBusinessName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), null, null,null);
 
+        PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
+                (savedUser.getBusinessName(), savedUser.getRegion().getName().getKoreanName()+" "+savedUser.getAddress(), defaultImg, null,null);
+
+        //연습실 등록
         PracticeRoom savedPracticeRoom;
         try {
             PracticeRoom practiceRoom = createPracticeReqDto.toEntity(user, user.getRegion());
