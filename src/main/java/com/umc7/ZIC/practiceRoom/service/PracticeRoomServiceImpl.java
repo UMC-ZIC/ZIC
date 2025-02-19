@@ -2,10 +2,8 @@ package com.umc7.ZIC.practiceRoom.service;
 
 import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
 import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomHandler;
-import com.umc7.ZIC.apiPayload.exception.handler.RegionHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
 import com.umc7.ZIC.common.domain.Region;
-import com.umc7.ZIC.common.repository.RegionRepository;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.dto.PageRequestDto;
 import com.umc7.ZIC.practiceRoom.dto.PageResponseDto;
@@ -23,6 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.color.ProfileDataException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +34,7 @@ import java.awt.color.ProfileDataException;
 public class PracticeRoomServiceImpl implements PracticeRoomService {
     private final PracticeRoomRepository practiceRoomRepository;
     private final UserRepository userRepository;
-    private final RegionRepository regionRepository;
+    private final PracticeRoomDetailService practiceRoomDetailService;
 
     //연습실 등록
     @Override
@@ -42,7 +45,7 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
 
         Region region = user.getRegion();
 
-        if (!user.getRole().equals(RoleType.OWNER)){
+        if (!user.getRole().equals(RoleType.OWNER)) {
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
         }
         try {
@@ -51,7 +54,7 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
             PracticeRoom savedPracticeRoom = practiceRoomRepository.save(practiceRoom);
 
             return PracticeRoomResponseDto.CreateResponseDto.from(savedPracticeRoom);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
         }
@@ -66,10 +69,10 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
                 .orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
 
-        if (!user.getRole().equals(RoleType.OWNER)){
+        if (!user.getRole().equals(RoleType.OWNER)) {
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
         }
-        if(!user.getId().equals(practiceRoom.getUser().getId())) {
+        if (!user.getId().equals(practiceRoom.getUser().getId())) {
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_AUTHORIZATION_FAILED);
         }
 
@@ -89,14 +92,14 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
 
     //연습실 삭제
     @Override
-    public void deletePracticeRoom(Long practiceRoomId,Long userId) {
+    public void deletePracticeRoom(Long practiceRoomId, Long userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
                 .orElseThrow(() -> new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND));
 
-        if(!user.getId().equals(practiceRoom.getUser().getId())) {
+        if (!user.getId().equals(practiceRoom.getUser().getId())) {
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_AUTHORIZATION_FAILED);
         }
         practiceRoomRepository.delete(practiceRoom);
@@ -114,20 +117,38 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
 
     //연습실 목록 조회
     @Override
-    public PageResponseDto<PracticeRoomResponseDto.GetResponseDto> getPracticeRoomList(PageRequestDto request) {
+    public PageResponseDto<PracticeRoomResponseDto.GetListResponseDto> getPracticeRoomList(PageRequestDto request, LocalDate date, Region region) {
         try {
             Pageable pageable = request.toPageable();
-            Page<PracticeRoom> practiceRoomPage = practiceRoomRepository.findAllPracticeRoom(pageable);
 
-            // PracticeRoom 엔티티의 Page를 PracticeRoomResponseDto.GetResponseDto DTO의 Page로 변환,
-            // map() 메서드를 사용하여 각 PracticeRoom 객체를 PracticeRoomResponseDto.GetResponseDto 객체로 변환
-            Page<PracticeRoomResponseDto.GetResponseDto> practiceRoomDtoPage = practiceRoomPage.map(PracticeRoomResponseDto.GetResponseDto::from);
+            // Region 객체가 null이면 null, 아니면 id를 전달
+            Long regionId = (region == null) ? null : region.getId();
 
-            // PageResponseDto.from() 정적 팩토리 메서드를 사용하여 Page<DTO> 객체를 PageResponseDto<DTO> 객체로 변환
-            return PageResponseDto.from(practiceRoomDtoPage);
+            Page<PracticeRoom> practiceRoomPage = practiceRoomRepository.findAvailablePracticeRoomsByRegionAndDate(regionId, date, pageable);
+
+
+            // practiceRoomPage를 순회하며 각 practiceRoom에 대한 DTO를 생성하고, hasAvailableRoom을 계산.
+            List<PracticeRoomResponseDto.GetListResponseDto> dtoList = practiceRoomPage.getContent().stream()
+                    .map(practiceRoom -> {
+
+                        // 전체 방 개수와 예약 가능한 방 개수를 계산
+                        int totalRoomCount = practiceRoom.getPracticeRoomDetailList().size();
+                        int availableRoomCount = (date == null) ? 0 :
+                                (int) practiceRoom.getPracticeRoomDetailList().stream()
+                                        .filter(detail -> practiceRoomDetailService.hasAvailableTimeSlot(detail, date))
+                                        .count();
+
+                        return PracticeRoomResponseDto.GetListResponseDto.from(practiceRoom, totalRoomCount, availableRoomCount);
+                    })
+                    .collect(Collectors.toList());
+
+
+
+            return new PageResponseDto<>(dtoList, practiceRoomPage.getNumberOfElements(), practiceRoomPage.getTotalPages(),
+                    practiceRoomPage.getTotalElements(), practiceRoomPage.isFirst(), practiceRoomPage.isLast());
+
         } catch (Exception e) {
             log.error("getPracticeRoomList error: {}", e.getMessage());
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND);
         }
-    }
-}
+    }}

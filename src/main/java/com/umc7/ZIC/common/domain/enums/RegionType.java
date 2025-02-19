@@ -27,4 +27,13 @@ public enum RegionType {
     RegionType(String koreanName) {
         this.koreanName = koreanName;
     }
+    // 한글 이름을 입력받아 RegionType을 반환하는 정적 메서드 추가
+    public static RegionType fromKoreanName(String koreanName) {
+        for (RegionType type : RegionType.values()) {
+            if (type.getKoreanName().equals(koreanName)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("RegionType : " + koreanName);
+    }
 }

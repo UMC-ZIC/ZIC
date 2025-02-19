@@ -64,7 +64,7 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
 
     //연습실 내부 방 목록 조회
     @Override
-    public PageResponseDto<PracticeRoomDetailResponseDto.GetDetailResponseDto> getPracticeRoomDetailList(PageRequestDto request, Long practiceRoomId) {
+    public PageResponseDto<PracticeRoomDetailResponseDto.GetListDetailResponseDto> getPracticeRoomDetailList(PageRequestDto request, Long practiceRoomId, LocalDate date) {
 
         //연습실이 있는지 확인
         PracticeRoom practiceRoom = practiceRoomRepository.findById(practiceRoomId)
@@ -74,8 +74,13 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
         Pageable pageable = request.toPageable();
         Page<PracticeRoomDetail> practiceRoomDetailPage = practiceRoomDetailRepository.findAllByPracticeRoomId(practiceRoomId, pageable);
 
-        // 조회된 내부 방 목록(Page<PracticeRoomDetail>)을 DTO 목록(Page<PracticeRoomDetailResponseDto.GetDetailResponseDto>)으로 변환.
-        Page<PracticeRoomDetailResponseDto.GetDetailResponseDto> practiceRoomDetailDtoPage = practiceRoomDetailPage.map(PracticeRoomDetailResponseDto.GetDetailResponseDto::from);
+        // 각 PracticeRoomDetail에 대해 예약 가능한 시간대를 가져와서 DTO에 추가
+        Page<PracticeRoomDetailResponseDto.GetListDetailResponseDto> practiceRoomDetailDtoPage = practiceRoomDetailPage.map(practiceRoomDetail -> {
+            // 현재 날짜 기준으로 예약 가능한 시간대 조회 (원하는 날짜로 변경 가능)
+
+            List<AvailableTimeSlot> availableTimeSlots = getPracticeRoomDetailAvailableTimeSlots(practiceRoomDetail.getId(), date);
+            return PracticeRoomDetailResponseDto.GetListDetailResponseDto.from(practiceRoomDetail, availableTimeSlots);
+        });
 
         //DTO 목록(Page<DTO>)을 최종 응답 객체(PageResponseDto<DTO>)로 변환하여 반환.
         return PageResponseDto.from(practiceRoomDetailDtoPage);
@@ -150,7 +155,7 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
         LocalTime startTime = LocalTime.of(9, 0);
         LocalTime endTime = LocalTime.of(22, 0);
 
-        // 30분 단위로 시간 슬롯을 확인
+        // 1시간 단위로 시간 슬롯을 확인
         while (startTime.isBefore(endTime)) {
             LocalTime currentStartTime = startTime;
             LocalTime currentEndTime = startTime.plusHours(1);
@@ -231,5 +236,49 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
                 .practiceRoomDTO(PracticeRoomConvertor.toPracticeRoom(practiceRoom))
                 .practiceRoomDetailDTO(PracticeRoomDetailConvertor.toPracticeRoomDetails(practiceRoomDetails))
                 .build();
+    }
+
+
+    // 예약 가능한 타임슬롯이 하나라도 있는지 boolean 타입으로 반환하는 메서드
+    @Override
+    public boolean hasAvailableTimeSlot(PracticeRoomDetail practiceRoomDetail, LocalDate date) {
+
+        if (date == null) {  //  null
+            return false; // 또는 예외 처리 등
+        }
+
+        if (practiceRoomDetail.getStatus() != RoomStatus.AVAILABLE) {
+            return false; // 이용 불가능 상태면 예약 불가
+        }
+        List<Reservation> reservations = practiceRoomDetail.getSuccessReservationsByDate(date);
+        LocalTime startTime = LocalTime.of(9, 0);  // 영업 시작 시간 (예: 09:00)
+        LocalTime endTime = LocalTime.of(22, 0);   // 영업 종료 시간 (예: 22:00)
+
+        // 예약이 없는 경우, 모든 TimeSlot이 예약 가능
+        if (reservations.isEmpty()) {
+            return true;
+        }
+
+        // 각 TimeSlot 1시간 을 순회하면서 예약 가능 여부 확인
+        while (startTime.isBefore(endTime)) {
+            LocalTime slotEndTime = startTime.plusHours(1);
+            boolean slotAvailable = true;
+
+            for (Reservation reservation : reservations) {
+                // TimeSlot과 예약 시간이 겹치는지 확인
+                if (!(slotEndTime.isBefore(reservation.getStartTime()) || startTime.isAfter(reservation.getEndTime()))) {
+                    slotAvailable = false; // 겹치면 해당 TimeSlot은 예약 불가
+                    break;
+                }
+            }
+
+            if (slotAvailable) {
+                return true; // 예약 가능한 TimeSlot을 찾으면 즉시 true 반환
+            }
+
+            startTime = slotEndTime; // 다음 TimeSlot으로 이동
+        }
+
+        return false; // 모든 TimeSlot을 확인했지만 예약 가능한 TimeSlot이 없음
     }
 }

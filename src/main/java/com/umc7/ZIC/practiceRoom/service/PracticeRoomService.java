@@ -1,7 +1,10 @@
 package com.umc7.ZIC.practiceRoom.service;
 
+import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.practiceRoom.dto.*;
 import org.springframework.data.domain.Page;
+
+import java.time.LocalDate;
 
 public interface PracticeRoomService {
 
@@ -14,5 +17,5 @@ public interface PracticeRoomService {
     // 연습실 단일 조회
     PracticeRoomResponseDto.GetResponseDto getPracticeRoom(Long practiceRoomId);
     // 연습실 리스트 조회
-    PageResponseDto<PracticeRoomResponseDto.GetResponseDto> getPracticeRoomList(PageRequestDto request);
+    PageResponseDto<PracticeRoomResponseDto.GetListResponseDto> getPracticeRoomList(PageRequestDto request, LocalDate date, Region region);
 }

@@ -20,7 +20,8 @@ public interface PracticeRoomDetailRepository extends JpaRepository<PracticeRoom
     Page<PracticeRoomDetail> findAllByPracticeRoomId(@Param("practiceRoomId") Long practiceRoomId, Pageable pageable);
 
     // 연습실 내부 연습방 단일 조회 (방 ID로 조회)
-    Optional<PracticeRoomDetail> findById(Long practiceRoomDetailId);
+    @Query("SELECT prd FROM PracticeRoomDetail prd WHERE prd.id = :id")
+    Optional<PracticeRoomDetail> findById(Long id);
 
     // 연습실 내부 연습방 단일 조회 (방 ID와 연습실로 조회)
     Optional<PracticeRoomDetail> findByIdAndPracticeRoom(Long id, PracticeRoom practiceRoom);

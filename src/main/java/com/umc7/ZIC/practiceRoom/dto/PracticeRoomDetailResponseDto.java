@@ -92,4 +92,27 @@ public record PracticeRoomDetailResponseDto() {
                 RoomStatus status
         ) {}
     }
+    public record GetListDetailResponseDto(
+            Long practiceRoomDetailId,
+            String name,
+            String image,
+            Integer fee,
+            RoomStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            List<AvailableTimeSlot> availableTimeSlots // 예약 가능한 시간대 목록 추가
+    ) {
+        public static GetListDetailResponseDto from(PracticeRoomDetail practiceRoomDetail, List<AvailableTimeSlot> availableTimeSlots) {
+            return new GetListDetailResponseDto(
+                    practiceRoomDetail.getId(),
+                    practiceRoomDetail.getName(),
+                    practiceRoomDetail.getImage(),
+                    practiceRoomDetail.getFee(),
+                    practiceRoomDetail.getStatus(),
+                    practiceRoomDetail.getCreatedAt(),
+                    practiceRoomDetail.getUpdatedAt(),
+                    availableTimeSlots
+            );
+        }
+    }
 }

@@ -9,11 +9,11 @@ import com.umc7.ZIC.security.JwtTokenProvider;
 import com.umc7.ZIC.user.domain.enums.RoleType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,6 +34,9 @@ public class PracticeRoomDetailController {
 
     //연습실 내부 방 등록
     @PostMapping
+    @Parameters({
+            @Parameter(name = "practiceRoomId", description = "연습방을 등록하고자 하는 연습실의 id ")
+    })
     @Operation(summary = "연습실 내부 방 등록 API", description = "연습실에 연습방을 등록할때 사용하는 API.")
     public ApiResponse<PracticeRoomDetailResponseDto.CreateDetailResponseDto> createPracticeRoomDetail(
             @RequestBody @Valid PracticeRoomDetailRequestDto.CreateRequestDetailDto createRequest,
@@ -48,17 +51,25 @@ public class PracticeRoomDetailController {
 
     //연습실 내부 방 목록 조회
     @GetMapping
+    @Parameters({
+            @Parameter(name = "date", description = "조회할 날짜, yyyy-MM-dd 형식으로 입력 ex) 2025-01-01, query String 입니다!"),
+            @Parameter(name = "practiceRoomId", description = "조회할 연습실의 id ")
+    })
     @Operation(summary = "연습실 내부 방 목록(페이징) 조회 API", description = "연습실 내부 방 목록을 조회하는API.")
-    public ApiResponse<PageResponseDto<PracticeRoomDetailResponseDto.GetDetailResponseDto>> getPracticeRoomDetailList(
+    public ApiResponse<PageResponseDto<PracticeRoomDetailResponseDto.GetListDetailResponseDto>> getPracticeRoomDetailList(
             @ModelAttribute PageRequestDto request,
-            @RequestParam("practiceRoomId") Long practiceRoomId) {
-        PageResponseDto<PracticeRoomDetailResponseDto.GetDetailResponseDto> response = practiceRoomDetailService.getPracticeRoomDetailList(request, practiceRoomId);
+            @RequestParam("practiceRoomId") Long practiceRoomId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        PageResponseDto<PracticeRoomDetailResponseDto.GetListDetailResponseDto> response = practiceRoomDetailService.getPracticeRoomDetailList(request, practiceRoomId, date);
         return ApiResponse.onSuccess(response);
     }
 
     //연습실 내부 방 단일 조회
     @GetMapping("/{practiceRoomDetailId}")
-    @Operation(summary = "연습실 내부 방 단일 조회 API", description = "연습실 내부 방을 단일 조회하는 API.")
+    @Parameters({
+            @Parameter(name = "practiceRoomDetailId", description = "조회할 연습실 내부방의 id ")
+    })
+    @Operation(summary = "연습실 내부 방 단일 조회 API", description = "연습실 내부 방의 정보를 단일 조회하는 API.")
     public ApiResponse<PracticeRoomDetailResponseDto.GetDetailResponseDto> getPracticeRoomDetail(
             @PathVariable Long practiceRoomDetailId) {
         PracticeRoomDetailResponseDto.GetDetailResponseDto response = practiceRoomDetailService.getPracticeRoomDetail(practiceRoomDetailId);
@@ -67,6 +78,9 @@ public class PracticeRoomDetailController {
 
     //연습실 내부 방 정보 수정
     @PatchMapping("/{practiceRoomDetailId}")
+    @Parameters({
+            @Parameter(name = "practiceRoomDetailId", description = "수정하고싶은 연습실 내부방의 id ")
+    })
     @Operation(summary = "연습실 내부 방 정보 수정 API", description = "연습실 내부 방 정보를 수정하는 API.")
     public ApiResponse<PracticeRoomDetailResponseDto.UpdateDetailResponseDto> updatePracticeRoomDetail(
             @RequestBody @Valid PracticeRoomDetailRequestDto.UpdateRequestDetailDto updateRequest,
@@ -108,6 +122,9 @@ public class PracticeRoomDetailController {
 
     //연습실 내부 방 이용상태 정보 수정
     @PatchMapping("/status/{practiceRoomDetailId}")
+    @Parameters({
+            @Parameter(name = "practiceRoomDetailId", description = "이용정지, 이용가능 전환하고 싶은 연습실 내부방의 id ")
+    })
     @Operation(summary = "연습실 내부 방 이용가능, 이용중지 전용 API", description = "호출 시마다 이용 가능/이용 중지 상태가 번갈아 전환됩니다..")
     public ApiResponse<PracticeRoomDetailResponseDto.UpdateDetailResponseDto> updateStatusPracticeRoomDetail(
             @PathVariable Long practiceRoomDetailId) {
