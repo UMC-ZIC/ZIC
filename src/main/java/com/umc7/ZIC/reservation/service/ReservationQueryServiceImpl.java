@@ -33,8 +33,8 @@ public class ReservationQueryServiceImpl implements ReservationQueryService {
     }
 
     @Override
-    public Optional<List<Reservation>> overlappingReservation(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        return reservationRepository.findOverlappingReservations(practiceRoomDetailId, date, startTime, endTime);
+    public Optional<List<Reservation>> overlappingReservation(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime, ReservationStatus status) {
+        return reservationRepository.findOverlappingReservations(practiceRoomDetailId, date, startTime, endTime, status);
     }
 
     @Override

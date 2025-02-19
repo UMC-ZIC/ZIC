@@ -22,6 +22,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,7 @@ import java.util.Objects;
 @RequestMapping("/api/reservation")
 @Tag(name = "예약", description = "예약 API")
 public class ReservationRestController {
+    private static final Logger log = LoggerFactory.getLogger(ReservationRestController.class);
     private final ReservationCommandService reservationCommandService;
     private final ReservationQueryService reservationQueryService;
     private final KakaoPayService kakaoPayService;
@@ -82,6 +85,7 @@ public class ReservationRestController {
     @PostMapping("/payment/kakao/approve")
     public ApiResponse<PaymentResponseDTO.KakaoPaymentResultDTO<Object>> approveToKakaoPay(
             @RequestBody @Validated(ValidationOrder.OrderedKakaoPaymentValidation.class) PaymentRequestDTO.KakaoPaymentApproveRequestDTO request) {
+        log.info("결제 승인");
         PaymentResponseDTO.KakaoPaymentApproveResponseDTO result = kakaoPayService.kakaoPayApprove(request, jwtTokenProvider.getUserIdFromToken());
         ReservationDetail reservationDetail = reservationCommandService.registReservationDetail(request, result);
 
