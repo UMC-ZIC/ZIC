@@ -40,18 +40,18 @@ public class PracticeRoomController {
 
     // Practice Room 관련 API
     //연습실 등록
-    @Operation(summary = "연습실을 등록할때 사용하는 API", description = "유저가 Owner 역할일때 본인의 연습실을 등록할 때 사용하는 API")
-    @PostMapping
-    public ApiResponse<PracticeRoomResponseDto.CreateResponseDto> createPracticeRoom(
-            @RequestBody @Valid PracticeRoomRequestDto.CreateRequestDto createRequest) {
-        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
-            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
-        }
-
-        Long userId = jwtTokenProvider.getUserIdFromToken();
-        PracticeRoomResponseDto.CreateResponseDto response = practiceRoomService.createPracticeRoom(createRequest, userId);
-        return ApiResponse.onSuccess(response);
-    }
+//    @Operation(summary = "연습실을 등록할때 사용하는 API", description = "유저가 Owner 역할일때 본인의 연습실을 등록할 때 사용하는 API")
+//    @PostMapping
+//    public ApiResponse<PracticeRoomResponseDto.CreateResponseDto> createPracticeRoom(
+//            @RequestBody @Valid PracticeRoomRequestDto.CreateRequestDto createRequest) {
+//        if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
+//            throw new UserHandler(ErrorStatus._UNAUTHORIZED);
+//        }
+//
+//        Long userId = jwtTokenProvider.getUserIdFromToken();
+//        PracticeRoomResponseDto.CreateResponseDto response = practiceRoomService.createPracticeRoom(createRequest, userId);
+//        return ApiResponse.onSuccess(response);
+//    }
 
     //연습실 수정
     @PatchMapping("/{id}")
