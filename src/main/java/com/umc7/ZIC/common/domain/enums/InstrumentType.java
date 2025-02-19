@@ -21,4 +21,14 @@ public enum InstrumentType {
     InstrumentType(String koreanName) {
         this.koreanName = koreanName;
     }
+
+    // 한글 이름을 입력받아 InstrumentType을 반환하는 정적 메서드 추가
+    public static InstrumentType fromKoreanName(String koreanName) {
+        for (InstrumentType type : InstrumentType.values()) {
+            if (type.getKoreanName().equals(koreanName)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("InstrumentType : " + koreanName);
+    }
 }
