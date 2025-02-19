@@ -1,8 +1,10 @@
 package com.umc7.ZIC.practiceRoom.service;
 
 import com.umc7.ZIC.apiPayload.code.status.ErrorStatus;
+import com.umc7.ZIC.apiPayload.exception.handler.InstrumentHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.PracticeRoomHandler;
 import com.umc7.ZIC.apiPayload.exception.handler.UserHandler;
+import com.umc7.ZIC.common.domain.Instrument;
 import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.practiceRoom.domain.PracticeRoom;
 import com.umc7.ZIC.practiceRoom.dto.PageRequestDto;
@@ -20,9 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.color.ProfileDataException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,14 +117,18 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
 
     //연습실 목록 조회
     @Override
-    public PageResponseDto<PracticeRoomResponseDto.GetListResponseDto> getPracticeRoomList(PageRequestDto request, LocalDate date, Region region) {
+    public PageResponseDto<PracticeRoomResponseDto.GetListResponseDto> getPracticeRoomList(PageRequestDto request, LocalDate date, Region region, Instrument instrument) {
         try {
             Pageable pageable = request.toPageable();
+            String priceSort = request.priceSort(); // priceSort 가져오기
 
             // Region 객체가 null이면 null, 아니면 id를 전달
             Long regionId = (region == null) ? null : region.getId();
 
-            Page<PracticeRoom> practiceRoomPage = practiceRoomRepository.findAvailablePracticeRoomsByRegionAndDate(regionId, date, pageable);
+            // Instrument 객체가 null이면 null, 아니면 id를 전달
+            Long instrumentId = (instrument == null) ? null : instrument.getId();
+
+            Page<PracticeRoom> practiceRoomPage = practiceRoomRepository.findAvailablePracticeRoomsByRegionAndDateAndInstrument(regionId, date, instrumentId, priceSort, pageable);
 
 
             // practiceRoomPage를 순회하며 각 practiceRoom에 대한 DTO를 생성하고, hasAvailableRoom을 계산.
@@ -147,8 +151,10 @@ public class PracticeRoomServiceImpl implements PracticeRoomService {
             return new PageResponseDto<>(dtoList, practiceRoomPage.getNumberOfElements(), practiceRoomPage.getTotalPages(),
                     practiceRoomPage.getTotalElements(), practiceRoomPage.isFirst(), practiceRoomPage.isLast());
 
+        } catch (InstrumentHandler e) { // InstrumentHandler 예외 처리
+            throw e;
         } catch (Exception e) {
             log.error("getPracticeRoomList error: {}", e.getMessage());
-            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_FOUND);
+            throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_LIST_GET_FAIL);
         }
     }}
