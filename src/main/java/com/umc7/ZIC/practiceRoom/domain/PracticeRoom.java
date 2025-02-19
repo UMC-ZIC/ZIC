@@ -47,9 +47,15 @@ public class PracticeRoom extends BaseEntity {
     @Max(value = 180)
     private Double longitude;
 
+    private Integer basePrice;
+
     @Builder.Default
     @OneToMany(mappedBy = "practiceRoom", cascade = CascadeType.ALL)
     private List<PracticeRoomDetail> PracticeRoomDetailList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "practiceRoom", cascade = CascadeType.ALL)
+    private List<PracticeRoomInstrument> practiceRoomInstrumentList = new ArrayList<>();
 
     public void update(String name, String address, Double latitude, Double longitude, String image) {
         this.name = name;
