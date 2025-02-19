@@ -9,7 +9,7 @@ public enum InstrumentType {
     GUITAR("기타"),
     BASS("베이스"),
     DRUM("드럼"),
-    FLUTE("플롯"),
+    FLUTE("플룻"),
     HARP("하프"),
     TRUMPET("트럼펫"),
     VIOLA("비올라"),
