@@ -36,6 +36,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //악기 관련 에러
     INSTRUMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "INSTRUMENT4001", "해당 악기가 없습니다."),
+    INSTRUMENT_OWNER_NOT_FOUND(HttpStatus.NOT_FOUND, "INSTRUMENT4001", "대여자는 연습실을 위한 악기를 정해야합니다."),
 
     //연습실 내부 연습방 관련에러
     PRACTICEROOMDETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "PRACTICEROOMDETAIL4004", "연습실 내부에 해당 연습방이 없습니다."),

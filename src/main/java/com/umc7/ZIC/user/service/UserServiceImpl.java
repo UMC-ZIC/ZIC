@@ -40,9 +40,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -76,7 +74,8 @@ public class UserServiceImpl implements UserService {
 
         //update
         User savedUser = userRepository.save(user);
-        saveUserInstruments(savedUser, userDetailsDto.instrumentList());
+        Optional<List<String>> instrumentList = Optional.ofNullable(userDetailsDto.instrumentList());
+        saveUserInstruments(savedUser, instrumentList);
 
 
         String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
@@ -87,34 +86,51 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto.User.OwnerDetailsDto updateOwnerDetails(Long userId, UserRequestDto.ownerDetailsDto ownerDetailsDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        Optional<List<String>> instrumentList = Optional.ofNullable(ownerDetailsDto.instrumentList());
+
+        //연습실 등록을 위한 악기가 있는지
+        if(!instrumentList.isPresent() || instrumentList.get().isEmpty()){
+            throw new InstrumentHandler(ErrorStatus.INSTRUMENT_OWNER_NOT_FOUND);
+        }
+        
+        //악기 한글 이름 잘못 되어 있는지 save 전에 선 검색
+        List<Instrument> instruments = new ArrayList<>();
+        for (String roomInstrument : instrumentList.get()) {
+            instruments.add(getInstrument(roomInstrument));
+        }
 
         checkPendingStatus(user);
 
         //ex [0]: 울산, [1]:남구 무거동~
-        String[] userRequestRegion = ownerDetailsDto.region1().split(" ");
+        String[] userRequestRegion = ownerDetailsDto.region1().trim().split(" ");
         Region userRegion = getRegion(userRequestRegion[0]);//ex 울산
         user.setRegion(userRegion);
 
         user.setRole(RoleType.OWNER);
-
         //남구 무거동 ~~~~
         StringBuilder address = new StringBuilder(); //메모리 효율을 위해 사용
         for (int i = 1; i < userRequestRegion.length; i++) {
-            address.append(userRequestRegion[i]);
+            address.append(userRequestRegion[i].trim());
             if (i < userRequestRegion.length - 1) {
                 address.append(" "); // 띄어쓰기
             }
         }
         //울산대학교 ~~
-        address.append(" ").append(ownerDetailsDto.region2());
+        //region이 '울산'으로만 끝나면 띄어쓰기 안 주기
+        if(userRequestRegion.length==1){
+            address.append(ownerDetailsDto.region2());
+        } else {
+            address.append(" ").append(ownerDetailsDto.region2());
+        }
 
         user.setAddress(address.toString());
         user.setBusinessName(ownerDetailsDto.businessName());
         user.setBusinessNumber(ownerDetailsDto.businessNumber());
 
         //update
+
         User savedUser = userRepository.save(user);
-        saveUserInstruments(savedUser, ownerDetailsDto.instrumentList());
+        saveUserInstruments(savedUser, instrumentList);
         updateAuthorities(user);
 
         PracticeRoomRequestDto.CreateRequestDto createPracticeReqDto = new PracticeRoomRequestDto.CreateRequestDto
@@ -132,10 +148,11 @@ public class UserServiceImpl implements UserService {
             throw new PracticeRoomHandler(ErrorStatus.PRACTICEROOM_NOT_OWNER_ROLE);
         }
 
-
-        for (String roomInstrument : ownerDetailsDto.instrumentList()){
-            PracticeRoomInstrument practiceRoomInstrument = PracticeRoomInstrumentConverter.toPracticeRoomInstrument(savedPracticeRoom, getInstrument(roomInstrument));
-            practiceRoomInstrumentRepository.save(practiceRoomInstrument);
+        if (instrumentList.isPresent() && !instrumentList.get().isEmpty()){
+            for (Instrument roomInstrument : instruments) {
+                PracticeRoomInstrument practiceRoomInstrument = PracticeRoomInstrumentConverter.toPracticeRoomInstrument(savedPracticeRoom, roomInstrument);
+                practiceRoomInstrumentRepository.save(practiceRoomInstrument);
+            }
         }
 
         String jwtToken = jwtTokenProvider.createAccessToken(userId, savedUser.getRole().toString(), savedUser.getName());
@@ -193,8 +210,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void saveUserInstruments(User user, List<String> instrumentKorNames) {
-        for (String instrumentKorName : instrumentKorNames) {
+    private void saveUserInstruments(User user, Optional<List<String>> instrumentKorNames) {
+        if (!instrumentKorNames.isPresent() || instrumentKorNames.get().isEmpty()) {
+            return;
+        }
+        for (String instrumentKorName : instrumentKorNames.get()) {
             InstrumentType instrumentType = InstrumentUtil.fromKoreanName(instrumentKorName);
             Instrument instrument = instrumentRepository.findByName(instrumentType).orElseThrow(() -> new InstrumentHandler(ErrorStatus.INSTRUMENT_NOT_FOUND));
             ;
