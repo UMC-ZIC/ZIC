@@ -29,13 +29,13 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     QPracticeRoomDetail qPracticeRoomDetail = QPracticeRoomDetail.practiceRoomDetail;
 
     @Override
-    public Optional<List<Reservation>> findOverlappingReservations(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+    public Optional<List<Reservation>> findOverlappingReservations(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime, ReservationStatus status) {
 
         List<Reservation> overlappingReservations = jpaQueryFactory
                 .selectFrom(qReservation)
                 .where(
                         qReservation.practiceRoomDetail.id.eq(practiceRoomDetailId),
-                        qReservation.status.eq(ReservationStatus.SUCCESS),
+                        qReservation.status.eq(status),
                         qReservation.date.eq(date),
                         qReservation.startTime.goe(startTime).and(qReservation.startTime.lt(endTime))
                                 .or(qReservation.endTime.gt(startTime).and(qReservation.endTime.loe(endTime)))

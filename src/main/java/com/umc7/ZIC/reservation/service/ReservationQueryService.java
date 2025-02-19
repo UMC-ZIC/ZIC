@@ -1,6 +1,7 @@
 package com.umc7.ZIC.reservation.service;
 
 import com.umc7.ZIC.reservation.domain.Reservation;
+import com.umc7.ZIC.reservation.domain.enums.ReservationStatus;
 import com.umc7.ZIC.reservation.dto.ReservationResponseDTO;
 import org.springframework.data.domain.Page;
 
@@ -35,7 +36,7 @@ public interface ReservationQueryService {
      * @param endTime
      * @return
      */
-    Optional<List<Reservation>> overlappingReservation(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime);
+    Optional<List<Reservation>> overlappingReservation(Long practiceRoomDetailId, LocalDate date, LocalTime startTime, LocalTime endTime, ReservationStatus status);
 
     /**
      * 유저 Id가 Owner 타입인 대여자가 등록한 연습실을 page를 통해 예약된 목록을 조회하는 Service

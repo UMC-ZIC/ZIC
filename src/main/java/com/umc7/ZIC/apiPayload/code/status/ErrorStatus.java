@@ -53,7 +53,8 @@ public enum ErrorStatus implements BaseErrorCode {
     RESERVATION_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION4042", "해당 예약 상세 데이터가 없습니다."),
 
     RESERVATION_TIME_WRONG_REQUEST(HttpStatus.BAD_REQUEST, "RESERVATION4001", "startTime이 endTime보다 늦어선 안됩니다."),
-    RESERVATION_TIME_OVERLAP_REQUEST(HttpStatus.BAD_REQUEST, "RESERVATION4002", "선택하신 시간에 이미 예약이 있습니다."),
+    RESERVATION_TIME_OVERLAP_SECCESS_REQUEST(HttpStatus.BAD_REQUEST, "RESERVATION4002", "선택하신 시간에 이미 예약이 있습니다."),
+    RESERVATION_TIME_OVERLAP_PENDING_REQUEST(HttpStatus.BAD_REQUEST, "RESERVATION4002", "선택하신 시간에 결제 대기중인 예약이 있습니다."),
 
     RESERVATION_STATUS_NOT_PENDING(HttpStatus.BAD_REQUEST, "RESERVATION4003", "해당 예약은 현재 '결제 대기' 상태가 아닙니다."),
     RESERVATION_STATUS_NOT_SUCCESS(HttpStatus.BAD_REQUEST, "RESERVATION4004", "해당 예약은 현재 '결제 완료' 상태가 아닙니다."),
