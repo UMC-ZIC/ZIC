@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
 @ParameterObject
 public record PageRequestDto(
         @Parameter(description = "페이지 번호 (1 이상)")
@@ -16,7 +17,10 @@ public record PageRequestDto(
         @Parameter(description = "페이지 크기 (10-100 사이)")
         @Min(value = 10)
         @Max(value = 100)
-        int size
+        int size,
+
+        @Parameter(description = "가격 정렬 (asc 또는 desc, 대소문자 구분 없음), 아무값이나 넣으면 id ASC 정렬")
+        String priceSort // 가격 정렬
 ) {
 
     public Pageable toPageable(Sort sort) {

@@ -1,5 +1,6 @@
 package com.umc7.ZIC.practiceRoom.service;
 
+import com.umc7.ZIC.common.domain.Instrument;
 import com.umc7.ZIC.common.domain.Region;
 import com.umc7.ZIC.practiceRoom.dto.*;
 import org.springframework.data.domain.Page;
@@ -17,5 +18,5 @@ public interface PracticeRoomService {
     // 연습실 단일 조회
     PracticeRoomResponseDto.GetResponseDto getPracticeRoom(Long practiceRoomId);
     // 연습실 리스트 조회
-    PageResponseDto<PracticeRoomResponseDto.GetListResponseDto> getPracticeRoomList(PageRequestDto request, LocalDate date, Region region);
+    PageResponseDto<PracticeRoomResponseDto.GetListResponseDto> getPracticeRoomList(PageRequestDto request, LocalDate date, Region region, Instrument instrumentId);
 }
