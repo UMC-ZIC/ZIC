@@ -31,7 +31,6 @@ import java.time.LocalDate;
 @Tag(name = "연습실", description = "연습실 CRUD")
 public class PracticeRoomController {
 
-    private static final Logger log = LoggerFactory.getLogger(PracticeRoomController.class);
     private final PracticeRoomService practiceRoomService;
     private final RegionService regionService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -60,8 +59,6 @@ public class PracticeRoomController {
     public ApiResponse<PracticeRoomResponseDto.UpdateResponseDto> updatePracticeRoom(
             @RequestBody @Valid PracticeRoomRequestDto.UpdateRequestDto updateRequest,
             @PathVariable Long id) {
-        // TODO : 로그 확인
-        log.info("연습실 수정 - PATCH");
 
         if (jwtTokenProvider.resolveAccessToken().isEmpty()) {
             throw new UserHandler(ErrorStatus._UNAUTHORIZED);
