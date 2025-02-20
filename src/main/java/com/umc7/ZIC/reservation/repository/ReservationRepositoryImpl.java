@@ -37,6 +37,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         qReservation.practiceRoomDetail.id.eq(practiceRoomDetailId),
                         qReservation.status.eq(status),
                         qReservation.date.eq(date),
+                        qReservation.status.eq(ReservationStatus.SUCCESS),
                         qReservation.startTime.goe(startTime).and(qReservation.startTime.lt(endTime))
                                 .or(qReservation.endTime.gt(startTime).and(qReservation.endTime.loe(endTime)))
                                 .or(qReservation.startTime.loe(startTime).and(qReservation.endTime.goe(endTime)))
@@ -58,6 +59,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .from(qReservation)
                 .where(
                         qReservation.user.id.eq(userId),
+                        qReservation.status.eq(ReservationStatus.SUCCESS),
                         qReservation.date.between(startOfMonth, endOfMonth)
                 )
                 .groupBy(qReservation.practiceRoomDetail.practiceRoom.name, qReservation.practiceRoomDetail.name)
