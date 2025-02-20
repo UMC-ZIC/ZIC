@@ -83,14 +83,15 @@ public class PracticeRoomRepositoryImpl implements PracticeRoomRepositoryCustom 
             return null;
         }
 
-        return practiceRoom.PracticeRoomDetailList.any().status.eq(com.umc7.ZIC.practiceRoom.domain.enums.RoomStatus.AVAILABLE)
+        return null;
+/*        return practiceRoom.PracticeRoomDetailList.any().status.eq(com.umc7.ZIC.practiceRoom.domain.enums.RoomStatus.AVAILABLE)
                 .and(practiceRoom.PracticeRoomDetailList.any().id.notIn(
                         queryFactory.select(reservation.practiceRoomDetail.id)
                                 .from(reservation)
                                 .where(reservation.date.eq(date),
                                         reservation.status.eq(com.umc7.ZIC.reservation.domain.enums.ReservationStatus.SUCCESS))
                                 .fetch()
-                ));
+                ));*/
     }
 
     private OrderSpecifier<?> getOrderSpecifier(String priceSort) {
