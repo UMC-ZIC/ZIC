@@ -152,8 +152,8 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
         List<AvailableTimeSlot> availableTimeSlots = new ArrayList<>();
 
         // 영업 시작 시간과 종료 시간 (예: 09시 ~ 22시)
-        LocalTime startTime = LocalTime.of(9, 0);
-        LocalTime endTime = LocalTime.of(22, 0);
+        LocalTime startTime = LocalTime.of(0, 0);
+        LocalTime endTime = LocalTime.of(23, 0);
 
         // 1시간 단위로 시간 슬롯을 확인
         while (startTime.isBefore(endTime)) {
@@ -251,8 +251,8 @@ public class PracticeRoomDetailServiceImpl implements PracticeRoomDetailService 
             return false; // 이용 불가능 상태면 예약 불가
         }
         List<Reservation> reservations = practiceRoomDetail.getSuccessReservationsByDate(date);
-        LocalTime startTime = LocalTime.of(9, 0);  // 영업 시작 시간 (예: 09:00)
-        LocalTime endTime = LocalTime.of(22, 0);   // 영업 종료 시간 (예: 22:00)
+        LocalTime startTime = LocalTime.of(0, 0);  // 영업 시작 시간 (예: 09:00)
+        LocalTime endTime = LocalTime.of(23, 0);   // 영업 종료 시간 (예: 22:00)
 
         // 예약이 없는 경우, 모든 TimeSlot이 예약 가능
         if (reservations.isEmpty()) {
