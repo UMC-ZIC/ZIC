@@ -324,14 +324,15 @@
 <details>
 <summary> 아키텍쳐 </summary>
 
+  
+</details>
+
+
 <details>
 <summary>ERD</summary>
 
 ![image](https://github.com/user-attachments/assets/22072c82-95bd-43fc-88a7-575500e96d09)
 
-
-
-  
 </details>
 
 
@@ -447,9 +448,6 @@
 </details>
 
   
-
-
-
 
 ## 팀원 소개
 
