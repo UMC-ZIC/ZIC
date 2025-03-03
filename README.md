@@ -340,60 +340,62 @@
 
 ## 프로젝트 협업 규칙
 
-    
 <details>
-<summary> API 문서화 프로세스 </summary>
+<summary>API 문서화 프로세스</summary>
+<br>
+ 
+ **API 설계 단계**
+  - Notion을 활용한 초기 API 명세서 작성
+  - Endpoint 정의
+  - Request/Response 스키마 작성
+    
+<br>
 
-  API 설계 단계
-  -Notion을 활용한 초기 API 명세서 작성
-        - Endpoint 정의
-        - Request/Response 스키마 작성
+ **배포 및 연동 단계**
+- Swagger/OpenAPI를 통한 자동화된 문서 추가
+  - API 변경사항 실시간 반영
+  - Request/Response 스키마 자동화/동기화
+  - Status Code 자동화/동기화
+  - 필수 파라미터 및 제약조건 자동화 <br>
 
-  배포 및 연동 단계
-  - Swagger/OpenAPI를 통한 자동화된 문서 추가
-        - API 변경사항 실시간 반영
-        - Request/Response 스키마 자동화/동기화
-        - Status Code 자동화/동기화
-        - 필수 파라미터 및 제약조건 자동화
-    - API 연동방식
-        AWS 프리티어 계정 활용
-            - CI/CD를 통해 자동 배포 및 동기화 API 서버 배포
-        
-  </details>  
+- API 연동 방식
+  - AWS 프리티어 계정 활용
+  - CI/CD를 통해 자동 배포 및 동기화 API 서버 배포
+
+   </details>
+   
 <details>
 <summary> 깃 전략 및 PR 규칙 </summary>
 
-  프론트와 백엔드 분리된 깃허브 저장소 운영
-        
-  <**Feature-Branch 전략(GitHub Flow)**>
-        
-  ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/07b9a78b-a42f-4b65-932f-5a91cc1be98e/d57407f6-6a10-4235-9a33-7fce28f21ad7/image.png)
-        
+  ** Feature-Branch 전략(GitHub Flow) **
+
+ ![image](https://github.com/user-attachments/assets/b96e30b5-7471-4cd1-9421-d12f6f1bb1cc)
+
     
-  **Main Branch**
-    - 배포 브랜치, 운영서버
-    - 직접적인 PUSH 절대 불가
-    - develop → main 으로만 Pull Request 가능
+  ### Main Branch
+    - 배포 브랜치, 운영서버 
+    - 직접적인 PUSH 불가 
+    - develop → main 으로만 Pull Request 가능 
     
-  **Develop Branch**
-    - 개발 통합 브랜치 :
-        - 다음 배포 버전을 위한 개발 코드 통합
-        - 기능 개발이 완료된 feature 브랜치들의 병합 지점
-        - QA/테스트 진행 시 베이스 브랜치
+  ### Develop Branch
+    - 개발 통합 브랜치: 
+        - 다음 배포 버전을 위한 개발 코드 통합 
+        - 기능 개발이 완료된 feature 브랜치들의 병합 지점 
+        - 테스트 진행 시 베이스 브랜치 
     
-  **Feature Branch (branch명 : ex - feature#2-security)** 
-    - 기능 개발을 위한 작업 브랜치
-    - Issue 생성 및 할당 → develop에서 feature 브랜치 생성 → 개발 작업 수행 → develop으로 PR 요청 → 코드 리뷰 후 Merge
-    - Merge된 Remote Feature 브랜치는 자동 삭제 설정
-    - develop 기준으로 분기
+  ### Feature Branch (branch명 : ex - feature#2-security)** <br>
+    - 기능 개발을 위한 작업 브랜치 
+    - Issue 생성 및 할당 → develop에서 feature 브랜치 생성 → 개발 작업 수행 → develop으로 PR 요청 → 코드 리뷰 후 Merge 
+    - Merge된 Remote Feature 브랜치는 자동 삭제 설정 
+    - develop 기준으로 분기 
     
-  **Merge 방식**
-    - 마지막 approve 사람이 merge 하기
-    - feature 브랜치
-    - develop 브랜치 (본인이 스스로 approve 가능)
-    - main  브랜치 (1명 이상 approve시 가능)
+  ### Merge 방식
+    - 마지막 approve 사람이 merge 하기 
+    - feature 브랜치 
+    - develop 브랜치 (본인이 스스로 approve 가능) 
+    - main  브랜치 (1명 이상 approve시 가능) 
     
-   </details>   
+   </details>
 
     
 
