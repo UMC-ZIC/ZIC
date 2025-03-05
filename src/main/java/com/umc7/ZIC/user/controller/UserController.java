@@ -18,27 +18,12 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    //test용
-    @GetMapping("/user-id")
-    public String userid(){
-        String jwt =jwtTokenProvider.getUserIdFromToken().toString()+ "    "+jwtTokenProvider.getUserTypeInToken(jwtTokenProvider.resolveAccessToken()).toString();
-        return jwt;
-    }
-
     @Operation(summary = "유저 회원가입 할 때 사용하는 API", description = "유저가 로그인 후 추가 정보 기입후 최종 가입 할 때 사용하는 API")
     @PatchMapping("/details")
     public ApiResponse<UserResponseDto.User.UserDetailsDto> userDetails(@RequestBody UserRequestDto.userDetailsDto userRequestDto){
         Long userId = jwtTokenProvider.getUserIdFromToken();
 
         return ApiResponse.onSuccess(userService.updateUserDetails(userId, userRequestDto));
-    }
-
-
-    @GetMapping("/details")
-    public ApiResponse<UserResponseDto.User.UserDetailsDto> test(@RequestParam("user-id") Long userId, @RequestParam("jwt-token") String jwtToken){
-
-
-        return ApiResponse.onSuccess(userService.getUser(userId, jwtToken));
     }
 
     @Operation(summary = "마이페이지 API", description = "마이페이지 이번달 연습 횟수, 자주 가는 연습실 API")

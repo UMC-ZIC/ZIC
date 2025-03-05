@@ -44,27 +44,6 @@ public class KakaoLoginPageController {
         return "login";
     }
 
-    @GetMapping("/user")
-    public String getUser(@AuthenticationPrincipal OAuth2User principal) {
-        log.info(principal.getAuthorities().toString());
-        return principal.getAuthorities().toString();
-    }
-    @GetMapping("/home")
-    public String home() {
-
-        return "home";
-    }
-
-//    @GetMapping("/login/oauth2")
-//    public ApiResponse<UserResponseDto.UserDetailsDto> oauth2(@RequestParam("code") String code, @RequestParam("state") String state) {
-//        log.info("Wwwwwwwwwwwwww");
-//        String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(code);
-//        KakaoUserInfoResponseDto kakaoUserInfo = kakaoService.getUserInfo(kakaoAccessToken);
-//        UserResponseDto.UserDetailsDto UserDetailsDto = userService.kaKaoGetUser(kakaoUserInfo);
-//        log.info(UserDetailsDto.toString());
-//        return ApiResponse.onSuccess(UserDetailsDto);
-//    }
-
     @GetMapping("/success")
     public String success() {
 
