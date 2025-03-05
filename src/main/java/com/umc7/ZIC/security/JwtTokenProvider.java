@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     private Key secretKey;
 
     // 토큰의 유효시간
-    public static final long TOKEN_VALID_TIME = 1000L * 60 * 60 * 24;    // 엑세스 토큰 24시간
+    public static final long TOKEN_VALID_TIME = 1000L * 60 * 60;    // 엑세스 토큰 1시간
     public static final long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 60 * 24 * 7;   // 일주일
 
     private final CustomUserDetailsService userDetailService;
