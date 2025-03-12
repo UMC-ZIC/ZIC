@@ -1,30 +1,16 @@
 ![image](https://github.com/user-attachments/assets/1620d892-6caa-4bff-8c98-7e019f6f6996)
 
-리드미 초안
 
 ## 💡 서비스 소개  
 '**ZIC**' 은 음악 연습실을 쉽고 빠르게 예약하고 효율적으로 관리할 수 있게 돕는 서비스입니다.
 > music의 sic을 어감을 더 찰지게 하기 위해 첫 글자를 Z로 바꾸면서 탄생했습니다.
 <details> 
-<summary>ZIC 소개 더보기 (임시 소개글)</summary>
-  **해결하고 싶은 것:**
+<summary>ZIC 기획안 </summary>
+ 
+![image](https://github.com/user-attachments/assets/284900cb-c480-4c6d-9f20-a27ed26f7bae)
 
-*   사용자는 원하는 시간, 원하는 조건의 연습실을 찾기 어렵습니다.
-*   운영자는 전화, 문자 등 번거로운 예약 관리와 빈 시간 발생으로 수익 극대화가 어렵습니다.
-*   기존 플랫폼들은 연습실에 특화되지 않아 검색이 불편하고, 연습실 관리에 특화된 기능이 부족합니다.
 
-**ZIC 솔루션:**
 
-*   **한 번에 해결:** 다양한 연습실 검색, 실시간 예약, 간편 결제를 한 플랫폼에서 제공합니다.
-*   **효율적인 예약 관리:** 운영자를 위한 예약 일정 관리, 수익 분석, 홍보 기능을 제공합니다.
-*   **음악 연습실 특화:** 음악 연습실에만 집중하여 사용자 편의성을 높이고, 운영자는 효율적인 관리가 가능합니다.
-*   **구독형 요금제(선택 사항):** 전공생, 취미 연주자를 위한 월 구독 요금제를 통해 부담 없이 다양한 연습실을 이용할 수 있습니다.
-
-**ZIC의 가치:**
-
-*   **사용자:** 원하는 연습실을 쉽고 빠르게 찾아 예약하고, 편리하게 이용합니다.
-*   **운영자:** 효율적인 예약 관리로 수익을 극대화하고, 홍보 채널을 확보합니다.
-*    **시장 성장성**: 세계 악기 시장의 성장과 크리에이터 증가 추세에 발맞춰, 연습 공간 대여 시장의 성장 가능성이 큽니다.
 
 </details>
 
@@ -303,19 +289,6 @@
 </details>
 
 
-<details> 
-<summary>기능1</summary>
-</details>
-
-<details>
-<summary>기능2</summary>
-</details>
-
-<details>
-<summary>기능3</summary>
-</details>
-
-
   
 </details>
 
@@ -323,6 +296,15 @@
 
 <details>
 <summary> 아키텍쳐 </summary>
+<br/>
+ 
+### 백엔드 아키텍쳐
+![image](https://github.com/user-attachments/assets/27384d3e-ff79-4730-8c1e-8a88ad232808)
+
+<br/>
+
+### 프론트 아키텍쳐
+![image](https://github.com/user-attachments/assets/bdf238d5-5327-42b4-b8fd-ea6121443c75)
 
   
 </details>
