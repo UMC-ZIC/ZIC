@@ -349,7 +349,9 @@
 <details>
 <summary> 깃 전략 및 PR 규칙 </summary>
 
-  ** Feature-Branch 전략(GitHub Flow) **
+<br/>
+
+  **Feature-Branch 전략(GitHub Flow)**
 
  ![image](https://github.com/user-attachments/assets/b96e30b5-7471-4cd1-9421-d12f6f1bb1cc)
 
@@ -365,7 +367,7 @@
         - 기능 개발이 완료된 feature 브랜치들의 병합 지점 
         - 테스트 진행 시 베이스 브랜치 
     
-  ### Feature Branch (branch명 : ex - feature#2-security)** <br>
+  ### Feature Branch (branch명 : ex - feature#2-security) <br>
     - 기능 개발을 위한 작업 브랜치 
     - Issue 생성 및 할당 → develop에서 feature 브랜치 생성 → 개발 작업 수행 → develop으로 PR 요청 → 코드 리뷰 후 Merge 
     - Merge된 Remote Feature 브랜치는 자동 삭제 설정 
@@ -415,9 +417,7 @@
 - DB는 스네이크- jpa에서 카멜케이스 사용시 자동 변환 해 줌
 - URL, 파일명 등은 kebab-case를 사용 (예: /user-email-page )
 
-### **컨트롤러 규칙**
 
-- 
 
 ### **블록 구문**
 
